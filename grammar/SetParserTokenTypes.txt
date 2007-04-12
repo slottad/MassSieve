@@ -1,0 +1,10 @@
+// $ANTLR 2.7.5 (20060418): SetParser.g -> SetParserTokenTypes.txt$
+SetParser    // output token vocab name
+UNION=4
+DIFF=5
+INTERSECT=6
+COMPLEMENT=7
+SET=8
+LPAREN=9
+RPAREN=10
+WS=11
