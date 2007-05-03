@@ -35,7 +35,7 @@ import org.biojavax.bio.seq.RichSequenceIterator;
  * @author  slotta
  */
 public class MassSieveFrame extends javax.swing.JFrame {
-    private String version = "MassSieve v0.96";
+    private String version = "MassSieve v0.97";
     private ExperimentPanel currentExperiment;
     private HashMap<String, ExperimentPanel> expSet;
     private boolean useDigest, useMultiColumnSort;
@@ -107,7 +107,7 @@ public class MassSieveFrame extends javax.swing.JFrame {
         jFileChooserLoad.setDialogTitle("Open Files");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("MassSieve v0.8");
+        setTitle("MassSieve v0.97");
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         jTabbedPaneMain.addComponentListener(new java.awt.event.ComponentAdapter() {
             public void componentShown(java.awt.event.ComponentEvent evt) {

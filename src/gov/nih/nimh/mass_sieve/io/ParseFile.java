@@ -132,7 +132,7 @@ public class ParseFile {
 
 class CheckTypeHandler extends DefaultHandler {
     public void startElement(String namespaceURI, String sName, String qName, Attributes attrs) throws TypeFoundException {
-        if (sName == "MSSearch") {
+        if (sName == "MSSearch" || sName == "MSResponse") {
             throw new TypeFoundException(AnalysisProgramType.OMSSA);
         }
         if (sName == "bioml") {

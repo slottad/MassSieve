@@ -546,10 +546,21 @@ public class Protein implements Comparable<Protein> {
                 !superset.isEmpty()) {
             return false;
         }
-        for (Protein p:differentiable) {
-            for (Protein q:differentiable) {
+        for (int i=0; i<(differentiable.size()-1); i++) {
+            for (int j=i+1; j<differentiable.size(); j++) {
+                Protein p = differentiable.get(i);
+                Protein q = differentiable.get(j);
                 if (p.compareParsimony(q) == ParsimonyType.DIFFERENTIABLE) {
-                    return true;
+                    // Might be, check to see if they cover the peptide set
+                    HashSet<String> peps = new HashSet<String>();
+                    for (Protein pro:differentiable) {
+                        peps.addAll(pro.getPeptides());
+                    }
+                    if (peps.containsAll(peptideSet)) {
+                        return true;
+                    } else {
+                        return false;
+                    }
                 }
             }
         }
