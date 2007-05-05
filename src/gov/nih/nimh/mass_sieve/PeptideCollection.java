@@ -8,6 +8,7 @@
 
 package gov.nih.nimh.mass_sieve;
 
+import com.sun.org.apache.bcel.internal.classfile.ConstantString;
 import gov.nih.nimh.mass_sieve.gui.ExperimentPanel;
 import gov.nih.nimh.mass_sieve.gui.ListPanel;
 import gov.nih.nimh.mass_sieve.gui.MassSieveFrame;
@@ -496,12 +497,13 @@ public class PeptideCollection implements Comparable<PeptideCollection> {
         display.addControlListener(new PanControl());  // pan with background left-drag
         display.addControlListener(new WheelZoomControl()); // zoom with vertical right-drag
         display.addControlListener(new ZoomToFitControl(Visualization.ALL_ITEMS, 50, 500, Control.MIDDLE_MOUSE_BUTTON));
-        display.addControlListener(new NeighborHighlightControl());
+        //display.addControlListener(new NeighborHighlightControl());
         
         Visualization vis = new Visualization();
         if (clusterGraph == null) { clusterGraph = this.toGraph(); }
         vis.add("graph", clusterGraph);
         LabelRenderer r = new LabelRenderer("name");
+        r.setHorizontalAlignment(Constants.CENTER);
         //r.setRoundedCorner(8, 8); // round the corners
         
         DefaultRendererFactory rf = new DefaultRendererFactory(r);
@@ -511,7 +513,9 @@ public class PeptideCollection implements Comparable<PeptideCollection> {
         DataColorAction fill = new DataColorAction("graph.nodes", "type", Constants.NOMINAL, VisualItem.FILLCOLOR, palette);
         fill.add(VisualItem.FIXED, ColorLib.rgb(255,100,100));
         fill.add(VisualItem.HIGHLIGHT, ColorLib.rgb(255,200,125));
-        ColorAction text = new ColorAction("graph.nodes", VisualItem.TEXTCOLOR, ColorLib.gray(0));
+        int[] text_palette = new int[] {ColorLib.gray(0), ColorLib.gray(255)};
+        DataColorAction text = new DataColorAction("graph.nodes", "indeterminate", Constants.NUMERICAL, VisualItem.TEXTCOLOR, text_palette);
+        //ColorAction text = new ColorAction("graph.nodes", VisualItem.TEXTCOLOR, ColorLib.gray(0));
         ColorAction edges = new ColorAction("graph.edges", VisualItem.STROKECOLOR, ColorLib.gray(200));
         
         ActionList color = new ActionList(Activity.INFINITY);
@@ -536,7 +540,6 @@ public class PeptideCollection implements Comparable<PeptideCollection> {
                         nItem.setHighlighted(true);
                     }
                 }
-                //ni.setHighlighted(true);
             }
         }
         
@@ -601,6 +604,23 @@ public class PeptideCollection implements Comparable<PeptideCollection> {
                         Protein p = minProteins.get(item.getString("name"));
                         expPanel.showProtein(p);
                     }
+                    String pred  = "name='" + item.getString("name") + "'";
+                    Iterator iter = item.getVisualization().items("graph.nodes", ExpressionParser.predicate(pred));
+                    while ( iter.hasNext() ) {
+                        NodeItem ni = (NodeItem)iter.next();
+                        highlightedItem = ni;
+                        ni.setFixed(true);
+                        Iterator iterEdge = ni.edges();
+                        while ( iterEdge.hasNext() ) {
+                            EdgeItem eItem = (EdgeItem)iterEdge.next();
+                            NodeItem nItem = eItem.getAdjacentItem(ni);
+                            if (eItem.isVisible()) {
+                                eItem.setHighlighted(true);
+                                nItem.setHighlighted(true);
+                            }
+                        }
+                    }
+
                 }
             }
         };
@@ -644,6 +664,7 @@ public class PeptideCollection implements Comparable<PeptideCollection> {
         nodeTable.addColumn("key", int.class);
         nodeTable.addColumn("name", String.class);
         nodeTable.addColumn("type", String.class);
+        nodeTable.addColumn("indeterminate", int.class);
         
         int idx = 0;
         for (Protein prot:minProteins.values()) {
@@ -652,6 +673,7 @@ public class PeptideCollection implements Comparable<PeptideCollection> {
             nodeTable.setInt(row, "key", idx++);
             nodeTable.setString(row, "name", prot.getName());
             nodeTable.setString(row, "type", "protein");
+            nodeTable.setInt(row, "indeterminate", 0);
         }
         
         for (Peptide pep:minPeptides.values()) {
@@ -660,6 +682,12 @@ public class PeptideCollection implements Comparable<PeptideCollection> {
             nodeTable.setInt(row, "key", idx++);
             nodeTable.setString(row, "name", pep.getSequence());
             nodeTable.setString(row, "type", "peptide");
+            if (pep.getIndeterminateType() == PeptideIndeterminacyType.NONE) {
+                nodeTable.setInt(row, "indeterminate", 0);
+            } else {
+                nodeTable.setInt(row, "indeterminate", 1);
+            }
+                
         }
         
         for (Protein prot:minProteins.values()) {
