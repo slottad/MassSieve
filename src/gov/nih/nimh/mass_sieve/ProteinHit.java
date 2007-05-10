@@ -9,11 +9,13 @@
 
 package gov.nih.nimh.mass_sieve;
 
+import java.io.Serializable;
+
 /**
  *
  * @author slotta
  */
-public class ProteinHit {
+public class ProteinHit implements Serializable {
     private int start;
     private int end;
     private String name;

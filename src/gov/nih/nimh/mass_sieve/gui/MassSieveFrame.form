@@ -36,13 +36,45 @@
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="jMenuBatchLoad">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Batch Load"/>
+                <Property name="text" type="java.lang.String" value="Batch Load Results..."/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jMenuBatchLoadActionPerformed"/>
               </Events>
             </MenuItem>
+            <MenuItem class="javax.swing.JSeparator" name="jSeparator1">
+            </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="jMenuOpenExp">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Open Experiment..."/>
+              </Properties>
+            </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="jMenuOpenExpSet">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Open Experiment Set..."/>
+              </Properties>
+            </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="jMenuClose">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Close Tab"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jMenuCloseActionPerformed"/>
+              </Events>
+            </MenuItem>
             <MenuItem class="javax.swing.JSeparator" name="jSeparator2">
+            </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="jMenuSaveExp">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Save Experiment..."/>
+              </Properties>
+            </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="jMenuSaveExpSet">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Save Experiment Set..."/>
+              </Properties>
+            </MenuItem>
+            <MenuItem class="javax.swing.JSeparator" name="jSeparator3">
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="jMenuOpenSeqDB">
               <Properties>
@@ -60,25 +92,7 @@
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jMenuExportSeqDBActionPerformed"/>
               </Events>
             </MenuItem>
-            <MenuItem class="javax.swing.JSeparator" name="jSeparator1">
-            </MenuItem>
-            <MenuItem class="javax.swing.JMenuItem" name="jMenuOptions">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="Set Options"/>
-              </Properties>
-              <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jMenuOptionsActionPerformed"/>
-              </Events>
-            </MenuItem>
-            <MenuItem class="javax.swing.JSeparator" name="jSeparator3">
-            </MenuItem>
-            <MenuItem class="javax.swing.JMenuItem" name="jMenuClose">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="Close Tab"/>
-              </Properties>
-              <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jMenuCloseActionPerformed"/>
-              </Events>
+            <MenuItem class="javax.swing.JSeparator" name="jSeparator4">
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="jMenuQuit">
               <Properties>
@@ -97,7 +111,7 @@
           <SubComponents>
             <MenuItem class="javax.swing.JMenuItem" name="jMenuFilterPrefs">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Change Filter"/>
+                <Property name="text" type="java.lang.String" value="Change Filter..."/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jMenuFilterPrefsActionPerformed"/>
@@ -105,7 +119,7 @@
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="jMenuShowSummary">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Experiment Summary"/>
+                <Property name="text" type="java.lang.String" value="Experiment Summary..."/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jMenuShowSummaryActionPerformed"/>
@@ -145,6 +159,16 @@
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jMenuCompareParsimonyActionPerformed"/>
+              </Events>
+            </MenuItem>
+            <MenuItem class="javax.swing.JSeparator" name="jSeparator5">
+            </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="jMenuOptions">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Set Options"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jMenuOptionsActionPerformed"/>
               </Events>
             </MenuItem>
           </SubComponents>
@@ -203,7 +227,7 @@
     </DimensionLayout>
     <DimensionLayout dim="1">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Component id="jTabbedPaneMain" alignment="0" pref="679" max="32767" attributes="0"/>
+          <Component id="jTabbedPaneMain" alignment="1" pref="679" max="32767" attributes="0"/>
       </Group>
     </DimensionLayout>
   </Layout>

@@ -9,13 +9,14 @@
 
 package gov.nih.nimh.mass_sieve.io;
 
+import java.io.Serializable;
 import java.util.HashSet;
 
 /**
  *
  * @author slotta
  */
-public class FileInformation implements Comparable<FileInformation> {
+public class FileInformation implements Serializable, Comparable<FileInformation> {
     private AnalysisProgramType analysisProgram;
     private String sourceFile;
     private String searchDB;

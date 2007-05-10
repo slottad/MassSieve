@@ -9,10 +9,11 @@
 package gov.nih.nimh.mass_sieve;
 
 import gov.nih.nimh.mass_sieve.io.AnalysisProgramType;
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.HashSet;
 
-public class PeptideHit implements Comparable<PeptideHit> {
+public class PeptideHit implements Serializable, Comparable<PeptideHit> {
     private int queryNum;
     private int scanNum;
     private double expMass;

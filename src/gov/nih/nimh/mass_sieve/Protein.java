@@ -12,6 +12,7 @@ import gov.nih.nimh.mass_sieve.gui.ExperimentPanel;
 import gov.nih.nimh.mass_sieve.gui.ListPanel;
 import gov.nih.nimh.mass_sieve.gui.MassSieveFrame;
 import gov.nih.nimh.mass_sieve.gui.SequencePanel;
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -32,7 +33,7 @@ import org.biojava.bio.symbol.SymbolPropertyTable;
 import org.biojava.utils.ChangeVetoException;
 import org.biojavax.bio.seq.RichSequence;
 
-public class Protein implements Comparable<Protein> {
+public class Protein implements Serializable, Comparable<Protein> {
     
     private String name;
     private String id;

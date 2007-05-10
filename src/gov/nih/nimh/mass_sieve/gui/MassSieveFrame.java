@@ -50,6 +50,8 @@ public class MassSieveFrame extends javax.swing.JFrame {
         initComponents();
         jFileChooserLoad.setMultiSelectionEnabled(true);
         jFileChooserLoad.setFileFilter(new MSFileFilter());
+        jMenuClose.setEnabled(false);
+        jMenuClose.setText("Close");
         jMenuAddSearchResults.setEnabled(false);
         jMenuOpenSeqDB.setEnabled(false);
         jMenuFilterPrefs.setEnabled(false);
@@ -83,13 +85,17 @@ public class MassSieveFrame extends javax.swing.JFrame {
         jMenuNewExperiment = new javax.swing.JMenuItem();
         jMenuAddSearchResults = new javax.swing.JMenuItem();
         jMenuBatchLoad = new javax.swing.JMenuItem();
+        jSeparator1 = new javax.swing.JSeparator();
+        jMenuOpenExp = new javax.swing.JMenuItem();
+        jMenuOpenExpSet = new javax.swing.JMenuItem();
+        jMenuClose = new javax.swing.JMenuItem();
         jSeparator2 = new javax.swing.JSeparator();
+        jMenuSaveExp = new javax.swing.JMenuItem();
+        jMenuSaveExpSet = new javax.swing.JMenuItem();
+        jSeparator3 = new javax.swing.JSeparator();
         jMenuOpenSeqDB = new javax.swing.JMenuItem();
         jMenuExportSeqDB = new javax.swing.JMenuItem();
-        jSeparator1 = new javax.swing.JSeparator();
-        jMenuOptions = new javax.swing.JMenuItem();
-        jSeparator3 = new javax.swing.JSeparator();
-        jMenuClose = new javax.swing.JMenuItem();
+        jSeparator4 = new javax.swing.JSeparator();
         jMenuQuit = new javax.swing.JMenuItem();
         jMenuTools = new javax.swing.JMenu();
         jMenuFilterPrefs = new javax.swing.JMenuItem();
@@ -100,6 +106,8 @@ public class MassSieveFrame extends javax.swing.JFrame {
         jSeparatorCompare = new javax.swing.JSeparator();
         jMenuCompareDiff = new javax.swing.JMenuItem();
         jMenuCompareParsimony = new javax.swing.JMenuItem();
+        jSeparator5 = new javax.swing.JSeparator();
+        jMenuOptions = new javax.swing.JMenuItem();
         jMenuHelp = new javax.swing.JMenu();
         jMenuGarbageCollect = new javax.swing.JMenuItem();
         jMenuAbout = new javax.swing.JMenuItem();
@@ -134,7 +142,7 @@ public class MassSieveFrame extends javax.swing.JFrame {
 
         jMenuFile.add(jMenuAddSearchResults);
 
-        jMenuBatchLoad.setText("Batch Load");
+        jMenuBatchLoad.setText("Batch Load Results...");
         jMenuBatchLoad.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jMenuBatchLoadActionPerformed(evt);
@@ -143,7 +151,32 @@ public class MassSieveFrame extends javax.swing.JFrame {
 
         jMenuFile.add(jMenuBatchLoad);
 
+        jMenuFile.add(jSeparator1);
+
+        jMenuOpenExp.setText("Open Experiment...");
+        jMenuFile.add(jMenuOpenExp);
+
+        jMenuOpenExpSet.setText("Open Experiment Set...");
+        jMenuFile.add(jMenuOpenExpSet);
+
+        jMenuClose.setText("Close Tab");
+        jMenuClose.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuCloseActionPerformed(evt);
+            }
+        });
+
+        jMenuFile.add(jMenuClose);
+
         jMenuFile.add(jSeparator2);
+
+        jMenuSaveExp.setText("Save Experiment...");
+        jMenuFile.add(jMenuSaveExp);
+
+        jMenuSaveExpSet.setText("Save Experiment Set...");
+        jMenuFile.add(jMenuSaveExpSet);
+
+        jMenuFile.add(jSeparator3);
 
         jMenuOpenSeqDB.setText("Import Fasta...");
         jMenuOpenSeqDB.addActionListener(new java.awt.event.ActionListener() {
@@ -163,27 +196,7 @@ public class MassSieveFrame extends javax.swing.JFrame {
 
         jMenuFile.add(jMenuExportSeqDB);
 
-        jMenuFile.add(jSeparator1);
-
-        jMenuOptions.setText("Set Options");
-        jMenuOptions.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuOptionsActionPerformed(evt);
-            }
-        });
-
-        jMenuFile.add(jMenuOptions);
-
-        jMenuFile.add(jSeparator3);
-
-        jMenuClose.setText("Close Tab");
-        jMenuClose.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuCloseActionPerformed(evt);
-            }
-        });
-
-        jMenuFile.add(jMenuClose);
+        jMenuFile.add(jSeparator4);
 
         jMenuQuit.setText("Quit");
         jMenuQuit.addActionListener(new java.awt.event.ActionListener() {
@@ -197,7 +210,7 @@ public class MassSieveFrame extends javax.swing.JFrame {
         jMenuBarMain.add(jMenuFile);
 
         jMenuTools.setText("Tools");
-        jMenuFilterPrefs.setText("Change Filter");
+        jMenuFilterPrefs.setText("Change Filter...");
         jMenuFilterPrefs.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jMenuFilterPrefsActionPerformed(evt);
@@ -206,7 +219,7 @@ public class MassSieveFrame extends javax.swing.JFrame {
 
         jMenuTools.add(jMenuFilterPrefs);
 
-        jMenuShowSummary.setText("Experiment Summary");
+        jMenuShowSummary.setText("Experiment Summary...");
         jMenuShowSummary.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jMenuShowSummaryActionPerformed(evt);
@@ -255,6 +268,17 @@ public class MassSieveFrame extends javax.swing.JFrame {
 
         jMenuTools.add(jMenuCompareParsimony);
 
+        jMenuTools.add(jSeparator5);
+
+        jMenuOptions.setText("Set Options");
+        jMenuOptions.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuOptionsActionPerformed(evt);
+            }
+        });
+
+        jMenuTools.add(jMenuOptions);
+
         jMenuBarMain.add(jMenuTools);
 
         jMenuHelp.setText("Help");
@@ -288,7 +312,7 @@ public class MassSieveFrame extends javax.swing.JFrame {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(jTabbedPaneMain, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 679, Short.MAX_VALUE)
+            .add(org.jdesktop.layout.GroupLayout.TRAILING, jTabbedPaneMain, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 679, Short.MAX_VALUE)
         );
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -369,18 +393,18 @@ public class MassSieveFrame extends javax.swing.JFrame {
         for (Component comp:comps) {
             if (comp instanceof ExperimentPanel) {
                 ExperimentPanel exp = (ExperimentPanel)comp;
-                if (exp.getMascotCutoff() > maxMascot) maxMascot = exp.getMascotCutoff();
-                if (exp.getOmssaCutoff() > maxOmssa) maxOmssa = exp.getOmssaCutoff();
-                if (exp.getXtandemCutoff() > maxXtandem) maxXtandem = exp.getXtandemCutoff();
+                if (exp.getFilterSettings().getMascotCutoff() > maxMascot) maxMascot = exp.getFilterSettings().getMascotCutoff();
+                if (exp.getFilterSettings().getOmssaCutoff() > maxOmssa) maxOmssa = exp.getFilterSettings().getOmssaCutoff();
+                if (exp.getFilterSettings().getXtandemCutoff() > maxXtandem) maxXtandem = exp.getFilterSettings().getXtandemCutoff();
                 allHits.addAll(exp.getPepCollection().getPeptideHits());
             }
         }
         currentExperiment = new ExperimentPanel(this);
         currentExperiment.setName("Parsimony Comparison");
-        currentExperiment.setUseIonIdent(false);
-        currentExperiment.setMascotCutoff(maxMascot);
-        currentExperiment.setOmssaCutoff(maxOmssa);
-        currentExperiment.setXtandemCutoff(maxXtandem);
+        currentExperiment.getFilterSettings().setUseIonIdent(false);
+        currentExperiment.getFilterSettings().setMascotCutoff(maxMascot);
+        currentExperiment.getFilterSettings().setOmssaCutoff(maxOmssa);
+        currentExperiment.getFilterSettings().setXtandemCutoff(maxXtandem);
         currentExperiment.addPeptideHits(allHits);
         expSet.put("Parsimony Comparison", currentExperiment);
         jTabbedPaneMain.add(currentExperiment);
@@ -393,6 +417,7 @@ public class MassSieveFrame extends javax.swing.JFrame {
             jMenuOpenSeqDB.setEnabled(true);
             jMenuFilterPrefs.setEnabled(true);
         }
+        jMenuClose.setText("Close '" + jTabbedPaneMain.getSelectedComponent().getName() + "'" );
     }//GEN-LAST:event_jTabbedPaneMainComponentShown
     
     private void jMenuCompareDiffActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuCompareDiffActionPerformed
@@ -410,6 +435,8 @@ public class MassSieveFrame extends javax.swing.JFrame {
         if (s != null && s.length() > 0) {
             createExperiment(s);
         }
+        jMenuClose.setEnabled(true);
+        jMenuClose.setText("Close '" + jTabbedPaneMain.getSelectedComponent().getName() + "'" );
     }//GEN-LAST:event_jMenuNewExperimentActionPerformed
     
     public void createExperiment(String name) {
@@ -544,6 +571,12 @@ public class MassSieveFrame extends javax.swing.JFrame {
             jMenuFilterPrefs.setEnabled(false);
             jMenuShowSummary.setEnabled(false);
         }
+        if (jTabbedPaneMain.getTabCount() < 1) {
+            jMenuClose.setEnabled(false);
+            jMenuClose.setText("Close");
+        } else {
+            jMenuClose.setText("Close " + jTabbedPaneMain.getSelectedComponent().getName() );
+        }
     }//GEN-LAST:event_jMenuCloseActionPerformed
     
     private void jMenuAddSearchResultsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuAddSearchResultsActionPerformed
@@ -568,7 +601,7 @@ public class MassSieveFrame extends javax.swing.JFrame {
         } else {
             createExperiment(exp);
         }
-        currentExperiment.cloneFilterSettings(defExp);
+        currentExperiment.getFilterSettings().cloneFilterSettings(defExp.getFilterSettings());
         currentExperiment.addFiles(files);
     }
     
@@ -659,15 +692,21 @@ public class MassSieveFrame extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuGarbageCollect;
     private javax.swing.JMenu jMenuHelp;
     private javax.swing.JMenuItem jMenuNewExperiment;
+    private javax.swing.JMenuItem jMenuOpenExp;
+    private javax.swing.JMenuItem jMenuOpenExpSet;
     private javax.swing.JMenuItem jMenuOpenSeqDB;
     private javax.swing.JMenuItem jMenuOptions;
     private javax.swing.JMenuItem jMenuQuit;
+    private javax.swing.JMenuItem jMenuSaveExp;
+    private javax.swing.JMenuItem jMenuSaveExpSet;
     private javax.swing.JMenuItem jMenuShowSummary;
     private javax.swing.JMenu jMenuTools;
     private javax.swing.JOptionPane jOptionPaneAbout;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
     private javax.swing.JSeparator jSeparator3;
+    private javax.swing.JSeparator jSeparator4;
+    private javax.swing.JSeparator jSeparator5;
     private javax.swing.JSeparator jSeparatorCompare;
     private javax.swing.JSeparator jSeparatorDetach;
     private javax.swing.JTabbedPane jTabbedPaneMain;

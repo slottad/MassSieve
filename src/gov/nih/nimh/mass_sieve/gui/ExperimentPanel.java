@@ -51,16 +51,13 @@ import prefuse.Display;
  * @author slotta
  */
 public class ExperimentPanel extends JPanel {
-    
-    private PeptideCollection pepCollection, pepCollectionOriginal;
-    private DefaultTreeModel treeModelClusters, treeModelPeptides, treeModelPeptideHits, treeModelProteins, treeModelParsimony;
-    private double omssaCutoff, mascotCutoff, xtandemCutoff;
-    private double omssaCutoffOrig, mascotCutoffOrig, xtandemCutoffOrig;
-    private String filterText;
-    private boolean useIonIdent, useIndeterminates, filterPeptides, filterProteins, filterCoverage;
-    private int pHitCutoffCount, peptideCutoffCount, coverageCutoffAmount;
     private ArrayList<File> allFiles;
     private ArrayList<FileInformation> fileInfos;
+    private PeptideCollection pepCollection, pepCollectionOriginal;
+    //private Experiment experiment;
+    private FilterSettings filterSettings;
+    private double omssaCutoffOrig, mascotCutoffOrig, xtandemCutoffOrig;
+    private DefaultTreeModel treeModelClusters, treeModelPeptides, treeModelPeptideHits, treeModelProteins, treeModelParsimony;
     private ButtonGroup buttonGroupTreeSource;
     private FilterPreferencesDialog prefDialog;
     private SummaryDialog summaryDialog;
@@ -73,46 +70,23 @@ public class ExperimentPanel extends JPanel {
     private MassSieveFrame msFrame;
     private String lowerFrameTitle, upperFrameTitle;
     
-    /** Creates a new instance of Experiment */
+    /** Creates a new instance of ExperimentPanel */
     public ExperimentPanel(MassSieveFrame frm) {
         msFrame = frm;
         initComponents();
         jFileChooserLoad.setMultiSelectionEnabled(true);
         allFiles = new ArrayList<File>();
         fileInfos = new ArrayList<FileInformation>();
-        omssaCutoff = 0.05;
-        mascotCutoff = 0.05;
-        xtandemCutoff = 0.05;
-        omssaCutoffOrig = omssaCutoff;
-        mascotCutoffOrig = mascotCutoff;
-        xtandemCutoffOrig = xtandemCutoff;
-        useIonIdent = true;
-        filterText = "o+m+x";
-        useIndeterminates = true;
-        filterPeptides = false;
-        filterProteins = false;
-        pHitCutoffCount = 1;
-        peptideCutoffCount = 1;
+        filterSettings = new FilterSettings();
+        omssaCutoffOrig = filterSettings.getOmssaCutoff();
+        mascotCutoffOrig = filterSettings.getMascotCutoff();
+        xtandemCutoffOrig = filterSettings.getXtandemCutoff();
         cleanDisplay();
-    }
-    
-    public void cloneFilterSettings(ExperimentPanel fromExp) {
-        this.setOmssaCutoff(fromExp.getOmssaCutoff());
-        this.setMascotCutoff(fromExp.getMascotCutoff());
-        this.setXtandemCutoff(fromExp.getXtandemCutoff());
-        this.setUseIonIdent(fromExp.getUseIonIdent());
-        this.setFilterText(fromExp.getFilterText());
-        this.setUseIndeterminates(fromExp.getUseIndeterminates());
-        this.setFilterPeptides(fromExp.getFilterPeptides());
-        this.setFilterProteins(fromExp.getFilterProteins());
-        this.setPHitCutoffCount(fromExp.getPHitCutoffCount());
-        this.setPeptideCutoffCount(fromExp.getPeptideCutoffCount());
     }
     
     private void cleanDisplay() {
         pepCollectionOriginal = new PeptideCollection();
-        
-        DefaultMutableTreeNode root=new DefaultMutableTreeNode("No data");
+        DefaultMutableTreeNode root = new DefaultMutableTreeNode("No data");
         DefaultTreeModel treeModel = new DefaultTreeModel(root);
         treeModelClusters = treeModel;
         treeModelProteins = treeModel;
@@ -222,16 +196,7 @@ public class ExperimentPanel extends JPanel {
         if (prefDialog == null) {
             prefDialog = new FilterPreferencesDialog(this);
         }
-        prefDialog.setOmssaCutoff(omssaCutoff);
-        prefDialog.setXtandemCutoff(xtandemCutoff);
-        prefDialog.setMascotCutoff(mascotCutoff);
-        prefDialog.setUseIonIdent(useIonIdent);
-        prefDialog.setPepFilterField(filterText);
-        prefDialog.setUseIndeterminates(useIndeterminates);
-        prefDialog.setFilterPeptides(filterPeptides);
-        prefDialog.setPepHitCount(pHitCutoffCount);
-        prefDialog.setFilterProteins(filterProteins);
-        prefDialog.setPeptideCount(peptideCutoffCount);
+        prefDialog.updateFilterDisplay();
         prefDialog.setVisible(true);
     }
     
@@ -245,7 +210,7 @@ public class ExperimentPanel extends JPanel {
     
     private PeptideCollection FilterBySearchProgram(PeptideCollection pc) {
         PeptideCollection result;
-        StringReader setDescription = new StringReader(filterText);
+        StringReader setDescription = new StringReader(filterSettings.getFilterText());
         SetLexer lexer = new SetLexer(setDescription);
         SetParser parser = new SetParser(lexer);
         parser.setPeptideCollection(pc);
@@ -263,25 +228,26 @@ public class ExperimentPanel extends JPanel {
     
     public void recomputeCutoff() {
         PeptideCollection pepFiltered;
-        if (useIndeterminates) {
+        if (filterSettings.getUseIndeterminates()) {
             pepFiltered = pepCollectionOriginal;
         } else {
             pepFiltered = pepCollectionOriginal.getNonIndeterminents();
         }
-        pepFiltered = pepFiltered.getCutoffCollection(omssaCutoff, mascotCutoff, xtandemCutoff, useIonIdent);
-        pepCollection = FilterBySearchProgram(pepFiltered);
-        if (filterPeptides) {
-            pepCollection = pepCollection.getPeptidesByHits(pHitCutoffCount);
+        pepFiltered = pepFiltered.getCutoffCollection(filterSettings.getOmssaCutoff(), filterSettings.getMascotCutoff(), filterSettings.getXtandemCutoff(), filterSettings.getUseIonIdent());
+        pepFiltered = FilterBySearchProgram(pepFiltered);
+        if (filterSettings.getFilterPeptides()) {
+            pepFiltered = pepFiltered.getPeptidesByHits(filterSettings.getPHitCutoffCount());
         }
-        pepCollection.createProteinList();
-        if (filterProteins) {
-            pepCollection = pepCollection.filterByPeptidePerProtein(peptideCutoffCount);
+        pepFiltered.createProteinList();
+        if (filterSettings.getFilterProteins()) {
+            pepFiltered = pepFiltered.filterByPeptidePerProtein(filterSettings.getPeptideCutoffCount());
         }
-        if (filterCoverage) {
-            pepCollection.updateClusters();
-            pepCollection = pepCollection.filterByProteinCoverage(coverageCutoffAmount);
+        if (filterSettings.getFilterCoverage()) {
+            pepFiltered.updateClusters();
+            pepFiltered = pepFiltered.filterByProteinCoverage(filterSettings.getCoverageCutoffAmount());
         }
-        pepCollection.updateClusters();
+        pepFiltered.updateClusters();
+        pepCollection = pepFiltered;
         
         updateDisplay();
     }
@@ -301,13 +267,13 @@ public class ExperimentPanel extends JPanel {
                 boolean usePepHit = false;
                 switch (p.getSourceType()) {
                     case MASCOT:
-                        if (p.getExpect() < mascotCutoff) usePepHit = true;
+                        if (p.getExpect() < filterSettings.getMascotCutoff()) usePepHit = true;
                         break;
                     case OMSSA:
-                        if (p.getExpect() < omssaCutoff) usePepHit = true;
+                        if (p.getExpect() < filterSettings.getOmssaCutoff()) usePepHit = true;
                         break;
                     case XTANDEM:
-                        if (p.getExpect() < xtandemCutoff) usePepHit = true;
+                        if (p.getExpect() < filterSettings.getXtandemCutoff()) usePepHit = true;
                         break;
                 }
                 if (usePepHit) {
@@ -334,13 +300,13 @@ public class ExperimentPanel extends JPanel {
     }
     
     public void reloadFiles() {
-        if ((omssaCutoff > omssaCutoffOrig) ||
-                (mascotCutoff > mascotCutoffOrig) ||
-                (xtandemCutoff > xtandemCutoffOrig)) {
+        if ((filterSettings.getOmssaCutoff() > omssaCutoffOrig) ||
+                (filterSettings.getMascotCutoff() > mascotCutoffOrig) ||
+                (filterSettings.getXtandemCutoff() > xtandemCutoffOrig)) {
             cleanDisplay();
-            if (omssaCutoff > omssaCutoffOrig) omssaCutoffOrig = omssaCutoff;
-            if (mascotCutoff > mascotCutoffOrig) mascotCutoffOrig = mascotCutoff;
-            if (xtandemCutoff > xtandemCutoffOrig) xtandemCutoffOrig = xtandemCutoff;
+            if (filterSettings.getOmssaCutoff() > omssaCutoffOrig) omssaCutoffOrig = filterSettings.getOmssaCutoff();
+            if (filterSettings.getMascotCutoff() > mascotCutoffOrig) mascotCutoffOrig = filterSettings.getMascotCutoff();
+            if (filterSettings.getXtandemCutoff() > xtandemCutoffOrig) xtandemCutoffOrig = filterSettings.getXtandemCutoff();
             new Thread(new Runnable() {
                 public void run() {
                     setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
@@ -530,52 +496,14 @@ public class ExperimentPanel extends JPanel {
         jTreeMain.setSelectionRow(0);
         System.err.println("PepCollectionOrig: " + pepCollectionOriginal.getPeptideHits().size());
         System.err.println("PepCollection: " + pepCollection.getPeptideHits().size());
-        //pepCollectionOriginal = null;
-        //pepCollection.cleanMemory();
         System.gc();
     }
     
     public HashMap<String, Protein> getProteins() {
         return pepCollection.getMinProteins();
     }
-    
     public PeptideCollection getPepCollection() {
         return pepCollection;
-    }
-    
-    public void setOmssaCutoff(String s) {
-        omssaCutoff = Double.parseDouble(s);
-    }
-    
-    public void setMascotCutoff(String s) {
-        mascotCutoff = Double.parseDouble(s);
-    }
-    
-    public void setOmssaCutoff(double d) {
-        omssaCutoff = d;
-    }
-    
-    public void setMascotCutoff(double d) {
-        mascotCutoff = d;
-    }
-    
-    public void setUseIonIdent(boolean b) {
-        useIonIdent = b;
-        if (useIonIdent) {
-            mascotCutoff = 0.05;
-        }
-    }
-    
-    public void setXtandemCutoff(String s) {
-        xtandemCutoff = Double.parseDouble(s);
-    }
-    
-    public void setXtandemCutoff(double d) {
-        xtandemCutoff = d;
-    }
-    
-    public void setFilterText(String s) {
-        filterText = s;
     }
     public Frame getParentFrame() {
         return (Frame)msFrame;
@@ -585,75 +513,13 @@ public class ExperimentPanel extends JPanel {
         return msFrame;
     }
     
-    public double getOmssaCutoff() {
-        return omssaCutoff;
+    public FilterSettings getFilterSettings() {
+        return filterSettings;
     }
     
-    public double getMascotCutoff() {
-        return mascotCutoff;
+    public void setFilterSettings(FilterSettings filterSettings) {
+        this.filterSettings = filterSettings;
     }
     
-    public double getXtandemCutoff() {
-        return xtandemCutoff;
-    }
     
-    public String getFilterText() {
-        return filterText;
-    }
-    
-    public boolean getUseIonIdent() {
-        return useIonIdent;
-    }
-    
-    public void setUseIndeterminates(boolean b) {
-        useIndeterminates = b;
-    }
-    
-    public void setFilterPeptides(boolean b) {
-        filterPeptides = b;
-    }
-    
-    public void setFilterProteins(boolean b) {
-        filterProteins = b;
-    }
-    public void setFilterCoverage(boolean b) {
-        filterCoverage = b;
-    }
-    
-    public void setPHitCutoffCount(int i) {
-        pHitCutoffCount = i;
-    }
-    
-    public void setPeptideCutoffCount(int i) {
-        peptideCutoffCount = i;
-    }
-    public void setCoverageCutoffAmount(int i) {
-        coverageCutoffAmount = i;
-    }
-    
-    public boolean getUseIndeterminates() {
-        return useIndeterminates;
-    }
-    
-    public boolean getFilterPeptides() {
-        return filterPeptides;
-    }
-    
-    public boolean getFilterProteins() {
-        return filterProteins;
-    }
-    public boolean getFilterCoverage() {
-        return filterCoverage;
-    }
-    
-    public int getPHitCutoffCount() {
-        return pHitCutoffCount;
-    }
-    
-    public int getPeptideCutoffCount() {
-        return peptideCutoffCount;
-    }
-    public int getCoverageCutoffAmount() {
-        return coverageCutoffAmount;
-    }
 }

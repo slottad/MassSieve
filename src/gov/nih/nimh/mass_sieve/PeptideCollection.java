@@ -17,6 +17,7 @@ import gov.nih.nimh.mass_sieve.io.AnalysisProgramType;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Rectangle2D;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -58,7 +59,7 @@ import prefuse.visual.EdgeItem;
 import prefuse.visual.NodeItem;
 import prefuse.visual.VisualItem;
 
-public class PeptideCollection implements Comparable<PeptideCollection> {
+public class PeptideCollection implements Serializable, Comparable<PeptideCollection> {
     
     private HashMap<String, Peptide> minPeptides;
     private HashMap<String, Protein> minProteins;

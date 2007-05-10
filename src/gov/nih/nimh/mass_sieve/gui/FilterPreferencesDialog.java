@@ -10,6 +10,7 @@
 package gov.nih.nimh.mass_sieve.gui;
 
 import com.jhlabs.awt.*;
+import gov.nih.nimh.mass_sieve.FilterSettings;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ItemEvent;
@@ -29,7 +30,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
-import javax.swing.SpinnerModel;
 import javax.swing.SpinnerNumberModel;
 import org.biojava.bio.proteomics.ProteaseManager;
 
@@ -48,11 +48,13 @@ public class FilterPreferencesDialog extends JDialog {
     private SpinnerNumberModel pepHitCount, peptideCount, coverageAmount;
     private JButton            okButton, cancelButton;
     private boolean            useIonIdent, useIndeterminates, filterPeptides, filterProteins, filterCoverage;
+    private FilterSettings     filterSettings;
     
     /** Creates a new instance of PreferencesDialog */
     public FilterPreferencesDialog(ExperimentPanel exp) {
         super(exp.getParentFrame(),true);
         experiment = exp;
+        filterSettings = exp.getFilterSettings();
         setBounds(50,50,width, height);
         setTitle(exp.getName() + " Preferences");
         setAlwaysOnTop(true);
@@ -242,23 +244,36 @@ public class FilterPreferencesDialog extends JDialog {
     }
     
     private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {
-        experiment.setOmssaCutoff(omssaCutoff.getText());
-        experiment.setXtandemCutoff(xtandemCutoff.getText());
-        experiment.setMascotCutoff(mascotCutoff.getText());
-        experiment.setUseIonIdent(useIonIdent);
-        experiment.setFilterText(pepFilterField.getText());
-        experiment.setUseIndeterminates(useIndeterminates);
-        experiment.setFilterPeptides(filterPeptides);
+        filterSettings.setOmssaCutoff(omssaCutoff.getText());
+        filterSettings.setXtandemCutoff(xtandemCutoff.getText());
+        filterSettings.setMascotCutoff(mascotCutoff.getText());
+        filterSettings.setUseIonIdent(useIonIdent);
+        filterSettings.setFilterText(pepFilterField.getText());
+        filterSettings.setUseIndeterminates(useIndeterminates);
+        filterSettings.setFilterPeptides(filterPeptides);
         setVisible(false);
-        if (filterPeptides) experiment.setPHitCutoffCount(pepHitCount.getNumber().intValue());
-        experiment.setFilterProteins(filterProteins);
-        if (filterProteins) experiment.setPeptideCutoffCount(peptideCount.getNumber().intValue());
-        experiment.setFilterCoverage(filterCoverage);
-        if (filterCoverage) experiment.setCoverageCutoffAmount(coverageAmount.getNumber().intValue());
+        if (filterPeptides) filterSettings.setPHitCutoffCount(pepHitCount.getNumber().intValue());
+        filterSettings.setFilterProteins(filterProteins);
+        if (filterProteins) filterSettings.setPeptideCutoffCount(peptideCount.getNumber().intValue());
+        filterSettings.setFilterCoverage(filterCoverage);
+        if (filterCoverage) filterSettings.setCoverageCutoffAmount(coverageAmount.getNumber().intValue());
         experiment.reloadFiles();
     }
     private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {
         setVisible(false);
+    }
+    
+    public void updateFilterDisplay() {
+        this.setOmssaCutoff(filterSettings.getOmssaCutoff());
+        this.setXtandemCutoff(filterSettings.getXtandemCutoff());
+        this.setMascotCutoff(filterSettings.getMascotCutoff());
+        this.setUseIonIdent(filterSettings.getUseIonIdent());
+        this.setPepFilterField(filterSettings.getFilterText());
+        this.setUseIndeterminates(filterSettings.getUseIndeterminates());
+        this.setFilterPeptides(filterSettings.getFilterPeptides());
+        this.setPepHitCount(filterSettings.getPHitCutoffCount());
+        this.setFilterProteins(filterSettings.getFilterProteins());
+        this.setPeptideCount(filterSettings.getPeptideCutoffCount());
     }
     
     public void setPepFilterField(String s) {
@@ -336,7 +351,7 @@ public class FilterPreferencesDialog extends JDialog {
     public void setPeptideCount(int i) {
         peptideCount.setValue(i);
     }
-
+    
     public void setCoverageCount(int i) {
         coverageAmount.setValue(i);
     }

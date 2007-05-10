@@ -10,6 +10,7 @@ package gov.nih.nimh.mass_sieve;
 import gov.nih.nimh.mass_sieve.gui.ExperimentPanel;
 import gov.nih.nimh.mass_sieve.gui.ListPanel;
 import gov.nih.nimh.mass_sieve.gui.PeptideHitPanel;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -19,7 +20,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.tree.DefaultMutableTreeNode;
 
-public class Peptide implements Comparable<Peptide> {
+public class Peptide implements Serializable, Comparable<Peptide> {
     private String sequence;
     private ArrayList<PeptideHit> peptideHits;
     //private HashSet<PeptideHit> peptideHitsNR;
