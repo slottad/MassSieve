@@ -18,6 +18,7 @@ import java.util.ArrayList;
  * @author slotta
  */
 public class Experiment implements Serializable {
+    private String name;
     private PeptideCollection pepCollection;
     private ArrayList<FileInformation> fileInfos;
     private FilterSettings filterSettings;
@@ -49,7 +50,12 @@ public class Experiment implements Serializable {
     public void setFilterSettings(FilterSettings filterSettings) {
         this.filterSettings = filterSettings;
     }
-    
- 
-    
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 }

@@ -46,13 +46,11 @@
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="jMenuOpenExp">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Open Experiment..."/>
+                <Property name="text" type="java.lang.String" value="Open Experiment(s)..."/>
               </Properties>
-            </MenuItem>
-            <MenuItem class="javax.swing.JMenuItem" name="jMenuOpenExpSet">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="Open Experiment Set..."/>
-              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jMenuOpenExpActionPerformed"/>
+              </Events>
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="jMenuClose">
               <Properties>
@@ -68,11 +66,17 @@
               <Properties>
                 <Property name="text" type="java.lang.String" value="Save Experiment..."/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jMenuSaveExpActionPerformed"/>
+              </Events>
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="jMenuSaveExpSet">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Save Experiment Set..."/>
+                <Property name="text" type="java.lang.String" value="Save All Experiments..."/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jMenuSaveExpSetActionPerformed"/>
+              </Events>
             </MenuItem>
             <MenuItem class="javax.swing.JSeparator" name="jSeparator3">
             </MenuItem>
@@ -165,7 +169,7 @@
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="jMenuOptions">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Set Options"/>
+                <Property name="text" type="java.lang.String" value="Preferences"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jMenuOptionsActionPerformed"/>
@@ -201,7 +205,7 @@
   </NonVisualComponents>
   <Properties>
     <Property name="defaultCloseOperation" type="int" value="3"/>
-    <Property name="title" type="java.lang.String" value="MassSieve v0.97"/>
+    <Property name="title" type="java.lang.String" value="MassSieve v0.98"/>
     <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
       <Color id="Default Cursor"/>
     </Property>
@@ -234,7 +238,7 @@
   <SubComponents>
     <Container class="javax.swing.JTabbedPane" name="jTabbedPaneMain">
       <Events>
-        <EventHandler event="componentShown" listener="java.awt.event.ComponentListener" parameters="java.awt.event.ComponentEvent" handler="jTabbedPaneMainComponentShown"/>
+        <EventHandler event="stateChanged" listener="javax.swing.event.ChangeListener" parameters="javax.swing.event.ChangeEvent" handler="jTabbedPaneMainStateChanged"/>
       </Events>
 
       <Layout class="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout"/>

@@ -22,6 +22,10 @@ import java.awt.Frame;
 import java.awt.Toolkit;
 import java.awt.event.MouseEvent;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -54,7 +58,6 @@ public class ExperimentPanel extends JPanel {
     private ArrayList<File> allFiles;
     private ArrayList<FileInformation> fileInfos;
     private PeptideCollection pepCollection, pepCollectionOriginal;
-    //private Experiment experiment;
     private FilterSettings filterSettings;
     private double omssaCutoffOrig, mascotCutoffOrig, xtandemCutoffOrig;
     private DefaultTreeModel treeModelClusters, treeModelPeptides, treeModelPeptideHits, treeModelProteins, treeModelParsimony;
@@ -206,6 +209,28 @@ public class ExperimentPanel extends JPanel {
         }
         summaryDialog.setFileInformation(fileInfos);
         summaryDialog.setVisible(true);
+    }
+    
+    public void saveExperiment(ObjectOutputStream os) {
+        System.out.print("Saving experiment " + this.getName() + "...");
+        Experiment exp = new Experiment();
+        exp.setName(this.getName());
+        exp.setFileInfos(fileInfos);
+        exp.setFilterSettings(filterSettings);
+        exp.setPepCollection(pepCollectionOriginal);
+        try {
+            os.writeObject(exp);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+        System.out.println(" done");        
+    }
+    
+    public void reloadData(Experiment exp) {
+        pepCollectionOriginal = exp.getPepCollection();
+        fileInfos = exp.getFileInfos();
+        filterSettings = getFilterSettings();
+        recomputeCutoff();
     }
     
     private PeptideCollection FilterBySearchProgram(PeptideCollection pc) {

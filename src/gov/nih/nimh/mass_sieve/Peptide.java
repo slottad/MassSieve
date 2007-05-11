@@ -75,7 +75,7 @@ public class Peptide implements Serializable, Comparable<Peptide> {
             case OMSSA:   omssa.add(p);   break;
             case XTANDEM: xtandem.add(p); break;
             case UNKNOWN:
-                System.err.println("Unable to determine source of for peptide");
+                System.err.println("Unable to determine source of peptide");
                 System.exit(1);
                 break;
         }
