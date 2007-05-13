@@ -37,7 +37,7 @@ import org.biojava.bio.proteomics.ProteaseManager;
  *
  * @author slotta
  */
-public class FilterPreferencesDialog extends JDialog {
+public class FilterSettingsDialog extends JDialog {
     private ExperimentPanel    experiment;
     private int                width = 500;
     private int                height = 450;
@@ -51,12 +51,12 @@ public class FilterPreferencesDialog extends JDialog {
     private FilterSettings     filterSettings;
     
     /** Creates a new instance of PreferencesDialog */
-    public FilterPreferencesDialog(ExperimentPanel exp) {
+    public FilterSettingsDialog(ExperimentPanel exp) {
         super(exp.getParentFrame(),true);
         experiment = exp;
         filterSettings = exp.getFilterSettings();
         setBounds(50,50,width, height);
-        setTitle(exp.getName() + " Preferences");
+        setTitle(exp.getName() + " Filter Settings");
         setAlwaysOnTop(true);
         setLayout(new BorderLayout());
         JPanel centerPanel = new JPanel(new ParagraphLayout());

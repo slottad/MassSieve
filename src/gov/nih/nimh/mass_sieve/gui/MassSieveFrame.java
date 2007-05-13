@@ -42,7 +42,7 @@ public class MassSieveFrame extends javax.swing.JFrame {
     private boolean useDigest, useMultiColumnSort;
     private String digestName;
     private GraphLayoutType glType;
-    private OptionsDialog optDialog;
+    private PreferencesDialog optDialog;
     private BatchLoadDialog batchLoadDialog;
     private static HashMap<String, RichSequence> proteinDB  = new HashMap<String, RichSequence>();
     private MSFileFilter msFilter;
@@ -63,6 +63,7 @@ public class MassSieveFrame extends javax.swing.JFrame {
         jMenuClose.setText("Close");
         jMenuSaveExp.setEnabled(false);
         jMenuSaveExp.setText("Save...");
+        jMenuSaveExpSet.setEnabled(false);
         jMenuAddSearchResults.setEnabled(false);
         jMenuOpenSeqDB.setEnabled(false);
         jMenuFilterPrefs.setEnabled(false);
@@ -74,7 +75,7 @@ public class MassSieveFrame extends javax.swing.JFrame {
         digestName = "Trypsin";
         useMultiColumnSort = false;
         glType = GraphLayoutType.NODE_LINK_TREE;
-        optDialog = new OptionsDialog(this);
+        optDialog = new PreferencesDialog(this);
         batchLoadDialog = new BatchLoadDialog(this);
         expSet = new HashMap<String, ExperimentPanel>();
     }
@@ -423,6 +424,7 @@ public class MassSieveFrame extends javax.swing.JFrame {
             jMenuClose.setText("Close '" + jTabbedPaneMain.getSelectedComponent().getName() + "'" );
             jMenuSaveExp.setEnabled(true);
             jMenuSaveExp.setText("Save '" + jTabbedPaneMain.getSelectedComponent().getName() + "'" );
+            jMenuSaveExpSet.setEnabled(true);
         }
     }//GEN-LAST:event_jTabbedPaneMainStateChanged
     
@@ -564,6 +566,7 @@ public class MassSieveFrame extends javax.swing.JFrame {
         jMenuClose.setText("Close '" + jTabbedPaneMain.getSelectedComponent().getName() + "'" );
         jMenuSaveExp.setEnabled(true);
         jMenuSaveExp.setText("Save '" + jTabbedPaneMain.getSelectedComponent().getName() + "'" );
+        jMenuSaveExpSet.setEnabled(true);
         expSet.put(expPanel.getName(), currentExperiment);
         if (expSet.size() >= 2) {
             jMenuCompareDiff.setEnabled(true);
@@ -684,6 +687,7 @@ public class MassSieveFrame extends javax.swing.JFrame {
             jMenuClose.setText("Close");
             jMenuSaveExp.setEnabled(false);
             jMenuSaveExp.setText("Save...");
+            jMenuSaveExpSet.setEnabled(false);
         } else {
             jMenuClose.setText("Close " + jTabbedPaneMain.getSelectedComponent().getName() );
             jMenuSaveExp.setText("Save '" + jTabbedPaneMain.getSelectedComponent().getName() + "'" );

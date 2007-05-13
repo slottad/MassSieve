@@ -34,7 +34,7 @@ import org.biojava.bio.proteomics.ProteaseManager;
  *
  * @author slotta
  */
-public class OptionsDialog extends JDialog {
+public class PreferencesDialog extends JDialog {
     private int width = 450;
     private int height = 350;
     private JCheckBox useDigestBox;
@@ -52,7 +52,7 @@ public class OptionsDialog extends JDialog {
     private MassSieveFrame msFrame;
     
     /** Creates a new instance of PreferencesDialog */
-    public OptionsDialog(MassSieveFrame frm) {
+    public PreferencesDialog(MassSieveFrame frm) {
         msFrame = frm;
         setBounds(50,50,width, height);
         setTitle("Options");

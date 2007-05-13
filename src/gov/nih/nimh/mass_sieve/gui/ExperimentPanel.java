@@ -62,7 +62,7 @@ public class ExperimentPanel extends JPanel {
     private double omssaCutoffOrig, mascotCutoffOrig, xtandemCutoffOrig;
     private DefaultTreeModel treeModelClusters, treeModelPeptides, treeModelPeptideHits, treeModelProteins, treeModelParsimony;
     private ButtonGroup buttonGroupTreeSource;
-    private FilterPreferencesDialog prefDialog;
+    private FilterSettingsDialog prefDialog;
     private SummaryDialog summaryDialog;
     private JFileChooser jFileChooserLoad;
     private JOptionPane jOptionPaneAbout;
@@ -197,7 +197,7 @@ public class ExperimentPanel extends JPanel {
     
     public void showPreferences() {
         if (prefDialog == null) {
-            prefDialog = new FilterPreferencesDialog(this);
+            prefDialog = new FilterSettingsDialog(this);
         }
         prefDialog.updateFilterDisplay();
         prefDialog.setVisible(true);
