@@ -55,7 +55,7 @@ public class PreferencesDialog extends JDialog {
     public PreferencesDialog(MassSieveFrame frm) {
         msFrame = frm;
         setBounds(50,50,width, height);
-        setTitle("Options");
+        setTitle("Preferences");
         setAlwaysOnTop(true);
         setLayout(new BorderLayout());
         JPanel centerPanel = new JPanel(new ParagraphLayout());

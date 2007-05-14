@@ -62,6 +62,7 @@ public class Protein implements Serializable, Comparable<Protein> {
     private String fileList;
     private ParsimonyType pType;
     private int equivalentGroup;
+    private boolean mostEquivalent;
     
     /** Creates a new instance of Protein */
     public Protein() {
@@ -84,6 +85,7 @@ public class Protein implements Serializable, Comparable<Protein> {
         distinct = new ArrayList<Peptide>();
         shared = new ArrayList<Peptide>();
         seqObj = null;
+        mostEquivalent = false;
     }
     
     public int compareTo(Protein p) {
