@@ -423,7 +423,7 @@ public class ExperimentPanel extends JPanel {
         } else {
             seqPanel = p.getSequenceDisplay(jSplitPaneSecondary.getWidth());
         }
-        ListPanel lp = new ListPanel(this);
+        PeptideHitListPanel lp = new PeptideHitListPanel(this);
         lp.addProteinPeptideHitList(p.getPeptideHitList());
         jPanel.add(seqPanel);
         JScrollPane lps = lp.createTable();
@@ -454,7 +454,7 @@ public class ExperimentPanel extends JPanel {
     public void showProteinsLower(HashSet<Protein> pSet) {
         ArrayList<Protein> pList = new ArrayList<Protein>(pSet);
         Collections.sort(pList);
-        ListPanel cPanel = new ListPanel(this);
+        ProteinListPanel cPanel = new ProteinListPanel(this);
         cPanel.addProteinList(pList, pepCollection.getExperimentSet(), true);
         jSplitPaneSecondary.setBottomComponent(cPanel.createTable());
         jSplitPaneSecondary.setDividerLocation(0.5);

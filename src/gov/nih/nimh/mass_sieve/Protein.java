@@ -9,8 +9,9 @@
 package gov.nih.nimh.mass_sieve;
 
 import gov.nih.nimh.mass_sieve.gui.ExperimentPanel;
-import gov.nih.nimh.mass_sieve.gui.ListPanel;
 import gov.nih.nimh.mass_sieve.gui.MassSieveFrame;
+import gov.nih.nimh.mass_sieve.gui.PeptideListPanel;
+import gov.nih.nimh.mass_sieve.gui.ProteinListPanel;
 import gov.nih.nimh.mass_sieve.gui.SequencePanel;
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -399,7 +400,7 @@ public class Protein implements Serializable, Comparable<Protein> {
         
         DefaultMutableTreeNode child;
         
-        ListPanel pPanel = new ListPanel(ePanel);
+        PeptideListPanel pPanel = new PeptideListPanel(ePanel);
         pPanel.addPeptideList(allPeptides, experimentSet);
         pPanel.setName("Peptides (" + allPeptides.size() + ")");
         child = new DefaultMutableTreeNode(pPanel);
@@ -410,10 +411,10 @@ public class Protein implements Serializable, Comparable<Protein> {
         
         node.add(child);
         
-        ListPanel proPanel;
+        ProteinListPanel proPanel;
         
         if (!equivalent.isEmpty()) {
-            proPanel = new ListPanel(ePanel);
+            proPanel = new ProteinListPanel(ePanel);
             proPanel.addProteinList(equivalent, experimentSet);
             proPanel.setName("Equivalent Proteins (" + equivalent.size() + ")");
             child = new DefaultMutableTreeNode(proPanel);
@@ -423,7 +424,7 @@ public class Protein implements Serializable, Comparable<Protein> {
             }
         }
         if (!subset.isEmpty()) {
-            proPanel = new ListPanel(ePanel);
+            proPanel = new ProteinListPanel(ePanel);
             proPanel.addProteinList(subset, experimentSet);
             proPanel.setName("Subset Proteins (" + subset.size() + ")");
             child = new DefaultMutableTreeNode(proPanel);
@@ -433,7 +434,7 @@ public class Protein implements Serializable, Comparable<Protein> {
             }
         }
         if (!superset.isEmpty()) {
-            proPanel = new ListPanel(ePanel);
+            proPanel = new ProteinListPanel(ePanel);
             proPanel.addProteinList(superset, experimentSet);
             proPanel.setName("Superset Proteins (" + superset.size() + ")");
             child = new DefaultMutableTreeNode(proPanel);
@@ -443,7 +444,7 @@ public class Protein implements Serializable, Comparable<Protein> {
             }
         }
         if (!differentiable.isEmpty()) {
-            proPanel = new ListPanel(ePanel);
+            proPanel = new ProteinListPanel(ePanel);
             proPanel.addProteinList(differentiable, experimentSet);
             proPanel.setName("Differentiable Proteins (" + differentiable.size() + ")");
             child = new DefaultMutableTreeNode(proPanel);

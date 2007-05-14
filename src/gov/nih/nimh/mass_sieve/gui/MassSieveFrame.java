@@ -524,7 +524,7 @@ public class MassSieveFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_jMenuCompareParsimonyActionPerformed
     
     private void jMenuCompareDiffActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuCompareDiffActionPerformed
-        ListPanel cPanel = new ListPanel();
+        ProteinListPanel cPanel = new ProteinListPanel();
         cPanel.addProteinList(expSet);
         JScrollPane compare = cPanel.createTable();
         compare.setName("Differences Comparison");

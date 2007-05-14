@@ -8,15 +8,16 @@
 
 package gov.nih.nimh.mass_sieve;
 
-import com.sun.org.apache.bcel.internal.classfile.ConstantString;
 import gov.nih.nimh.mass_sieve.gui.ExperimentPanel;
 import gov.nih.nimh.mass_sieve.gui.ListPanel;
 import gov.nih.nimh.mass_sieve.gui.MassSieveFrame;
+import gov.nih.nimh.mass_sieve.gui.PeptideHitListPanel;
+import gov.nih.nimh.mass_sieve.gui.PeptideListPanel;
 import gov.nih.nimh.mass_sieve.gui.PrintUtilities;
+import gov.nih.nimh.mass_sieve.gui.ProteinListPanel;
 import gov.nih.nimh.mass_sieve.io.AnalysisProgramType;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.geom.Rectangle2D;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -42,7 +43,6 @@ import prefuse.controls.Control;
 import prefuse.controls.DragControl;
 import prefuse.controls.FocusControl;
 import prefuse.controls.HoverActionControl;
-import prefuse.controls.NeighborHighlightControl;
 import prefuse.controls.PanControl;
 import prefuse.controls.WheelZoomControl;
 import prefuse.controls.ZoomToFitControl;
@@ -53,8 +53,6 @@ import prefuse.render.DefaultRendererFactory;
 import prefuse.render.EdgeRenderer;
 import prefuse.render.LabelRenderer;
 import prefuse.util.ColorLib;
-import prefuse.util.GraphicsLib;
-import prefuse.util.display.DisplayLib;
 import prefuse.visual.EdgeItem;
 import prefuse.visual.NodeItem;
 import prefuse.visual.VisualItem;
@@ -263,7 +261,7 @@ public class PeptideCollection implements Serializable, Comparable<PeptideCollec
     }
     
     public DefaultMutableTreeNode getClusterTree(ExperimentPanel expPanel) {
-        ListPanel cPanel = new ListPanel(expPanel);
+        ProteinListPanel cPanel = new ProteinListPanel(expPanel);
         ArrayList<Protein> sortProteins = new ArrayList<Protein>();
         sortProteins.addAll(minProteins.values());
         Collections.sort(sortProteins);
@@ -272,10 +270,19 @@ public class PeptideCollection implements Serializable, Comparable<PeptideCollec
         DefaultMutableTreeNode root=new DefaultMutableTreeNode(cPanel);
         //DefaultMutableTreeNode root=new DefaultMutableTreeNode("Clusters (" + clusters.size() + ")");
         DefaultMutableTreeNode child, grandchild;
-        ArrayList<PeptideCollection> sortClusters = new ArrayList<PeptideCollection>();
-        sortClusters.addAll(clusters.values());
-        Collections.sort(sortClusters);
-        for (PeptideCollection pc:sortClusters) {
+
+        // Old: sort by cluster size
+        //ArrayList<PeptideCollection> sortClusters = new ArrayList<PeptideCollection>();
+        //sortClusters.addAll(clusters.values());
+        //Collections.sort(sortClusters);
+        //for (PeptideCollection pc:sortClusters) {
+        
+        // New: sort by cluster num
+        ArrayList<Integer> sortClusterNum = new ArrayList<Integer>();
+        sortClusterNum.addAll(clusters.keySet());
+        Collections.sort(sortClusterNum);
+        for (Integer i:sortClusterNum) {
+            PeptideCollection pc = clusters.get(i);
             child = new DefaultMutableTreeNode(pc);
             root.add(child);
             grandchild = pc.getPeptideTree(experimentSet, expPanel);
@@ -291,7 +298,7 @@ public class PeptideCollection implements Serializable, Comparable<PeptideCollec
         ArrayList<Peptide> sortPeptides = new ArrayList<Peptide>();
         sortPeptides.addAll(minPeptides.values());
         Collections.sort(sortPeptides);
-        ListPanel pPanel = new ListPanel(expPanel);
+        PeptideListPanel pPanel = new PeptideListPanel(expPanel);
         pPanel.addPeptideList(sortPeptides, exp);
         pPanel.setName("Peptides (" + minPeptides.size() + ")");
         DefaultMutableTreeNode root=new DefaultMutableTreeNode(pPanel);
@@ -307,7 +314,7 @@ public class PeptideCollection implements Serializable, Comparable<PeptideCollec
     
     public DefaultMutableTreeNode getPeptideHitsTree(HashSet<String> exp, ExperimentPanel expPanel) {
         if (exp == null) exp = experimentSet;
-        ListPanel pPanel = new ListPanel(expPanel);
+        PeptideHitListPanel pPanel = new PeptideHitListPanel(expPanel);
         pPanel.addProteinPeptideHitList(peptideHits);
         pPanel.setName("Peptide Hits (" + peptideHits.size() + ")");
         DefaultMutableTreeNode root=new DefaultMutableTreeNode(pPanel);
@@ -319,7 +326,7 @@ public class PeptideCollection implements Serializable, Comparable<PeptideCollec
         ArrayList<Protein> sortProteins = new ArrayList<Protein>();
         sortProteins.addAll(minProteins.values());
         Collections.sort(sortProteins);
-        ListPanel pPanel = new ListPanel(expPanel);
+        ProteinListPanel pPanel = new ProteinListPanel(expPanel);
         pPanel.addProteinList(sortProteins, exp);
         pPanel.setName("Proteins (" + minProteins.size() + ")");
         DefaultMutableTreeNode root=new DefaultMutableTreeNode(pPanel);
@@ -335,7 +342,7 @@ public class PeptideCollection implements Serializable, Comparable<PeptideCollec
     
     public DefaultMutableTreeNode getParsimonyTree(HashSet<String> exp, ExperimentPanel expPanel) {
         if (exp == null) exp = experimentSet;
-        ListPanel pPanel = new ListPanel(expPanel);
+        ProteinListPanel pPanel = new ProteinListPanel(expPanel);
         pPanel.addProteinList(getCountables(), experimentSet, false);
         pPanel.setName("Parsimony (" + getCountablesCount() + ")");
         DefaultMutableTreeNode root=new DefaultMutableTreeNode(pPanel);
@@ -343,7 +350,7 @@ public class PeptideCollection implements Serializable, Comparable<PeptideCollec
         DefaultMutableTreeNode child, grandchild;
         
         // Discrete
-        pPanel = new ListPanel(expPanel);
+        pPanel = new ProteinListPanel(expPanel);
         pPanel.addProteinList(getDiscretes(), exp);
         pPanel.setName("Discrete (" + getDiscretes().size() + ")");
         child = new DefaultMutableTreeNode(pPanel);
@@ -352,7 +359,7 @@ public class PeptideCollection implements Serializable, Comparable<PeptideCollec
         root.add(child);
         
         // Differentiable
-        pPanel = new ListPanel(expPanel);
+        pPanel = new ProteinListPanel(expPanel);
         pPanel.addProteinList(getDifferentiables(), exp);
         pPanel.setName("Differentiable (" + getDifferentiables().size() + ")");
         child = new DefaultMutableTreeNode(pPanel);
@@ -361,7 +368,7 @@ public class PeptideCollection implements Serializable, Comparable<PeptideCollec
         root.add(child);
         
         // Superset
-        pPanel = new ListPanel(expPanel);
+        pPanel = new ProteinListPanel(expPanel);
         child = new DefaultMutableTreeNode(pPanel);
         HashSet<String> usedProteins = new HashSet<String>();
         ArrayList<Protein> superset_subsets = new ArrayList<Protein>();
@@ -392,7 +399,7 @@ public class PeptideCollection implements Serializable, Comparable<PeptideCollec
         root.add(child);
         
         // Subsumable
-        pPanel = new ListPanel(expPanel);
+        pPanel = new ProteinListPanel(expPanel);
         child = new DefaultMutableTreeNode(pPanel);
         usedProteins = new HashSet<String>();
         ArrayList<Protein> subsumable_subsets = new ArrayList<Protein>();
@@ -423,7 +430,7 @@ public class PeptideCollection implements Serializable, Comparable<PeptideCollec
         root.add(child);
         
         // Subset
-        pPanel = new ListPanel(expPanel);
+        pPanel = new ProteinListPanel(expPanel);
         child = new DefaultMutableTreeNode(pPanel);
         usedProteins = new HashSet<String>();
         ArrayList<Protein> subset_subsets = new ArrayList<Protein>();
@@ -454,7 +461,7 @@ public class PeptideCollection implements Serializable, Comparable<PeptideCollec
         root.add(child);
         
         // Equivalent
-        pPanel = new ListPanel(expPanel);
+        pPanel = new ProteinListPanel(expPanel);
         child = new DefaultMutableTreeNode(pPanel);
         usedProteins = new HashSet<String>();
         ArrayList<Protein> equivalent_subsets = new ArrayList<Protein>();

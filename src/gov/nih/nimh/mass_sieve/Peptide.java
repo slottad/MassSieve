@@ -8,7 +8,7 @@
 
 package gov.nih.nimh.mass_sieve;
 import gov.nih.nimh.mass_sieve.gui.ExperimentPanel;
-import gov.nih.nimh.mass_sieve.gui.ListPanel;
+import gov.nih.nimh.mass_sieve.gui.PeptideHitListPanel;
 import gov.nih.nimh.mass_sieve.gui.PeptideHitPanel;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -226,7 +226,7 @@ public class Peptide implements Serializable, Comparable<Peptide> {
     }
     
     public JScrollPane getJTable(ExperimentPanel ePanel) {
-        ListPanel lp = new ListPanel(ePanel);
+        PeptideHitListPanel lp = new PeptideHitListPanel(ePanel);
         lp.addPeptideHitList(peptideHits);
         return lp.createTable();
     }
