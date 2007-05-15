@@ -7,6 +7,7 @@
 package gov.nih.nimh.mass_sieve.gui;
 
 import gov.nih.nimh.mass_sieve.*;
+import gov.nih.nimh.mass_sieve.io.FileInformation;
 import java.awt.Component;
 import java.awt.Cursor;
 import java.io.BufferedInputStream;
@@ -347,8 +348,13 @@ public class MassSieveFrame extends javax.swing.JFrame {
         int status = jFileChooserLoad.showSaveDialog(this);
         if (status == JFileChooser.APPROVE_OPTION) {
             File selectedFile = jFileChooserLoad.getSelectedFile();
-            currentExperiment = (ExperimentPanel)jTabbedPaneMain.getSelectedComponent();
             try {
+                if (!selectedFile.createNewFile()) {
+                    status = jOptionPaneAbout.showConfirmDialog(this,
+                            selectedFile.getName() + " exists, are you sure you wish to overwrite it?",
+                            "Overwrite?", JOptionPane.YES_NO_OPTION);
+                    if (status != JOptionPane.OK_OPTION) return;
+                }
                 FileOutputStream fs = new FileOutputStream(selectedFile);
                 ObjectOutputStream os = new ObjectOutputStream(fs);
                 int tabCount = jTabbedPaneMain.getTabCount();
@@ -380,8 +386,10 @@ public class MassSieveFrame extends javax.swing.JFrame {
                 for (int i=0; i<expCount; i++) {
                     Object obj = oin.readObject();
                     Experiment exp = (Experiment) obj;
-                    this.createExperiment(exp.getName());
-                    currentExperiment.reloadData(exp);
+                    if (this.createExperiment(exp.getName())) {
+                        currentExperiment.reloadData(exp);
+                        for (String proName:currentExperiment.getProteins().keySet()) this.addProtein(proName);
+                    }
                 }
             } catch (FileNotFoundException ex) {
                 ex.printStackTrace();
@@ -400,6 +408,12 @@ public class MassSieveFrame extends javax.swing.JFrame {
             File selectedFile = jFileChooserLoad.getSelectedFile();
             currentExperiment = (ExperimentPanel)jTabbedPaneMain.getSelectedComponent();
             try {
+                if (!selectedFile.createNewFile()) {
+                    status = jOptionPaneAbout.showConfirmDialog(this,
+                            selectedFile.getName() + " exists, are you sure you wish to overwrite it?",
+                            "Overwrite?", JOptionPane.YES_NO_OPTION);
+                    if (status != JOptionPane.OK_OPTION) return;
+                }
                 FileOutputStream fs = new FileOutputStream(selectedFile);
                 ObjectOutputStream os = new ObjectOutputStream(fs);
                 os.writeInt(1);
@@ -498,6 +512,7 @@ public class MassSieveFrame extends javax.swing.JFrame {
     
     private void jMenuCompareParsimonyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuCompareParsimonyActionPerformed
         ArrayList<PeptideHit> allHits = new ArrayList<PeptideHit>();
+        ArrayList<FileInformation> fInfos = new ArrayList<FileInformation>();
         Component comps[] = jTabbedPaneMain.getComponents();
         double maxMascot = Double.MIN_VALUE;
         double maxOmssa = Double.MIN_VALUE;
@@ -509,6 +524,7 @@ public class MassSieveFrame extends javax.swing.JFrame {
                 if (exp.getFilterSettings().getOmssaCutoff() > maxOmssa) maxOmssa = exp.getFilterSettings().getOmssaCutoff();
                 if (exp.getFilterSettings().getXtandemCutoff() > maxXtandem) maxXtandem = exp.getFilterSettings().getXtandemCutoff();
                 allHits.addAll(exp.getPepCollection().getPeptideHits());
+                fInfos.addAll(exp.getFileInfos());
             }
         }
         currentExperiment = new ExperimentPanel(this);
@@ -518,6 +534,7 @@ public class MassSieveFrame extends javax.swing.JFrame {
         currentExperiment.getFilterSettings().setOmssaCutoff(maxOmssa);
         currentExperiment.getFilterSettings().setXtandemCutoff(maxXtandem);
         currentExperiment.addPeptideHits(allHits);
+        currentExperiment.setFileInfos(fInfos);
         expSet.put("Parsimony Comparison", currentExperiment);
         jTabbedPaneMain.add(currentExperiment);
         jTabbedPaneMain.setSelectedComponent(currentExperiment);
@@ -544,13 +561,15 @@ public class MassSieveFrame extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jMenuNewExperimentActionPerformed
     
-    public void createExperiment(String name) {
+    public boolean createExperiment(String name) {
         if (expSet.containsKey(name)) {
             jOptionPaneAbout.showMessageDialog(MassSieveFrame.this, "There is already an experiment named " + name);
+            return false;
         } else {
             ExperimentPanel exp = new ExperimentPanel(this);
             exp.setName(name);
             this.createExperiment(exp);
+            return true;
         }
     }
     

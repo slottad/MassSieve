@@ -8,6 +8,7 @@
 
 package gov.nih.nimh.mass_sieve;
 
+import ca.odell.glazedlists.EventList;
 import gov.nih.nimh.mass_sieve.gui.ExperimentPanel;
 import gov.nih.nimh.mass_sieve.gui.MassSieveFrame;
 import gov.nih.nimh.mass_sieve.gui.PeptideListPanel;
@@ -49,7 +50,7 @@ public class Protein implements Serializable, Comparable<Protein> {
     private ArrayList<Peptide> shared;
     private ArrayList<Peptide> allPeptides;
     private int cluster;
-    private ViewSequence seqObj;
+    transient private ViewSequence seqObj;
     private HashSet<String> associatedProteins;
     private HashSet<String> experimentSet;
     private HashSet<String> fileSet;
@@ -575,25 +576,42 @@ public class Protein implements Serializable, Comparable<Protein> {
         if (distinct.size() >= 1) {
             if (shared.isEmpty()) {
                 pType = ParsimonyType.DISCRETE;
+                mostEquivalent = true;
                 return;
             } else {
                 pType = ParsimonyType.DIFFERENTIABLE;
+                mostEquivalent = true;
                 return;
             }
         }
         if (superset.size() >= 1) {
             pType = ParsimonyType.SUBSET;
+            mostEquivalent = false;
             return;
         }
         if (isSubsumable()) {
             pType = ParsimonyType.SUBSUMABLE;
+            mostEquivalent = false;
             return;
         }
         if (subset.size() >=1) {
             pType = ParsimonyType.SUPERSET;
+            mostEquivalent = this.checkMostEquivalent();
             return;
         }
         pType = ParsimonyType.EQUIVALENT;
+        mostEquivalent = this.checkMostEquivalent();
+    }
+    
+    private boolean checkMostEquivalent() {
+        if (equivalent.isEmpty()) {
+            return true;
+        }
+        Collections.sort(equivalent);
+        if (this.compareTo(equivalent.get(0)) < 0) {
+            return true;
+        }
+        return false;
     }
     
     public ParsimonyType getParsimonyType() {
@@ -676,5 +694,32 @@ public class Protein implements Serializable, Comparable<Protein> {
             fileList = buf;
         }
         return fileList;
+    }
+    
+    public boolean isMostEquivalent() {
+        return mostEquivalent;
+    }
+    
+    public void setMostEquivalent(boolean isMost, EventList list) {
+        mostEquivalent = isMost;
+        int loc = list.indexOf(this);
+        list.set(loc,this);
+        if (isMost) {
+            for (Protein p:equivalent) {
+                p.setMostEquivalent(false, list);
+            }
+        }
+    }
+    
+    public String getMostEquivalent() {
+        if (mostEquivalent) {
+            return this.getName();
+        }
+        for (Protein p:equivalent) {
+            if (p.isMostEquivalent()) {
+                return p.getName();
+            }
+        }
+        return "No preferred found";
     }
 }

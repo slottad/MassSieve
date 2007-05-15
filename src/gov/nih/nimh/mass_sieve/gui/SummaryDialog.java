@@ -32,10 +32,11 @@ public class SummaryDialog extends Dialog {
         fileInfos = fi;
         Collections.sort(fileInfos);
         StringBuffer sb = new StringBuffer(4096);
-        sb.append("<html><table><tr><th>File name</th><th>Analysis Program</th><th>Search Database</th><th>Total PepHits</th><th>DTA files</th></tr>");
+        sb.append("<html><table><tr><th>Experiment</th><th>File name</th><th>Analysis Program</th><th>Search Database</th><th>Total PepHits</th><th>DTA files</th></tr>");
         
         for (FileInformation fInfo:fileInfos) {
             sb.append("<tr>");
+            sb.append("<td>" + fInfo.getExperiment() + "</td>");
             sb.append("<td>" + fInfo.getSourceFile() + "</td>");
             sb.append("<td>" + fInfo.getAnalysisProgram() + "</td>");
             sb.append("<td>" + fInfo.getSearchDB() + "</td>");

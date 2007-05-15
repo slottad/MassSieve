@@ -217,7 +217,8 @@ public class ExperimentPanel extends JPanel {
         exp.setName(this.getName());
         exp.setFileInfos(fileInfos);
         exp.setFilterSettings(filterSettings);
-        exp.setPepCollection(pepCollectionOriginal);
+        exp.setPepCollection(pepCollection);
+        exp.setPepCollectionOriginal(pepCollectionOriginal);
         try {
             os.writeObject(exp);
         } catch (IOException ex) {
@@ -227,10 +228,11 @@ public class ExperimentPanel extends JPanel {
     }
     
     public void reloadData(Experiment exp) {
-        pepCollectionOriginal = exp.getPepCollection();
+        pepCollectionOriginal = exp.getPepCollectionOriginal();
+        pepCollection = exp.getPepCollection();
         fileInfos = exp.getFileInfos();
         filterSettings = getFilterSettings();
-        recomputeCutoff();
+        updateDisplay();
     }
     
     private PeptideCollection FilterBySearchProgram(PeptideCollection pc) {
@@ -312,7 +314,9 @@ public class ExperimentPanel extends JPanel {
                     msFrame.addProtein(pName, pDB.get(pName));
                 }
             }
-            fileInfos.add(pf.getFileInformation());
+            FileInformation fInfo = pf.getFileInformation();
+            fInfo.setExperiment(exp_name);
+            fileInfos.add(fInfo);
         }
         recomputeCutoff();
     }
@@ -544,6 +548,14 @@ public class ExperimentPanel extends JPanel {
     
     public void setFilterSettings(FilterSettings filterSettings) {
         this.filterSettings = filterSettings;
+    }
+
+    public ArrayList<FileInformation> getFileInfos() {
+        return fileInfos;
+    }
+
+    public void setFileInfos(ArrayList<FileInformation> fileInfos) {
+        this.fileInfos = fileInfos;
     }
     
     

@@ -16,12 +16,16 @@ import ca.odell.glazedlists.swing.EventSelectionModel;
 import ca.odell.glazedlists.swing.EventTableModel;
 import com.publicobject.misc.swing.Icons;
 import com.publicobject.misc.swing.JSeparatorTable;
+import gov.nih.nimh.mass_sieve.Peptide;
 import gov.nih.nimh.mass_sieve.Protein;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -31,8 +35,11 @@ import javax.swing.AbstractCellEditor;
 import javax.swing.BorderFactory;
 import javax.swing.Icon;
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JLabel;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
 import javax.swing.border.Border;
@@ -55,15 +62,13 @@ public class ProteinListPanel extends ListPanel {
     }
     
     public void addProteinList(ArrayList<Protein> list, HashSet<String> exp) {
-        hasProteins = true;
-        pTableFormat = new ProteinTableFormat(exp);
+        pTableFormat = new ProteinTableFormat(exp, evList, false);
         this.addList(list);
     }
     
     public void addProteinList(ArrayList<Protein> list, HashSet<String> exp, boolean useClusters) {
-        hasProteins = true;
         evList.addAll(list);
-        pTableFormat = new ProteinTableFormat(exp);
+        pTableFormat = new ProteinTableFormat(exp, evList, !useClusters);
         sortList = new SortedList(evList, null);
         SeparatorList<Protein> sepList;
         this.useClusters = useClusters;
@@ -88,6 +93,59 @@ public class ProteinListPanel extends ListPanel {
         Collections.sort(list);
         pTableFormat = new DiffTableFormat(expSet);
         this.addList(list);
+    }
+    
+    public void tableToCSV(File file, boolean addPeptides) {
+        try {
+            FileWriter fw = new FileWriter(file);
+            //	Output column headers if any.
+            printColumnHeader(fw);
+            
+            for (int row=0 ; row < jTable.getRowCount(); row++) {
+                Object obj = tableModel.getElementAt(row);
+                if (obj instanceof SeparatorList.Separator) {
+                    SeparatorList.Separator<Protein> separator = (SeparatorList.Separator<Protein>)obj;
+                    if (useClusters) {
+                        fw.write("\nCluster " + separator.first().getCluster() + " (" + separator.size() + " proteins)\n");
+                    } else {
+                        fw.write("\nPutative Protein " + separator.first().getEquivalentGroup() + " (" + separator.size() + " candidate proteins)\n");
+                    }
+                } else {
+                    printRow(fw, row);
+                    
+                    if ((obj instanceof Protein) && addPeptides) {
+                        Protein pro = (Protein)obj;
+                        fw.write(",Sequence,Peptide Hits,Length,Num Proteins,Theoretical Mass,Type,Found by\n");
+                        for (Peptide pep:pro.getAllPeptides()) {
+                            fw.write("," + pep.toCSVString() + "\n");
+                        }
+                    }
+                }
+            }
+            fw.close();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+        return;
+    }
+    
+    protected JPopupMenu createPopupMenu() {
+        final JPopupMenu menu = super.createPopupMenu();
+        // Create and add a menu item
+        JMenuItem exportPepItem = new JMenuItem("Export Table with Peptides");
+        exportPepItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                JFileChooser fc = new JFileChooser();
+                fc.setDialogTitle("Export to...");
+                int returnVal = fc.showSaveDialog(null);
+                if (returnVal == JFileChooser.APPROVE_OPTION) {
+                    File f = fc.getSelectedFile();
+                    tableToCSV(f, true);
+                }
+            }
+        });
+        menu.add(exportPepItem);
+        return menu;
     }
     
     public static final Icon EXPANDED_ICON = Icons.triangle(9, SwingConstants.EAST, Color.DARK_GRAY);
@@ -151,7 +209,8 @@ public class ProteinListPanel extends ListPanel {
             if (useClusters) {
                 nameLabel.setText(clusterNameFormat.format(new Object[] {pro.getCluster(), new Integer(separator.size())}));
             } else {
-                nameLabel.setText(equivalentNameFormat.format(new Object[] {pro.getEquivalentGroup(), new Integer(separator.size())}));
+                //nameLabel.setText(equivalentNameFormat.format(new Object[] {pro.getEquivalentGroup(), new Integer(separator.size())}));
+                nameLabel.setText(equivalentNameFormat.format(new Object[] {pro.getMostEquivalent(), new Integer(separator.size())}));
             }
         }
         

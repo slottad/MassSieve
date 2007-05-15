@@ -18,6 +18,7 @@ import java.util.HashSet;
  */
 public class FileInformation implements Serializable, Comparable<FileInformation> {
     private AnalysisProgramType analysisProgram;
+    private String experiment;
     private String sourceFile;
     private String searchDB;
     private int pepHitCount;
@@ -69,5 +70,13 @@ public class FileInformation implements Serializable, Comparable<FileInformation
     
     public int compareTo(FileInformation fi) {
         return sourceFile.compareTo(fi.getSourceFile());
+    }
+
+    public String getExperiment() {
+        return experiment;
+    }
+
+    public void setExperiment(String experiment) {
+        this.experiment = experiment;
     }
 }

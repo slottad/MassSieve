@@ -45,7 +45,7 @@ import javax.swing.table.TableColumn;
 public class ListPanel {
     private String name;
     protected EventList evList;
-    private JTable jTable;
+    protected JTable jTable;
     protected JSeparatorTable jSepTable;
     protected TableFormat pTableFormat;
     protected SortedList sortList;
@@ -53,7 +53,6 @@ public class ListPanel {
     protected EventSelectionModel selectionModel;
     private ExperimentPanel expPanel;
     protected boolean useClusters;
-    protected boolean hasProteins;
     
     /** Creates a new instance of ListPanel */
     public ListPanel() {
@@ -63,7 +62,6 @@ public class ListPanel {
     public ListPanel(ExperimentPanel ePanel) {
         expPanel = ePanel;
         evList = new BasicEventList();
-        hasProteins = false;
     }
     
     public void addList(Collection<?> list) {
@@ -72,7 +70,7 @@ public class ListPanel {
         tableModel = new EventTableModel(sortList, pTableFormat);
         selectionModel = new EventSelectionModel(sortList);
     }
-        
+    
     public JScrollPane createTable() {
         if (jSepTable == null) {
             jTable = new JTable(tableModel);
@@ -98,38 +96,8 @@ public class ListPanel {
         jTable.setAutoResizeMode(jTable.AUTO_RESIZE_OFF);
         initColumnSizes();
         
-        final JPopupMenu menu = new JPopupMenu();
+        final JPopupMenu menu = createPopupMenu();
         
-        // Create and add a menu item
-        JMenuItem exportItem = new JMenuItem("Export Table");
-        exportItem.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                JFileChooser fc = new JFileChooser();
-                fc.setDialogTitle("Export to...");
-                int returnVal = fc.showSaveDialog(null);
-                if (returnVal == JFileChooser.APPROVE_OPTION) {
-                    File f = fc.getSelectedFile();
-                    tableToCSV(f, false);
-                }
-            }
-        });
-        menu.add(exportItem);
-        if (hasProteins) {
-            // Create and add a menu item
-            JMenuItem exportPepItem = new JMenuItem("Export Table with Peptides");
-            exportPepItem.addActionListener(new java.awt.event.ActionListener() {
-                public void actionPerformed(java.awt.event.ActionEvent evt) {
-                    JFileChooser fc = new JFileChooser();
-                    fc.setDialogTitle("Export to...");
-                    int returnVal = fc.showSaveDialog(null);
-                    if (returnVal == JFileChooser.APPROVE_OPTION) {
-                        File f = fc.getSelectedFile();
-                        tableToCSV(f, true);
-                    }
-                }
-            });
-            menu.add(exportPepItem);
-        }
         JScrollPane jsPane = new JScrollPane(jTable);
         // Set the component to show the popup menu
         jTable.addMouseListener(new MouseAdapter() {
@@ -145,6 +113,26 @@ public class ListPanel {
             }
         });
         return jsPane;
+    }
+    
+    protected JPopupMenu createPopupMenu() {
+        final JPopupMenu menu = new JPopupMenu();
+        
+        // Create and add a menu item
+        JMenuItem exportItem = new JMenuItem("Export Table");
+        exportItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                JFileChooser fc = new JFileChooser();
+                fc.setDialogTitle("Export to...");
+                int returnVal = fc.showSaveDialog(null);
+                if (returnVal == JFileChooser.APPROVE_OPTION) {
+                    File f = fc.getSelectedFile();
+                    tableToCSV(f);
+                }
+            }
+        });
+        menu.add(exportItem);
+        return menu;
     }
     
     public void setName(String s) {
@@ -172,61 +160,51 @@ public class ListPanel {
             column.setPreferredWidth(headerWidth);
         }
     }
+    protected void printColumnHeader(FileWriter fw) throws IOException {
+        if (jTable.getColumnCount() > 0) {
+            String columnHeader;
+            
+            for ( int column = 0; column < jTable.getColumnCount(); column++ ) {
+                if ( column > 0 ) fw.write(",");
+                columnHeader = jTable.getColumnName(column).trim();
+                if ( columnHeader.indexOf(",") >= 0 ) {
+                    fw.write("\"");
+                    fw.write(columnHeader);
+                    fw.write("\"" );
+                } else {
+                    fw.write(columnHeader);
+                }
+            }
+            
+            fw.write("\n");
+        }
+        
+    }
     
-    public void tableToCSV(File file, boolean addPeptides) {
+    protected void printRow(FileWriter fw, int row) throws IOException {
+        for ( int col=0; col<jTable.getColumnCount(); col++ ) {
+            if (col > 0) fw.write(",");
+            Object elem = jTable.getValueAt(row, col);
+            if (elem != null) {
+                String str = elem.toString();
+                if (str.contains(",")) {
+                    fw.write("\"" + str + "\"");
+                } else {
+                    fw.write(str);
+                }
+            }
+        }
+        fw.write("\n");
+    }
+    
+    public void tableToCSV(File file) {
         try {
             FileWriter fw = new FileWriter(file);
             //	Output column headers if any.
-            if (jTable.getColumnCount() > 0) {
-                String columnHeader;
-                
-                for ( int column = 0; column < jTable.getColumnCount(); column++ ) {
-                    if ( column > 0 ) fw.write(",");
-                    columnHeader = jTable.getColumnName(column).trim();
-                    if ( columnHeader.indexOf(",") >= 0 ) {
-                        fw.write("\"");
-                        fw.write(columnHeader);
-                        fw.write("\"" );
-                    } else {
-                        fw.write(columnHeader);
-                    }
-                }
-                
-                fw.write("\n");
-            }
+            printColumnHeader(fw);
+            
             for (int row=0 ; row < jTable.getRowCount(); row++) {
-                Object obj = tableModel.getElementAt(row);
-                if (obj instanceof SeparatorList.Separator) {
-                    SeparatorList.Separator<Protein> separator = (SeparatorList.Separator<Protein>)obj;
-                    if (useClusters) {
-                        fw.write("\nCluster " + separator.first().getCluster() + " (" + separator.size() + " proteins)\n");
-                    } else {
-                        fw.write("\nPutative Protein " + separator.first().getEquivalentGroup() + " (" + separator.size() + " candidate proteins)\n");
-                    }
-                } else {
-                    for ( int col=0; col<jTable.getColumnCount(); col++ ) {
-                        if (col > 0) fw.write(",");
-                        //Object elem = pTableFormat.getColumnValue(obj,col);
-                        Object elem = jTable.getValueAt(row,col);
-                        if (elem != null) {
-                            String str = elem.toString();
-                            if (str.contains(",")) {
-                                fw.write("\"" + str + "\"");
-                            } else {
-                                fw.write(str);
-                            }
-                        }
-                    }
-                    fw.write("\n");
-                    
-                    if ((obj instanceof Protein) && addPeptides) {
-                        Protein pro = (Protein)obj;
-                        fw.write(",Sequence,Peptide Hits,Length,Num Proteins,Theoretical Mass,Type,Found by\n");
-                        for (Peptide pep:pro.getAllPeptides()) {
-                            fw.write("," + pep.toCSVString() + "\n");
-                        }
-                    }
-                }
+                printRow(fw, row);
             }
             fw.close();
         } catch (IOException ex) {
@@ -242,52 +220,52 @@ public class ListPanel {
 //     * Render the issues separator.
 //     */
 //    public class ProteinSeparatorTableCell extends AbstractCellEditor implements TableCellRenderer, TableCellEditor, ActionListener {
-//        
+//
 //        private final MessageFormat clusterNameFormat = new MessageFormat("Cluster {0} ({1} proteins)");
 //        private final MessageFormat equivalentNameFormat = new MessageFormat("Putative Protein {0} ({1} candidate proteins)");
-//        
+//
 //        /** the separator list to lock */
 //        private final SeparatorList separatorList;
-//        
+//
 //        private final JPanel panel = new JPanel(new BorderLayout());
 //        private final JButton expandButton;
 //        private final JLabel nameLabel = new JLabel();
-//        
+//
 //        private SeparatorList.Separator<Protein> separator;
-//        
+//
 //        public ProteinSeparatorTableCell(SeparatorList separatorList) {
 //            this.separatorList = separatorList;
-//            
+//
 //            this.expandButton = new JButton(EXPANDED_ICON);
 //            this.expandButton.setOpaque(false);
 //            this.expandButton.setBorder(EMPTY_TWO_PIXEL_BORDER);
 //            this.expandButton.setIcon(EXPANDED_ICON);
 //            this.expandButton.setContentAreaFilled(false);
-//            
+//
 //            this.nameLabel.setFont(nameLabel.getFont().deriveFont(10.0f));
 //            this.nameLabel.setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 5));
-//            
+//
 //            this.expandButton.addActionListener(this);
-//            
+//
 //            this.panel.setBackground(Color.CYAN);
 //            this.panel.add(expandButton, BorderLayout.WEST);
 //            this.panel.add(nameLabel, BorderLayout.CENTER);
 //        }
-//        
+//
 //        public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
 //            configure(value);
 //            return panel;
 //        }
-//        
+//
 //        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
 //            configure(value);
 //            return panel;
 //        }
-//        
+//
 //        public Object getCellEditorValue() {
 //            return this.separator;
 //        }
-//        
+//
 //        private void configure(Object value) {
 //            this.separator = (SeparatorList.Separator<Protein>)value;
 //            Protein pro = separator.first();
@@ -299,7 +277,7 @@ public class ListPanel {
 //                nameLabel.setText(equivalentNameFormat.format(new Object[] {pro.getEquivalentGroup(), new Integer(separator.size())}));
 //            }
 //        }
-//        
+//
 //        public void actionPerformed(ActionEvent e) {
 //            separatorList.getReadWriteLock().writeLock().lock();
 //            boolean collapsed;

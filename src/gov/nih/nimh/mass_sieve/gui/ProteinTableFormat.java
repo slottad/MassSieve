@@ -9,6 +9,7 @@
 
 package gov.nih.nimh.mass_sieve.gui;
 
+import ca.odell.glazedlists.EventList;
 import ca.odell.glazedlists.GlazedLists;
 import ca.odell.glazedlists.SeparatorList;
 import ca.odell.glazedlists.gui.AdvancedTableFormat;
@@ -23,17 +24,25 @@ import java.util.HashSet;
  * @author slotta
  */
 public class ProteinTableFormat implements WritableTableFormat, AdvancedTableFormat {
+    private EventList evList;
     private ArrayList<String> experiments;
     private ArrayList<String> columnNames;
     private ArrayList<Class> columnClasses;
-    int upStart, upStop, phStart, phStop, covStart, covStop;
+    private int upStart, upStop, phStart, phStop, covStart, covStop;
+    private boolean parsimonyView;
     
     /** Creates a new instance of ProteinTableFormat */
-    public ProteinTableFormat(HashSet<String> exp) {
+    public ProteinTableFormat(HashSet<String> exp, EventList list, boolean pView) {
+        parsimonyView = pView;
+        evList = list;
         experiments = new ArrayList<String>();
         experiments.addAll(exp);
-        columnNames = new ArrayList<String>(); columnClasses =  new ArrayList<Class>();
-        columnNames.add("Protein Name");       columnClasses.add(String.class);
+        columnNames = new ArrayList<String>();  columnClasses =  new ArrayList<Class>();
+        columnNames.add("Protein Name");        columnClasses.add(String.class);
+        if (parsimonyView) {
+            columnNames.add("Preferred");         columnClasses.add(Boolean.class);
+        }
+        upStart = columnNames.size();
         if (experiments.size() > 1) {
             for (String e:experiments) {
                 columnNames.add(e + " Peptides"); columnClasses.add(Integer.class);
@@ -59,12 +68,12 @@ public class ProteinTableFormat implements WritableTableFormat, AdvancedTableFor
         columnNames.add(" pI ");            columnClasses.add(Double.class);
         columnNames.add("Description");     columnClasses.add(String.class);
         columnNames.add("Files found in");     columnClasses.add(String.class);
-        upStart = 1;
+        //upStart = 2;
         upStop =  upStart + experiments.size()-1;
         phStart = upStop + 1;
         phStop = phStart + experiments.size()-1;
         covStart = phStop + 4;
-        covStop = covStart + experiments.size()-1;        
+        covStop = covStart + experiments.size()-1;
     }
     
     public Class getColumnClass(int column) {
@@ -90,6 +99,13 @@ public class ProteinTableFormat implements WritableTableFormat, AdvancedTableFor
     }
     
     public Object setColumnValue(Object baseObject, Object editedValue, int column) {
+        if (parsimonyView && (column == 1)) {
+            Protein pro = (Protein)baseObject;
+            Boolean val = (Boolean)editedValue;
+            if (val) {
+                pro.setMostEquivalent(val, evList);
+            }
+        }
         return null;
     }
     
@@ -101,6 +117,7 @@ public class ProteinTableFormat implements WritableTableFormat, AdvancedTableFor
         }
         Protein p = (Protein)baseObject;
         if (column == 0) return p.getName();
+        if (parsimonyView && (column == 1)) return p.isMostEquivalent();
         else if ((column >= upStart) && (column <= upStop)) {
             if (experiments.size() > 1) return p.getNumUniquePeptides(experiments.get(column-upStart));
             else return p.getNumUniquePeptides();
@@ -113,8 +130,7 @@ public class ProteinTableFormat implements WritableTableFormat, AdvancedTableFor
         else if ((column >= covStart) && (column <= covStop)) {
             if (experiments.size() > 1) return p.getCoveragePercent(experiments.get(column-covStart));
             else return p.getCoveragePercent();
-        }
-        else if (column == (covStop+1)) return p.getMass();
+        } else if (column == (covStop+1)) return p.getMass();
         else if (column == (covStop+2)) return p.getIsoelectricPoint();
         else if (column == (covStop+3)) return p.getDescription();
         else if (column == (covStop+4)) return p.getFileList();
