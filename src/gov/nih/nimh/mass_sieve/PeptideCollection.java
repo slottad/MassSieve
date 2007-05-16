@@ -9,11 +9,11 @@
 package gov.nih.nimh.mass_sieve;
 
 import gov.nih.nimh.mass_sieve.gui.ExperimentPanel;
-import gov.nih.nimh.mass_sieve.gui.ListPanel;
 import gov.nih.nimh.mass_sieve.gui.MassSieveFrame;
 import gov.nih.nimh.mass_sieve.gui.PeptideHitListPanel;
 import gov.nih.nimh.mass_sieve.gui.PeptideListPanel;
 import gov.nih.nimh.mass_sieve.gui.PrintUtilities;
+import gov.nih.nimh.mass_sieve.gui.ProteinGroupListPanel;
 import gov.nih.nimh.mass_sieve.gui.ProteinListPanel;
 import gov.nih.nimh.mass_sieve.io.AnalysisProgramType;
 import java.awt.event.MouseAdapter;
@@ -43,6 +43,7 @@ import prefuse.controls.Control;
 import prefuse.controls.DragControl;
 import prefuse.controls.FocusControl;
 import prefuse.controls.HoverActionControl;
+import prefuse.controls.NeighborHighlightControl;
 import prefuse.controls.PanControl;
 import prefuse.controls.WheelZoomControl;
 import prefuse.controls.ZoomToFitControl;
@@ -261,7 +262,7 @@ public class PeptideCollection implements Serializable, Comparable<PeptideCollec
     }
     
     public DefaultMutableTreeNode getClusterTree(ExperimentPanel expPanel) {
-        ProteinListPanel cPanel = new ProteinListPanel(expPanel);
+        ProteinGroupListPanel cPanel = new ProteinGroupListPanel(expPanel);
         ArrayList<Protein> sortProteins = new ArrayList<Protein>();
         sortProteins.addAll(minProteins.values());
         Collections.sort(sortProteins);
@@ -342,34 +343,35 @@ public class PeptideCollection implements Serializable, Comparable<PeptideCollec
     
     public DefaultMutableTreeNode getParsimonyTree(HashSet<String> exp, ExperimentPanel expPanel) {
         if (exp == null) exp = experimentSet;
-        ProteinListPanel pPanel = new ProteinListPanel(expPanel);
+        ProteinGroupListPanel pPanel = new ProteinGroupListPanel(expPanel);
         pPanel.addProteinList(getCountables(), experimentSet, false);
         pPanel.setName("Parsimony (" + getCountablesCount() + ")");
         DefaultMutableTreeNode root=new DefaultMutableTreeNode(pPanel);
         //DefaultMutableTreeNode root=new DefaultMutableTreeNode("Parsimony (" + getCountablesCount() + ")");
         DefaultMutableTreeNode child, grandchild;
         
+        ProteinListPanel psPanel;
         // Discrete
-        pPanel = new ProteinListPanel(expPanel);
-        pPanel.addProteinList(getDiscretes(), exp);
-        pPanel.setName("Discrete (" + getDiscretes().size() + ")");
-        child = new DefaultMutableTreeNode(pPanel);
+        psPanel = new ProteinListPanel(expPanel);
+        psPanel.addProteinList(getDiscretes(), exp);
+        psPanel.setName("Discrete (" + getDiscretes().size() + ")");
+        child = new DefaultMutableTreeNode(psPanel);
         //for (Protein p:getDiscretes()) { child.add(p.getTree(expPanel)); }
         for (Protein p:getDiscretes()) { child.add(new DefaultMutableTreeNode(p)); }
         root.add(child);
         
         // Differentiable
-        pPanel = new ProteinListPanel(expPanel);
-        pPanel.addProteinList(getDifferentiables(), exp);
-        pPanel.setName("Differentiable (" + getDifferentiables().size() + ")");
-        child = new DefaultMutableTreeNode(pPanel);
+        psPanel = new ProteinListPanel(expPanel);
+        psPanel.addProteinList(getDifferentiables(), exp);
+        psPanel.setName("Differentiable (" + getDifferentiables().size() + ")");
+        child = new DefaultMutableTreeNode(psPanel);
         //for (Protein p:getDifferentiables()) { child.add(p.getTree(expPanel)); }
         for (Protein p:getDifferentiables()) { child.add(new DefaultMutableTreeNode(p)); }
         root.add(child);
         
         // Superset
-        pPanel = new ProteinListPanel(expPanel);
-        child = new DefaultMutableTreeNode(pPanel);
+        psPanel = new ProteinListPanel(expPanel);
+        child = new DefaultMutableTreeNode(psPanel);
         HashSet<String> usedProteins = new HashSet<String>();
         ArrayList<Protein> superset_subsets = new ArrayList<Protein>();
         for (Protein p:getSupersets()) {
@@ -394,13 +396,13 @@ public class PeptideCollection implements Serializable, Comparable<PeptideCollec
                 }
             }
         }
-        pPanel.addProteinList(superset_subsets, exp);
-        pPanel.setName("Superset (" + superset_subsets.size() + ")");
+        psPanel.addProteinList(superset_subsets, exp);
+        psPanel.setName("Superset (" + superset_subsets.size() + ")");
         root.add(child);
         
         // Subsumable
-        pPanel = new ProteinListPanel(expPanel);
-        child = new DefaultMutableTreeNode(pPanel);
+        psPanel = new ProteinListPanel(expPanel);
+        child = new DefaultMutableTreeNode(psPanel);
         usedProteins = new HashSet<String>();
         ArrayList<Protein> subsumable_subsets = new ArrayList<Protein>();
         for (Protein p:getSubsumables()) {
@@ -425,13 +427,13 @@ public class PeptideCollection implements Serializable, Comparable<PeptideCollec
                 }
             }
         }
-        pPanel.addProteinList(subsumable_subsets, exp);
-        pPanel.setName("Subsumable (" + subsumable_subsets.size() + ")");
+        psPanel.addProteinList(subsumable_subsets, exp);
+        psPanel.setName("Subsumable (" + subsumable_subsets.size() + ")");
         root.add(child);
         
         // Subset
-        pPanel = new ProteinListPanel(expPanel);
-        child = new DefaultMutableTreeNode(pPanel);
+        psPanel = new ProteinListPanel(expPanel);
+        child = new DefaultMutableTreeNode(psPanel);
         usedProteins = new HashSet<String>();
         ArrayList<Protein> subset_subsets = new ArrayList<Protein>();
         for (Protein p:getSubsets()) {
@@ -456,13 +458,13 @@ public class PeptideCollection implements Serializable, Comparable<PeptideCollec
                 }
             }
         }
-        pPanel.addProteinList(subset_subsets, exp);
-        pPanel.setName("Subset (" + subset_subsets.size() + ")");
+        psPanel.addProteinList(subset_subsets, exp);
+        psPanel.setName("Subset (" + subset_subsets.size() + ")");
         root.add(child);
         
         // Equivalent
-        pPanel = new ProteinListPanel(expPanel);
-        child = new DefaultMutableTreeNode(pPanel);
+        psPanel = new ProteinListPanel(expPanel);
+        child = new DefaultMutableTreeNode(psPanel);
         usedProteins = new HashSet<String>();
         ArrayList<Protein> equivalent_subsets = new ArrayList<Protein>();
         for (Protein p:getEquivalents()) {
@@ -487,8 +489,8 @@ public class PeptideCollection implements Serializable, Comparable<PeptideCollec
                 }
             }
         }
-        pPanel.addProteinList(equivalent_subsets, experimentSet);
-        pPanel.setName("Equivalent (" + equivalent_subsets.size() + ")");
+        psPanel.addProteinList(equivalent_subsets, experimentSet);
+        psPanel.setName("Equivalent (" + equivalent_subsets.size() + ")");
         root.add(child);
         
         return root;
@@ -505,7 +507,7 @@ public class PeptideCollection implements Serializable, Comparable<PeptideCollec
         display.addControlListener(new PanControl());  // pan with background left-drag
         display.addControlListener(new WheelZoomControl()); // zoom with vertical right-drag
         display.addControlListener(new ZoomToFitControl(Visualization.ALL_ITEMS, 50, 500, Control.MIDDLE_MOUSE_BUTTON));
-        //display.addControlListener(new NeighborHighlightControl());
+        display.addControlListener(new NeighborHighlightControl());
         
         Visualization vis = new Visualization();
         if (clusterGraph == null) { clusterGraph = this.toGraph(); }
@@ -527,8 +529,8 @@ public class PeptideCollection implements Serializable, Comparable<PeptideCollec
         ColorAction edges = new ColorAction("graph.edges", VisualItem.STROKECOLOR, ColorLib.gray(200));
         
         ActionList color = new ActionList(Activity.INFINITY);
-        color.add(fill);
         color.add(text);
+        color.add(fill);
         color.add(edges);
         color.add(new RepaintAction());
         

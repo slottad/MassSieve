@@ -759,6 +759,14 @@ public class MassSieveFrame extends javax.swing.JFrame {
         return res;
     }
     
+//    private String checkStackSize() {
+//        Runtime.getRuntime().
+//        long val = (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory())/1024;
+//        val /= 1024;
+//        String res = new String("Memory used: " + val + "MB");
+//        return res;
+//    }
+    
     private String checkAvailMem() {
         long val = (Runtime.getRuntime().totalMemory())/1024;
         val /= 1024;

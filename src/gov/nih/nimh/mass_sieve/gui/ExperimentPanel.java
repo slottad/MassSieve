@@ -458,7 +458,7 @@ public class ExperimentPanel extends JPanel {
     public void showProteinsLower(HashSet<Protein> pSet) {
         ArrayList<Protein> pList = new ArrayList<Protein>(pSet);
         Collections.sort(pList);
-        ProteinListPanel cPanel = new ProteinListPanel(this);
+        ProteinGroupListPanel cPanel = new ProteinGroupListPanel(this);
         cPanel.addProteinList(pList, pepCollection.getExperimentSet(), true);
         jSplitPaneSecondary.setBottomComponent(cPanel.createTable());
         jSplitPaneSecondary.setDividerLocation(0.5);
