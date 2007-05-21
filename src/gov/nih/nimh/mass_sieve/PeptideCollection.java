@@ -68,8 +68,8 @@ public class PeptideCollection implements Serializable, Comparable<PeptideCollec
     private ArrayList<Protein> equivalents, subsets, supersets, subsumables, differentiables, discretes, countables;
     private int cluster_num;
     private Integer countablesCount;
-    private Graph clusterGraph;
-    NodeItem highlightedItem;
+    transient private Graph clusterGraph;
+    transient NodeItem highlightedItem;
     
     /** Creates a new instance of PeptideCollection */
     public PeptideCollection() {

@@ -51,10 +51,11 @@ public class ProteinTableFormat implements WritableTableFormat, AdvancedTableFor
                 columnNames.add(e + " PepHits"); columnClasses.add(Integer.class);
             }
         } else {
-            columnNames.add("Peptides"); columnClasses.add(Integer.class);
+            columnNames.add("Peptides");    columnClasses.add(Integer.class);
             columnNames.add("PepHits");     columnClasses.add(Integer.class);
         }
         columnNames.add("Parsimony Type");  columnClasses.add(String.class);
+        columnNames.add("Cluster");         columnClasses.add(Integer.class);
         columnNames.add("Equiv. Proteins"); columnClasses.add(String.class);
         columnNames.add("Seq Len");         columnClasses.add(Integer.class);
         if (experiments.size() > 1) {
@@ -62,17 +63,17 @@ public class ProteinTableFormat implements WritableTableFormat, AdvancedTableFor
                 columnNames.add(e + " %cover"); columnClasses.add(Double.class);
             }
         } else {
-            columnNames.add("%Cover");          columnClasses.add(Double.class);
+            columnNames.add("%Cover");      columnClasses.add(Double.class);
         }
         columnNames.add(" Mass ");          columnClasses.add(Double.class);
         columnNames.add(" pI ");            columnClasses.add(Double.class);
         columnNames.add("Description");     columnClasses.add(String.class);
-        columnNames.add("Files found in");     columnClasses.add(String.class);
+        columnNames.add("Files found in");  columnClasses.add(String.class);
         //upStart = 2;
         upStop =  upStart + experiments.size()-1;
         phStart = upStop + 1;
         phStop = phStart + experiments.size()-1;
-        covStart = phStop + 4;
+        covStart = phStop + 5;
         covStop = covStart + experiments.size()-1;
     }
     
@@ -125,8 +126,9 @@ public class ProteinTableFormat implements WritableTableFormat, AdvancedTableFor
             if (experiments.size() > 1) return p.getNumPeptideHits(experiments.get(column-phStart));
             else return p.getNumPeptideHits();
         } else if (column == (phStop+1)) return p.getParsimonyType();
-        else if (column == (phStop+2)) return p.getEquivalentList();
-        else if (column == (phStop+3)) return p.getLength();
+        else if (column == (phStop+2)) return p.getCluster();
+        else if (column == (phStop+3)) return p.getEquivalentList();
+        else if (column == (phStop+4)) return p.getLength();
         else if ((column >= covStart) && (column <= covStop)) {
             if (experiments.size() > 1) return p.getCoveragePercent(experiments.get(column-covStart));
             else return p.getCoveragePercent();

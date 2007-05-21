@@ -26,15 +26,15 @@ public class PeptideListPanel extends ListPanel {
     /** Creates a new instance of PeptideListPanel */
     public PeptideListPanel(ExperimentPanel ePanel) {
         super(ePanel);
-        String[] columnTitles = {"Sequence", "Peptide Hits", "Length", "Num Proteins", "Theoretical Mass", "Indeterminate", "Type", "Analysis", "Files found in"};
-        String[] columnFields = {"sequence", "numPeptideHits", "Length", "numProteins", "theoreticalMass", "indeterminateType", "peptideType", "sourceTypes", "fileList"};
+        String[] columnTitles = {"Sequence", "Peptide Hits", "Length", "Num Proteins", "Theoretical Mass", "Indeterminate", "Type", "Analysis", "Cluster", "Files found in"};
+        String[] columnFields = {"sequence", "numPeptideHits", "Length", "numProteins", "theoreticalMass", "indeterminateType", "peptideType", "sourceTypes", "cluster", "fileList"};
         pTableFormat = GlazedLists.tableFormat(columnFields, columnTitles);
     }
     
     public void addPeptideList(ArrayList<Peptide> list, HashSet<String> exp) {
         if (exp.size() >= 2) {
-            String[] columnTitles = {"Sequence", "Peptide Hits", "Length", "Num Proteins", "Theoretical Mass", "Indeterminate", "Type", "Experiment", "Analysis", "Files found in"};
-            String[] columnFields = {"sequence", "numPeptideHits", "Length", "numProteins", "theoreticalMass", "indeterminateType", "peptideType", "experimentList", "sourceTypes", "fileList"};
+            String[] columnTitles = {"Sequence", "Peptide Hits", "Length", "Num Proteins", "Theoretical Mass", "Indeterminate", "Type", "Experiment", "Analysis", "Cluster", "Files found in"};
+            String[] columnFields = {"sequence", "numPeptideHits", "Length", "numProteins", "theoreticalMass", "indeterminateType", "peptideType", "experimentList", "sourceTypes", "cluster", "fileList"};
             pTableFormat = GlazedLists.tableFormat(columnFields, columnTitles);
         }
         this.addList(list);
