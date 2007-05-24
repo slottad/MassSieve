@@ -6,6 +6,10 @@
 
 package gov.nih.nimh.mass_sieve.gui;
 
+import com.javadocking.DockingManager;
+import com.javadocking.component.DefaultSwComponentFactory;
+import com.javadocking.dock.Dock;
+import com.javadocking.model.FloatDockModel;
 import gov.nih.nimh.mass_sieve.*;
 import gov.nih.nimh.mass_sieve.io.FileInformation;
 import java.awt.Component;
@@ -25,6 +29,7 @@ import java.util.HashSet;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
 import javax.swing.ProgressMonitorInputStream;
 import org.biojava.bio.BioException;
 import org.biojava.bio.symbol.SymbolList;
@@ -32,6 +37,8 @@ import org.biojavax.Namespace;
 import org.biojavax.RichObjectFactory;
 import org.biojavax.bio.seq.RichSequence;
 import org.biojavax.bio.seq.RichSequenceIterator;
+
+
 
 /**
  *
@@ -49,6 +56,15 @@ public class MassSieveFrame extends javax.swing.JFrame {
     private MSFileFilter msFilter;
     private MSVFileFilter msvFilter;
     private FastaFileFilter fastaFilter;
+    private FloatDockModel dockModel;
+    
+    private class MyComponentFactory extends DefaultSwComponentFactory {
+        public JSplitPane createJSplitPane() {
+            JSplitPane splitPane = super.createJSplitPane();
+            splitPane.setDividerSize(5);
+            return splitPane;
+        }
+    }
     
     /** Creates new form MassSieveFrame */
     public MassSieveFrame() {
@@ -76,9 +92,22 @@ public class MassSieveFrame extends javax.swing.JFrame {
         digestName = "Trypsin";
         useMultiColumnSort = false;
         glType = GraphLayoutType.NODE_LINK_TREE;
+        
+        // Create the dock model for the docks.
+        dockModel = new FloatDockModel();
+        dockModel.addOwner("msFrame", this);
+        
+        // Give the dock model to the docking manager.
+        DockingManager.setComponentFactory(new MyComponentFactory());
+        DockingManager.setDockModel(dockModel);
         optDialog = new PreferencesDialog(this);
         batchLoadDialog = new BatchLoadDialog(this);
         expSet = new HashMap<String, ExperimentPanel>();
+    }
+    
+    public void addRootDock(String name, Dock dock) {
+        // Add the root docks to the dock model.
+        dockModel.addRootDock(name, dock, this);
     }
     
     /** This method is called from within the constructor to
@@ -111,9 +140,6 @@ public class MassSieveFrame extends javax.swing.JFrame {
         jMenuTools = new javax.swing.JMenu();
         jMenuFilterPrefs = new javax.swing.JMenuItem();
         jMenuShowSummary = new javax.swing.JMenuItem();
-        jSeparatorDetach = new javax.swing.JSeparator();
-        jMenuDetachUpperWindow = new javax.swing.JMenuItem();
-        jMenuDetachLowerWindow = new javax.swing.JMenuItem();
         jSeparatorCompare = new javax.swing.JSeparator();
         jMenuCompareDiff = new javax.swing.JMenuItem();
         jMenuCompareParsimony = new javax.swing.JMenuItem();
@@ -253,26 +279,6 @@ public class MassSieveFrame extends javax.swing.JFrame {
         });
 
         jMenuTools.add(jMenuShowSummary);
-
-        jMenuTools.add(jSeparatorDetach);
-
-        jMenuDetachUpperWindow.setText("Detach Upper Window");
-        jMenuDetachUpperWindow.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuDetachUpperWindowActionPerformed(evt);
-            }
-        });
-
-        jMenuTools.add(jMenuDetachUpperWindow);
-
-        jMenuDetachLowerWindow.setText("Detach Lower Window");
-        jMenuDetachLowerWindow.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuDetachLowerWindowActionPerformed(evt);
-            }
-        });
-
-        jMenuTools.add(jMenuDetachLowerWindow);
 
         jMenuTools.add(jSeparatorCompare);
 
@@ -433,6 +439,7 @@ public class MassSieveFrame extends javax.swing.JFrame {
                 jMenuAddSearchResults.setEnabled(true);
                 jMenuOpenSeqDB.setEnabled(true);
                 jMenuFilterPrefs.setEnabled(true);
+                //((ExperimentPanel)jTabbedPaneMain.getSelectedComponent()).resetDockModel();
             }
             jMenuClose.setEnabled(true);
             jMenuClose.setText("Close '" + jTabbedPaneMain.getSelectedComponent().getName() + "'" );
@@ -446,11 +453,6 @@ public class MassSieveFrame extends javax.swing.JFrame {
         currentExperiment = (ExperimentPanel)jTabbedPaneMain.getSelectedComponent();
         currentExperiment.showSummary();
     }//GEN-LAST:event_jMenuShowSummaryActionPerformed
-    
-    private void jMenuDetachUpperWindowActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuDetachUpperWindowActionPerformed
-        currentExperiment = (ExperimentPanel)jTabbedPaneMain.getSelectedComponent();
-        currentExperiment.detachUpperWindow();
-    }//GEN-LAST:event_jMenuDetachUpperWindowActionPerformed
     
     private void jMenuExportSeqDBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuExportSeqDBActionPerformed
         jFileChooserLoad.setFileFilter(fastaFilter);
@@ -490,11 +492,6 @@ public class MassSieveFrame extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jMenuExportSeqDBActionPerformed
     
-    private void jMenuDetachLowerWindowActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuDetachLowerWindowActionPerformed
-        currentExperiment = (ExperimentPanel)jTabbedPaneMain.getSelectedComponent();
-        currentExperiment.detachLowerWindow();
-    }//GEN-LAST:event_jMenuDetachLowerWindowActionPerformed
-    
     private void jMenuBatchLoadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuBatchLoadActionPerformed
         batchLoadDialog.setVisible(true);
     }//GEN-LAST:event_jMenuBatchLoadActionPerformed
@@ -527,8 +524,7 @@ public class MassSieveFrame extends javax.swing.JFrame {
                 fInfos.addAll(exp.getFileInfos());
             }
         }
-        currentExperiment = new ExperimentPanel(this);
-        currentExperiment.setName("Parsimony Comparison");
+        currentExperiment = new ExperimentPanel(this, "Parsimony Comparison");
         currentExperiment.getFilterSettings().setUseIonIdent(false);
         currentExperiment.getFilterSettings().setMascotCutoff(maxMascot);
         currentExperiment.getFilterSettings().setOmssaCutoff(maxOmssa);
@@ -566,8 +562,7 @@ public class MassSieveFrame extends javax.swing.JFrame {
             jOptionPaneAbout.showMessageDialog(MassSieveFrame.this, "There is already an experiment named " + name);
             return false;
         } else {
-            ExperimentPanel exp = new ExperimentPanel(this);
-            exp.setName(name);
+            ExperimentPanel exp = new ExperimentPanel(this, name);
             this.createExperiment(exp);
             return true;
         }
@@ -827,8 +822,6 @@ public class MassSieveFrame extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuClose;
     private javax.swing.JMenuItem jMenuCompareDiff;
     private javax.swing.JMenuItem jMenuCompareParsimony;
-    private javax.swing.JMenuItem jMenuDetachLowerWindow;
-    private javax.swing.JMenuItem jMenuDetachUpperWindow;
     private javax.swing.JMenuItem jMenuExportSeqDB;
     private javax.swing.JMenu jMenuFile;
     private javax.swing.JMenuItem jMenuFilterPrefs;
@@ -850,7 +843,6 @@ public class MassSieveFrame extends javax.swing.JFrame {
     private javax.swing.JSeparator jSeparator4;
     private javax.swing.JSeparator jSeparator5;
     private javax.swing.JSeparator jSeparatorCompare;
-    private javax.swing.JSeparator jSeparatorDetach;
     private javax.swing.JTabbedPane jTabbedPaneMain;
     // End of variables declaration//GEN-END:variables
     

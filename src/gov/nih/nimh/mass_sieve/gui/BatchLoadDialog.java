@@ -32,8 +32,7 @@ public class BatchLoadDialog extends Dialog {
         super(parent, true);
         initComponents();
         msFrame = parent;
-        defaultExp = new ExperimentPanel(msFrame);
-        defaultExp.setName("Batch Load");
+        defaultExp = new ExperimentPanel(msFrame, "Batch Load");
         jFileChooserLoad = new JFileChooser();
         jFileChooserLoad.setDialogTitle("Open Files");
         jFileChooserLoad.setMultiSelectionEnabled(true);

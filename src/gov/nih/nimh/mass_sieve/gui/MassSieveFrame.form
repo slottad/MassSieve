@@ -129,24 +129,6 @@
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jMenuShowSummaryActionPerformed"/>
               </Events>
             </MenuItem>
-            <MenuItem class="javax.swing.JSeparator" name="jSeparatorDetach">
-            </MenuItem>
-            <MenuItem class="javax.swing.JMenuItem" name="jMenuDetachUpperWindow">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="Detach Upper Window"/>
-              </Properties>
-              <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jMenuDetachUpperWindowActionPerformed"/>
-              </Events>
-            </MenuItem>
-            <MenuItem class="javax.swing.JMenuItem" name="jMenuDetachLowerWindow">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="Detach Lower Window"/>
-              </Properties>
-              <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jMenuDetachLowerWindowActionPerformed"/>
-              </Events>
-            </MenuItem>
             <MenuItem class="javax.swing.JSeparator" name="jSeparatorCompare">
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="jMenuCompareDiff">

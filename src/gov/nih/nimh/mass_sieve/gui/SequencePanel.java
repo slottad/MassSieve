@@ -121,9 +121,9 @@ public class SequencePanel extends JPanel {
             }
         }
         
-        add(seqPanel);
-        //JScrollPane jScrollPane = new JScrollPane(seqPanel);
-        //add(jScrollPane, BorderLayout.CENTER);
+        //add(seqPanel);
+        JScrollPane jScrollPane = new JScrollPane(seqPanel);
+        add(jScrollPane, BorderLayout.CENTER);
     }
     
     protected SequenceRenderer createPeptideHitRenderer() throws ChangeVetoException{

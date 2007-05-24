@@ -269,21 +269,21 @@ public class PeptideCollection implements Serializable, Comparable<PeptideCollec
     public DefaultTreeModel getTree(ExperimentPanel expPanel) {
         DefaultMutableTreeNode root=new DefaultMutableTreeNode(expPanel.getName() + " Overview");
         root.add(getPeptideHitsTree(expPanel));
-        root.add(getPeptideTree(null, expPanel));
-        root.add(getProteinTree(null, expPanel));
+        root.add(getPeptideTree(expPanel));
+        root.add(getProteinTree(expPanel));
         root.add(getClusterTree(expPanel));
-        root.add(getParsimonyTree(null, expPanel));
+        root.add(getParsimonyTree(expPanel));
         return new DefaultTreeModel(root);
     }
     
     private DefaultMutableTreeNode getClusterTree(ExperimentPanel expPanel) {
-        ProteinGroupListPanel cPanel = new ProteinGroupListPanel(expPanel);
-        ArrayList<Protein> sortProteins = new ArrayList<Protein>();
-        sortProteins.addAll(minProteins.values());
-        Collections.sort(sortProteins);
-        cPanel.addProteinList(sortProteins, experimentSet, true);
-        cPanel.setName("Clusters (" + clusters.size() + ")");
-        DefaultMutableTreeNode root=new DefaultMutableTreeNode(cPanel);
+//        ProteinGroupListPanel cPanel = new ProteinGroupListPanel(expPanel);
+//        ArrayList<Protein> sortProteins = new ArrayList<Protein>();
+//        sortProteins.addAll(minProteins.values());
+//        Collections.sort(sortProteins);
+//        cPanel.addProteinList(sortProteins, experimentSet, true);
+//        cPanel.setName("Clusters (" + clusters.size() + ")");
+        DefaultMutableTreeNode root=new DefaultMutableTreeNode(getClusterListPanel(expPanel));
         //DefaultMutableTreeNode root=new DefaultMutableTreeNode("Clusters (" + clusters.size() + ")");
         DefaultMutableTreeNode child, grandchild;
         
@@ -301,25 +301,20 @@ public class PeptideCollection implements Serializable, Comparable<PeptideCollec
             PeptideCollection pc = clusters.get(i);
             child = new DefaultMutableTreeNode(pc);
             root.add(child);
-            grandchild = pc.getPeptideTree(experimentSet, expPanel);
+            grandchild = pc.getPeptideTree(expPanel);
             child.add(grandchild);
-            grandchild = pc.getProteinTree(experimentSet, expPanel);
+            grandchild = pc.getProteinTree(expPanel);
             child.add(grandchild);
         }
         return root;
     }
     
-    private DefaultMutableTreeNode getPeptideTree(HashSet<String> exp, ExperimentPanel expPanel) {
-        if (exp == null) exp = experimentSet;
+    private DefaultMutableTreeNode getPeptideTree(ExperimentPanel expPanel) {
+        DefaultMutableTreeNode root=new DefaultMutableTreeNode(getPeptideListPanel(expPanel));
+        DefaultMutableTreeNode child;
         ArrayList<Peptide> sortPeptides = new ArrayList<Peptide>();
         sortPeptides.addAll(minPeptides.values());
         Collections.sort(sortPeptides);
-        PeptideListPanel pPanel = new PeptideListPanel(expPanel);
-        pPanel.addPeptideList(sortPeptides, exp);
-        pPanel.setName("Peptides (" + minPeptides.size() + ")");
-        DefaultMutableTreeNode root=new DefaultMutableTreeNode(pPanel);
-        //DefaultMutableTreeNode root=new DefaultMutableTreeNode("Peptides (" + minPeptides.size() + ")");
-        DefaultMutableTreeNode child;
         for (Peptide pg:sortPeptides) {
             //child = pg.getTree();
             child = new DefaultMutableTreeNode(pg);
@@ -329,26 +324,16 @@ public class PeptideCollection implements Serializable, Comparable<PeptideCollec
     }
     
     private DefaultMutableTreeNode getPeptideHitsTree(ExperimentPanel expPanel) {
-//        if (exp == null) exp = experimentSet;
-//        PeptideHitListPanel pPanel = new PeptideHitListPanel(expPanel);
-//        pPanel.addProteinPeptideHitList(peptideHits);
-//        pPanel.setName("Peptide Hits (" + peptideHits.size() + ")");
-//        DefaultMutableTreeNode root = new DefaultMutableTreeNode(pPanel);
         DefaultMutableTreeNode root = new DefaultMutableTreeNode(getPeptideHitListPanel(expPanel));
         return root;
     }
     
-    private DefaultMutableTreeNode getProteinTree(HashSet<String> exp, ExperimentPanel expPanel) {
-        if (exp == null) exp = experimentSet;
+    private DefaultMutableTreeNode getProteinTree(ExperimentPanel expPanel) {
+        DefaultMutableTreeNode root=new DefaultMutableTreeNode(getProteinListPanel(expPanel));
+        DefaultMutableTreeNode child;
         ArrayList<Protein> sortProteins = new ArrayList<Protein>();
         sortProteins.addAll(minProteins.values());
         Collections.sort(sortProteins);
-        ProteinListPanel pPanel = new ProteinListPanel(expPanel);
-        pPanel.addProteinList(sortProteins, exp);
-        pPanel.setName("Proteins (" + minProteins.size() + ")");
-        DefaultMutableTreeNode root=new DefaultMutableTreeNode(pPanel);
-        //DefaultMutableTreeNode root=new DefaultMutableTreeNode("Proteins (" + minProteins.size() + ")");
-        DefaultMutableTreeNode child;
         for (Protein prot:sortProteins) {
             //child = prot.getTree(expPanel);
             child = new DefaultMutableTreeNode(prot);
@@ -357,19 +342,14 @@ public class PeptideCollection implements Serializable, Comparable<PeptideCollec
         return root;
     }
     
-    private DefaultMutableTreeNode getParsimonyTree(HashSet<String> exp, ExperimentPanel expPanel) {
-        if (exp == null) exp = experimentSet;
-        ProteinGroupListPanel pPanel = new ProteinGroupListPanel(expPanel);
-        pPanel.addProteinList(getCountables(), experimentSet, false);
-        pPanel.setName("Parsimony (" + getCountablesCount() + ")");
-        DefaultMutableTreeNode root=new DefaultMutableTreeNode(pPanel);
-        //DefaultMutableTreeNode root=new DefaultMutableTreeNode("Parsimony (" + getCountablesCount() + ")");
+    private DefaultMutableTreeNode getParsimonyTree(ExperimentPanel expPanel) {
+        DefaultMutableTreeNode root=new DefaultMutableTreeNode(getParsimonyListPanel(expPanel));
         DefaultMutableTreeNode child, grandchild;
         
         ProteinListPanel psPanel;
         // Discrete
         psPanel = new ProteinListPanel(expPanel);
-        psPanel.addProteinList(getDiscretes(), exp);
+        psPanel.addProteinList(getDiscretes(), experimentSet);
         psPanel.setName("Discrete (" + getDiscretes().size() + ")");
         child = new DefaultMutableTreeNode(psPanel);
         //for (Protein p:getDiscretes()) { child.add(p.getTree(expPanel)); }
@@ -378,7 +358,7 @@ public class PeptideCollection implements Serializable, Comparable<PeptideCollec
         
         // Differentiable
         psPanel = new ProteinListPanel(expPanel);
-        psPanel.addProteinList(getDifferentiables(), exp);
+        psPanel.addProteinList(getDifferentiables(), experimentSet);
         psPanel.setName("Differentiable (" + getDifferentiables().size() + ")");
         child = new DefaultMutableTreeNode(psPanel);
         //for (Protein p:getDifferentiables()) { child.add(p.getTree(expPanel)); }
@@ -412,7 +392,7 @@ public class PeptideCollection implements Serializable, Comparable<PeptideCollec
                 }
             }
         }
-        psPanel.addProteinList(superset_subsets, exp);
+        psPanel.addProteinList(superset_subsets, experimentSet);
         psPanel.setName("Superset (" + superset_subsets.size() + ")");
         root.add(child);
         
@@ -443,7 +423,7 @@ public class PeptideCollection implements Serializable, Comparable<PeptideCollec
                 }
             }
         }
-        psPanel.addProteinList(subsumable_subsets, exp);
+        psPanel.addProteinList(subsumable_subsets, experimentSet);
         psPanel.setName("Subsumable (" + subsumable_subsets.size() + ")");
         root.add(child);
         
@@ -474,7 +454,7 @@ public class PeptideCollection implements Serializable, Comparable<PeptideCollec
                 }
             }
         }
-        psPanel.addProteinList(subset_subsets, exp);
+        psPanel.addProteinList(subset_subsets, experimentSet);
         psPanel.setName("Subset (" + subset_subsets.size() + ")");
         root.add(child);
         
@@ -985,19 +965,39 @@ public class PeptideCollection implements Serializable, Comparable<PeptideCollec
         return peptideHitListPanel;
     }
     
-    public PeptideListPanel getPeptideListPanel() {
+    public PeptideListPanel getPeptideListPanel(ExperimentPanel expPanel) {
+        if (peptideListPanel == null) {
+            peptideListPanel = new PeptideListPanel(expPanel);
+            peptideListPanel.addPeptideList(new ArrayList(minPeptides.values()), experimentSet);
+            peptideListPanel.setName("Peptides (" + minPeptides.size() + ")");
+        }
         return peptideListPanel;
     }
     
-    public ProteinListPanel getProteinListPanel() {
+    public ProteinListPanel getProteinListPanel(ExperimentPanel expPanel) {
+        if (proteinListPanel == null) {
+            proteinListPanel = new ProteinListPanel(expPanel);
+            proteinListPanel.addProteinList(new ArrayList(minProteins.values()), experimentSet);
+            proteinListPanel.setName("Proteins (" + minProteins.size() + ")");
+        }
         return proteinListPanel;
     }
     
-    public ProteinGroupListPanel getClusterListPanel() {
+    public ProteinGroupListPanel getClusterListPanel(ExperimentPanel expPanel) {
+        if (clusterListPanel == null) {
+            clusterListPanel = new ProteinGroupListPanel(expPanel);
+            clusterListPanel.addProteinList(new ArrayList(minProteins.values()), experimentSet, true);
+            clusterListPanel.setName("Clusters (" + clusters.size() + ")");
+        }
         return clusterListPanel;
     }
     
-    public ProteinGroupListPanel getParsimonyListPanel() {
+    public ProteinGroupListPanel getParsimonyListPanel(ExperimentPanel expPanel) {
+        if (parsimonyListPanel == null) {
+            parsimonyListPanel = new ProteinGroupListPanel(expPanel);
+            parsimonyListPanel.addProteinList(getCountables(), experimentSet, false);
+            parsimonyListPanel.setName("Parsimony (" + getCountablesCount() + ")");
+        }
         return parsimonyListPanel;
     }
 }

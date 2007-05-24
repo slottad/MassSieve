@@ -301,14 +301,15 @@ public class ListPanel {
                         prevObject = selectedObject;
                         SeparatorList.Separator<Protein> separator = (SeparatorList.Separator<Protein>)selectedObject;
                         if (useClusters) {
-                            expPanel.showClusterLower(separator.first().getCluster());
+                            //expPanel.showClusterLower(separator.first().getCluster());
+                            expPanel.showCluster(separator.first().getCluster());
                         } else {
                             HashSet<Protein> proGroup = new HashSet<Protein>();
                             proGroup.addAll(separator.getGroup());
                             for (Protein p:separator.getGroup()) {
                                 proGroup.addAll(p.getAssociatedProteinSet());
                             }
-                            expPanel.showProteinsLower(proGroup);
+                            //expPanel.showProteinsLower(proGroup);
                         }
                     }
                     if (selectedObject instanceof Protein) {

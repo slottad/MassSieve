@@ -41,6 +41,7 @@ import java.util.HashSet;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.JFileChooser;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -63,38 +64,26 @@ public class ExperimentPanel extends JPanel {
     private PeptideCollection pepCollection, pepCollectionOriginal;
     private FilterSettings filterSettings;
     private double omssaCutoffOrig, mascotCutoffOrig, xtandemCutoffOrig;
-    //private DefaultTreeModel treeModelClusters, treeModelPeptides, treeModelPeptideHits, treeModelProteins, treeModelParsimony;
     private DefaultTreeModel treeModelOverview;
     private ButtonGroup buttonGroupTreeSource;
     private FilterSettingsDialog prefDialog;
     private SummaryDialog summaryDialog;
     private JFileChooser jFileChooserLoad;
     private JOptionPane jOptionPaneAbout;
-    //private JScrollPane jScrollPaneBottom, jScrollPaneLeft;
-    //private JSplitPane jSplitPaneMain, jSplitPaneSecondary;
     private JScrollPane jScrollPaneLeft;
     private JSplitPane jSplitPaneMain;
     private JScrollPane graphPanel;
     private JPanel pepHitPanel, pepPanel, proPanel, detailPanel;
-    //private JToggleButton jToggleButtonClusters, jToggleButtonParsimony, jToggleButtonPeptides, jToggleButtonProteins, jToggleButtonPeptideHits;
     private JTree jTreeMain;
     private MassSieveFrame msFrame;
-    private String lowerFrameTitle, upperFrameTitle;
+
+    //private String lowerFrameTitle, upperFrameTitle;
     
-    private class MyComponentFactory extends DefaultSwComponentFactory {
-        
-        public JSplitPane createJSplitPane() {
-            
-            JSplitPane splitPane = super.createJSplitPane();
-            splitPane.setDividerSize(5);
-            return splitPane;
-        }
-        
-    }
     
     /** Creates a new instance of ExperimentPanel */
-    public ExperimentPanel(MassSieveFrame frm) {
+    public ExperimentPanel(MassSieveFrame frm, String name) {
         msFrame = frm;
+        this.setName(name);
         initComponents();
         jFileChooserLoad.setMultiSelectionEnabled(true);
         allFiles = new ArrayList<File>();
@@ -110,20 +99,13 @@ public class ExperimentPanel extends JPanel {
         pepCollectionOriginal = new PeptideCollection();
         DefaultMutableTreeNode root = new DefaultMutableTreeNode("No data");
         DefaultTreeModel treeModel = new DefaultTreeModel(root);
-        //treeModelClusters = treeModel;
-        //treeModelProteins = treeModel;
-        //treeModelPeptides = treeModel;
-        //treeModelParsimony = treeModel;
         jTreeMain.setModel(treeModel);
         jTreeMain.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
-        //jSplitPaneSecondary.setTopComponent(null);
-        //jScrollPaneBottom.setViewportView(null);
+        jTreeMain.setSelectionRow(0);
     }
     
     private void initComponents() {
         setLayout(new BorderLayout());
-        //JToolBar toolbar = new JToolBar();
-        //toolbar.setFloatable(false);
         
         buttonGroupTreeSource = new ButtonGroup();
         jFileChooserLoad = new JFileChooser();
@@ -134,7 +116,7 @@ public class ExperimentPanel extends JPanel {
         pepHitPanel = new JPanel(new BorderLayout());
         pepPanel = new JPanel(new BorderLayout());
         proPanel = new JPanel(new BorderLayout());
-        detailPanel = new JPanel();
+        detailPanel = new JPanel(new BorderLayout());
         graphPanel = new JScrollPane(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         DefaultDockable pepHitDockable = new DefaultDockable("pepHits", pepHitPanel, "Peptide Hits", null, DockingMode.ALL - DockingMode.FLOAT);
         DefaultDockable pepDockable = new DefaultDockable("pep", pepPanel, "Peptides", null, DockingMode.ALL - DockingMode.FLOAT);
@@ -149,28 +131,15 @@ public class ExperimentPanel extends JPanel {
         tabDock.addDockable(pepHitDockable, new Position(2));
         tabDock.addDockable(graphDockable, new Position(3));
         tabDock.addDockable(detailDockable, new Position(4));
+        tabDock.setSelectedDockable(proDockable);
         rootDock.setSingleChildDock(tabDock);
-        //rootDock.addChildDock(tabDock, new Position(Position.CENTER));
         
-        // Create the dock model for the docks.
-        FloatDockModel dockModel = new FloatDockModel();
-        dockModel.addOwner("frame0", msFrame);
         
         // Add the root docks to the dock model.
-        dockModel.addRootDock("dock", rootDock, msFrame);
-        
-        // Give the dock model to the docking manager.
-        DockingManager.setComponentFactory(new MyComponentFactory());
-        DockingManager.setDockModel(dockModel);
-        
-        //jSplitPaneSecondary = new JSplitPane();
-        //jScrollPaneBottom = new JScrollPane();
-        //jToggleButtonClusters = new JToggleButton("Clusters");
-        //jToggleButtonPeptides = new JToggleButton("Peptides");
-        //jToggleButtonPeptideHits = new JToggleButton("Peptide Hits");
-        //jToggleButtonProteins = new JToggleButton("Proteins");
-        //jToggleButtonParsimony = new JToggleButton("Parsimony");
-        
+        //dockModel.addRootDock("dock" + this.getName(), rootDock, msFrame);
+        msFrame.addRootDock("dock" + this.getName(), rootDock);
+
+                
         jFileChooserLoad.setDialogTitle("Open Files");
         jSplitPaneMain.setBorder(null);
         jSplitPaneMain.setDividerLocation(175);
@@ -187,65 +156,11 @@ public class ExperimentPanel extends JPanel {
         jSplitPaneMain.setLeftComponent(jScrollPaneLeft);
         jSplitPaneMain.setRightComponent(rootDock);
         
-        //jSplitPaneSecondary.setDividerLocation(610);
-        //jSplitPaneSecondary.setDividerLocation(0.6);
-        //jSplitPaneSecondary.setDividerSize(5);
-        //jSplitPaneSecondary.setOrientation(JSplitPane.VERTICAL_SPLIT);
-        //jSplitPaneSecondary.setMinimumSize(new java.awt.Dimension(0, 0));
-        //jSplitPaneSecondary.setBottomComponent(jScrollPaneBottom);
-        
-        //jSplitPaneMain.setRightComponent(jSplitPaneSecondary);
-        
-//        buttonGroupTreeSource.add(jToggleButtonClusters);
-//        jToggleButtonClusters.addActionListener(new java.awt.event.ActionListener() {
-//            public void actionPerformed(java.awt.event.ActionEvent evt) {
-//                jToggleButtonClustersActionPerformed(evt);
-//            }
-//        });
-//
-//        buttonGroupTreeSource.add(jToggleButtonPeptides);
-//        jToggleButtonPeptides.addActionListener(new java.awt.event.ActionListener() {
-//            public void actionPerformed(java.awt.event.ActionEvent evt) {
-//                jToggleButtonPeptidesActionPerformed(evt);
-//            }
-//        });
-//
-//        buttonGroupTreeSource.add(jToggleButtonPeptideHits);
-//        jToggleButtonPeptideHits.addActionListener(new java.awt.event.ActionListener() {
-//            public void actionPerformed(java.awt.event.ActionEvent evt) {
-//                jToggleButtonPeptideHitsActionPerformed(evt);
-//            }
-//        });
-//
-//        buttonGroupTreeSource.add(jToggleButtonProteins);
-//        jToggleButtonProteins.addActionListener(new java.awt.event.ActionListener() {
-//            public void actionPerformed(java.awt.event.ActionEvent evt) {
-//                jToggleButtonProteinsActionPerformed(evt);
-//            }
-//        });
-//
-//        buttonGroupTreeSource.add(jToggleButtonParsimony);
-//        jToggleButtonParsimony.addActionListener(new java.awt.event.ActionListener() {
-//            public void actionPerformed(java.awt.event.ActionEvent evt) {
-//                jToggleButtonParsimonyActionPerformed(evt);
-//            }
-//        });
-//
-//        toolbar.add(new JLabel("View elements by:"));
-//        toolbar.addSeparator();
-//        toolbar.add(jToggleButtonPeptideHits);
-//        toolbar.addSeparator();
-//        toolbar.add(jToggleButtonPeptides);
-//        toolbar.addSeparator();
-//        toolbar.add(jToggleButtonProteins);
-//        toolbar.addSeparator();
-//        toolbar.add(jToggleButtonClusters);
-//        toolbar.addSeparator();
-//        toolbar.add(jToggleButtonParsimony);
-//
-//        add(toolbar, BorderLayout.NORTH);
         add(jSplitPaneMain, BorderLayout.CENTER);
     }
+    //public void resetDockModel() {
+    //    DockingManager.setDockModel(dockModel);
+    //}
     
     public void showPreferences() {
         if (prefDialog == null) {
@@ -337,8 +252,6 @@ public class ExperimentPanel extends JPanel {
             HashSet<String> acceptedProteins = new HashSet<String>();
             allFiles.add(f);
             String filename = f.getName();
-            //String filepath = f.getPath();
-            //ParseFile pf = new ParseFile(filepath,ExperimentPanel.this);
             ParseFile pf = new ParseFile(f, ExperimentPanel.this);
             for (PeptideHit p:pf.getPeptideHits()) {
                 p.setExperiment(exp_name);
@@ -410,37 +323,38 @@ public class ExperimentPanel extends JPanel {
         Object nodeInfo = node.getUserObject();
         if (nodeInfo instanceof String) {
             System.out.println("Main node selected");
-            updatePepHitPanel(pepCollection.getPeptideHitListPanel(this).createTable());
-            //jTreeMain.getModel().
+            if (pepCollection == null) {
+                updatePepHitPanel(new JLabel("Please add search results to this experiment"));
+                updatePepPanel(new JLabel("Please add search results to this experiment"));
+                updateProPanel(new JLabel("Please add search results to this experiment"));
+                updateGraphPanel(new JLabel("Please add search results to this experiment"));
+                updateDetailPanel(new JLabel("Please add search results to this experiment"));
+            } else {
+                updatePepHitPanel(pepCollection.getPeptideHitListPanel(this).createTable());
+                updatePepPanel(pepCollection.getPeptideListPanel(this).createTable());
+                updateProPanel(pepCollection.getParsimonyListPanel(this).createTable());
+                updateGraphPanel(new JLabel("No cluster, peptide, or protein selected"));
+                updateDetailPanel(new JLabel("No details for this item"));
+            }            
         }
         if (nodeInfo instanceof Peptide) {
             Peptide p = (Peptide)nodeInfo;
             PeptideCollection pc = pepCollection.getCluster(p.getCluster());
             updateGraphPanel(pc, p.getSequence());
-            //Display display = pc.getGraphDisplay(msFrame.getGraphLayout(), this, p.getSequence());
-            //graphPane.setViewportView(display);
-            //jSplitPaneSecondary.setTopComponent(display);
-            upperFrameTitle = "Cluster " + p.getCluster();
+            //upperFrameTitle = "Cluster " + p.getCluster();
             showPeptide(p);
-            //jSplitPaneSecondary.setDividerLocation(0.5);
         }
         if (nodeInfo instanceof Protein) {
             Protein p = (Protein)nodeInfo;
             PeptideCollection pc = pepCollection.getCluster(p.getCluster());
             updateGraphPanel(pc, p.getName());
-            //Display display = pc.getGraphDisplay(msFrame.getGraphLayout(), this, p.getName());
-            //jSplitPaneSecondary.setTopComponent(display);
-            upperFrameTitle = "Cluster " + p.getCluster();
+            //upperFrameTitle = "Cluster " + p.getCluster();
             showProtein(p);
         }
         if (nodeInfo instanceof PeptideCollection) {
             PeptideCollection pc = (PeptideCollection)nodeInfo;
             updateGraphPanel(pc, null);
-            //Display display = pc.getGraphDisplay(msFrame.getGraphLayout(), this, null);
-            //jSplitPaneSecondary.setTopComponent(display);
-            upperFrameTitle = "Cluster " + pc.getClusterNum();
-            //jSplitPaneSecondary.setBottomComponent(null);
-            //jSplitPaneSecondary.setDividerLocation(0.5);
+            //upperFrameTitle = "Cluster " + pc.getClusterNum();
         }
         if (nodeInfo instanceof ListPanel) {
             ListPanel lp = (ListPanel)nodeInfo;
@@ -453,11 +367,8 @@ public class ExperimentPanel extends JPanel {
             if (nodeInfo instanceof ProteinListPanel) {
                 updateProPanel(lp.createTable());
             }
-            //jSplitPaneSecondary.setTopComponent(lp.createTable());
-            upperFrameTitle = lp.getName();
-            //jSplitPaneSecondary.setBottomComponent(null);
-            //jSplitPaneSecondary.setDividerLocation(0.5);
-        }        
+            //upperFrameTitle = lp.getName();
+        }
     }
     
     public void updatePepHitPanel(Component comp) {
@@ -493,7 +404,15 @@ public class ExperimentPanel extends JPanel {
         }).start();
     }
     
+    public void updateGraphPanel(Component comp) {
+        graphPanel.setViewportView(comp);
+    }
     
+    public void updateDetailPanel(Component comp) {
+        detailPanel.removeAll();
+        detailPanel.add(BorderLayout.CENTER, comp);
+        detailPanel.validate();
+    }
     public int getDisplayHeight() {
         //return jSplitPaneSecondary.getHeight();
         return 200;
@@ -505,9 +424,12 @@ public class ExperimentPanel extends JPanel {
     }
     
     public void showPeptide(Peptide p) {
+        //pepPanel.getComponent(0);
+        updatePepHitPanel(p.getInfoPanel(this));
+        updateDetailPanel(new JLabel(""));
         //jSplitPaneSecondary.setBottomComponent(p.getInfoPanel(this));
         //jSplitPaneSecondary.setDividerLocation(0.5);
-        lowerFrameTitle = "Peptide " + p.getSequence();
+        //lowerFrameTitle = "Peptide " + p.getSequence();
     }
     
     public void showProtein(Protein p) {
@@ -515,113 +437,35 @@ public class ExperimentPanel extends JPanel {
         jPanel.setLayout(new BoxLayout(jPanel, BoxLayout.Y_AXIS));
         JPanel seqPanel;
         if (msFrame.getUseDigest()) {
-            //seqPanel = p.getSequenceDisplay(msFrame.getDigestName(), jSplitPaneSecondary.getWidth());
+            seqPanel = p.getSequenceDisplay(msFrame.getDigestName(), detailPanel.getWidth());
         } else {
-            //seqPanel = p.getSequenceDisplay(jSplitPaneSecondary.getWidth());
+            seqPanel = p.getSequenceDisplay(detailPanel.getWidth());
         }
+        updateDetailPanel(seqPanel);
         PeptideHitListPanel lp = new PeptideHitListPanel(this);
         lp.addProteinPeptideHitList(p.getPeptideHitList());
-        //jPanel.add(seqPanel);
-        JScrollPane lps = lp.createTable();
-        lps.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-        jPanel.add(lps);
-        //jSplitPaneSecondary.setBottomComponent(new JScrollPane(jPanel));
-        //jSplitPaneSecondary.setDividerLocation(0.5);
-        lowerFrameTitle = "Protein " + p.getName();
+        updatePepHitPanel(lp.createTable());
+        //lowerFrameTitle = "Protein " + p.getName();
     }
     
-    public void showClusterLower(int i) {
+    public void showCluster(int i) {
         PeptideCollection pc = pepCollection.getCluster(i);
-        //jSplitPaneSecondary.setBottomComponent(pc.getGraphDisplay(msFrame.getGraphLayout(), this, null));
-        //jSplitPaneSecondary.setDividerLocation(0.5);
-        lowerFrameTitle = "Cluster " + i + " Graph";
-        new Thread(new Runnable() {
-            public void run() {
-                //Display display = (Display)jSplitPaneSecondary.getBottomComponent();
-                try {
-                    Thread.sleep(250);
-                } catch (InterruptedException e) {}
-                //MouseEvent mEvt = new MouseEvent(display, MouseEvent.MOUSE_CLICKED, System.currentTimeMillis()+5000, MouseEvent.BUTTON2_MASK, 10,10,1,false,MouseEvent.BUTTON2);
-                //Toolkit.getDefaultToolkit().getSystemEventQueue().postEvent(mEvt);
-            }
-        }).start();
+        updateGraphPanel(pc, null);
     }
-    
-    public void showProteinsLower(HashSet<Protein> pSet) {
-        ArrayList<Protein> pList = new ArrayList<Protein>(pSet);
-        Collections.sort(pList);
-        ProteinGroupListPanel cPanel = new ProteinGroupListPanel(this);
-        cPanel.addProteinList(pList, pepCollection.getExperimentSet(), true);
-        //jSplitPaneSecondary.setBottomComponent(cPanel.createTable());
-        //jSplitPaneSecondary.setDividerLocation(0.5);
-        lowerFrameTitle = "Protein List";
-    }
-    
-    public void detachUpperWindow() {
-//        if (jSplitPaneSecondary.getTopComponent() != null) {
-//            JFrame frame = new JFrame("Experiment " +  this.getName() + ": " + upperFrameTitle);
-//            //frame.setDefaultLookAndFeelDecorated(true);
-//            frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-//            frame.getContentPane().add(jSplitPaneSecondary.getTopComponent());
-//            frame.pack();
-//            frame.setVisible(true);
-//            jSplitPaneSecondary.setTopComponent(null);
-//        }
-    }
-    
-    public void detachLowerWindow() {
-//        if (jSplitPaneSecondary.getBottomComponent() != null) {
-//            JFrame frame = new JFrame("Experiment " +  this.getName() + ": " + lowerFrameTitle);
-//            //frame.setDefaultLookAndFeelDecorated(true);
-//            frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-//            frame.getContentPane().add(jSplitPaneSecondary.getBottomComponent());
-//            frame.pack();
-//            frame.setVisible(true);
-//            jSplitPaneSecondary.setBottomComponent(null);
-//        }
-    }
-    
-//    private void jToggleButtonClustersActionPerformed(java.awt.event.ActionEvent evt) {
-//        jTreeMain.setModel(treeModelClusters);
-//        jTreeMain.setSelectionRow(0);
-//    }
-//
-//    private void jToggleButtonProteinsActionPerformed(java.awt.event.ActionEvent evt) {
-//        jTreeMain.setModel(treeModelProteins);
-//        jTreeMain.setSelectionRow(0);
-//    }
-//
-//    private void jToggleButtonPeptidesActionPerformed(java.awt.event.ActionEvent evt) {
-//        jTreeMain.setModel(treeModelPeptides);
-//        jTreeMain.setSelectionRow(0);
-//    }
-//
-//    private void jToggleButtonPeptideHitsActionPerformed(java.awt.event.ActionEvent evt) {
-//        jTreeMain.setModel(treeModelPeptideHits);
-//        jTreeMain.setSelectionRow(0);
-//    }
-//
-//    private void jToggleButtonParsimonyActionPerformed(java.awt.event.ActionEvent evt) {
-//        jTreeMain.setModel(treeModelParsimony);
-//        jTreeMain.setSelectionRow(0);
+
+//    public void showProteinsLower(HashSet<Protein> pSet) {
+//        ArrayList<Protein> pList = new ArrayList<Protein>(pSet);
+//        Collections.sort(pList);
+//        ProteinGroupListPanel cPanel = new ProteinGroupListPanel(this);
+//        cPanel.addProteinList(pList, pepCollection.getExperimentSet(), true);
+//        //jSplitPaneSecondary.setBottomComponent(cPanel.createTable());
+//        //jSplitPaneSecondary.setDividerLocation(0.5);
+//        //lowerFrameTitle = "Protein List";
 //    }
     
     private void updateDisplay() {
-//        DefaultMutableTreeNode root=new DefaultMutableTreeNode("Experiment Overview");
-//        root.add(pepCollection.getPeptideHitsTree(null,this));
-//        root.add(pepCollection.getPeptideTree(null,this));
-//        root.add(pepCollection.getProteinTree(null,this));
-//        root.add(pepCollection.getClusterTree(this));
-//        root.add(pepCollection.getParsimonyTree(null,this));
-//        treeModelOverview = new DefaultTreeModel(root);
         treeModelOverview = pepCollection.getTree(this);
-        //treeModelPeptideHits = new DefaultTreeModel(pepCollection.getPeptideHitsTree(null,this));
-        //treeModelPeptides = new DefaultTreeModel(pepCollection.getPeptideTree(null,this));
-        //treeModelProteins = new DefaultTreeModel(pepCollection.getProteinTree(null,this));
-        //treeModelClusters = new DefaultTreeModel(pepCollection.getClusterTree(this));
-        //treeModelParsimony = new DefaultTreeModel(pepCollection.getParsimonyTree(null,this));
         jTreeMain.setModel(treeModelOverview);
-        //jToggleButtonParsimony.setSelected(true);
         jTreeMain.setSelectionRow(0);
         System.err.println("PepCollectionOrig: " + pepCollectionOriginal.getPeptideHits().size());
         System.err.println("PepCollection: " + pepCollection.getPeptideHits().size());
