@@ -67,4 +67,9 @@
     nbproject/build-impl.xml file. 
 
     -->
+    <property name="dist.website" location="dist.website"/>
+    <target name="dist.website" depends="jar" description="Creates the website" >
+        <delete dir="${dist.website)"/>
+        <mkdir dir="${dist.website)"/>
+    </target>
 </project>
