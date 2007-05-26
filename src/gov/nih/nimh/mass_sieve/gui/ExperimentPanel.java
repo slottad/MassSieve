@@ -76,7 +76,7 @@ public class ExperimentPanel extends JPanel {
     private JPanel pepHitPanel, pepPanel, proPanel, detailPanel;
     private JTree jTreeMain;
     private MassSieveFrame msFrame;
-
+    
     //private String lowerFrameTitle, upperFrameTitle;
     
     
@@ -138,8 +138,8 @@ public class ExperimentPanel extends JPanel {
         // Add the root docks to the dock model.
         //dockModel.addRootDock("dock" + this.getName(), rootDock, msFrame);
         msFrame.addRootDock("dock" + this.getName(), rootDock);
-
-                
+        
+        
         jFileChooserLoad.setDialogTitle("Open Files");
         jSplitPaneMain.setBorder(null);
         jSplitPaneMain.setDividerLocation(175);
@@ -335,7 +335,7 @@ public class ExperimentPanel extends JPanel {
                 updateProPanel(pepCollection.getParsimonyListPanel(this).createTable());
                 updateGraphPanel(new JLabel("No cluster, peptide, or protein selected"));
                 updateDetailPanel(new JLabel("No details for this item"));
-            }            
+            }
         }
         if (nodeInfo instanceof Peptide) {
             Peptide p = (Peptide)nodeInfo;
@@ -424,15 +424,20 @@ public class ExperimentPanel extends JPanel {
     }
     
     public void showPeptide(Peptide p) {
-        //pepPanel.getComponent(0);
         updatePepHitPanel(p.getInfoPanel(this));
-        updateDetailPanel(new JLabel(""));
-        //jSplitPaneSecondary.setBottomComponent(p.getInfoPanel(this));
-        //jSplitPaneSecondary.setDividerLocation(0.5);
-        //lowerFrameTitle = "Peptide " + p.getSequence();
+        updateDetailPanel(new JLabel("No Data Availiable"));
+        //Peptide pep = pepCollection.getMinPeptides().get(p.getSequence());
+        //ArrayList<Peptide> pepList = new ArrayList<Peptide>();
+        //pepList.add(pep);
+        //PeptideListPanel peptideListPanel = new PeptideListPanel(this);
+        //peptideListPanel.addPeptideList(new ArrayList(pepList), pepCollection.getExperimentSet());
+        //updatePepPanel(peptideListPanel.createTable());
+        
+        //updateProPanel();
     }
     
     public void showProtein(Protein p) {
+        // Show protein detail
         JPanel jPanel = new JPanel();
         jPanel.setLayout(new BoxLayout(jPanel, BoxLayout.Y_AXIS));
         JPanel seqPanel;
@@ -442,17 +447,23 @@ public class ExperimentPanel extends JPanel {
             seqPanel = p.getSequenceDisplay(detailPanel.getWidth());
         }
         updateDetailPanel(seqPanel);
+
+        // update peptide hit table
         PeptideHitListPanel lp = new PeptideHitListPanel(this);
         lp.addProteinPeptideHitList(p.getPeptideHitList());
         updatePepHitPanel(lp.createTable());
-        //lowerFrameTitle = "Protein " + p.getName();
+        
+        // Update peptide table
+        PeptideListPanel peptideListPanel = new PeptideListPanel(this);
+        peptideListPanel.addPeptideList(p.getAllPeptides(), pepCollection.getExperimentSet());
+        updatePepPanel(peptideListPanel.createTable());
     }
     
     public void showCluster(int i) {
         PeptideCollection pc = pepCollection.getCluster(i);
         updateGraphPanel(pc, null);
     }
-
+    
 //    public void showProteinsLower(HashSet<Protein> pSet) {
 //        ArrayList<Protein> pList = new ArrayList<Protein>(pSet);
 //        Collections.sort(pList);
