@@ -277,14 +277,7 @@ public class PeptideCollection implements Serializable, Comparable<PeptideCollec
     }
     
     private DefaultMutableTreeNode getClusterTree(ExperimentPanel expPanel) {
-//        ProteinGroupListPanel cPanel = new ProteinGroupListPanel(expPanel);
-//        ArrayList<Protein> sortProteins = new ArrayList<Protein>();
-//        sortProteins.addAll(minProteins.values());
-//        Collections.sort(sortProteins);
-//        cPanel.addProteinList(sortProteins, experimentSet, true);
-//        cPanel.setName("Clusters (" + clusters.size() + ")");
         DefaultMutableTreeNode root=new DefaultMutableTreeNode(getClusterListPanel(expPanel));
-        //DefaultMutableTreeNode root=new DefaultMutableTreeNode("Clusters (" + clusters.size() + ")");
         DefaultMutableTreeNode child, grandchild;
         
         // Old: sort by cluster size
@@ -494,8 +487,8 @@ public class PeptideCollection implements Serializable, Comparable<PeptideCollec
     
     public Display getGraphDisplay(GraphLayoutType glType, final ExperimentPanel expPanel, String highlightName) {
         final Display display = new Display();
-        int X = expPanel.getDisplayWidth();
-        int Y = expPanel.getDisplayHeight();
+        int X = expPanel.getDetailWidth();
+        int Y = expPanel.getDetailHeight();
         display.setSize(X, Y); // set display size
         //display.setHighQuality(true);
         //display.setPreferredSize(new Dimension(600,600));
@@ -605,6 +598,12 @@ public class PeptideCollection implements Serializable, Comparable<PeptideCollec
                     if (item.getString("type").equals("peptide")) {
                         Peptide p = minPeptides.get(item.getString("name"));
                         expPanel.showPeptide(p);
+                        // Update peptide table
+                        PeptideListPanel peptideListPanel = new PeptideListPanel(expPanel);
+                        ArrayList<Peptide> pepList = new ArrayList<Peptide>();
+                        pepList.add(p);
+                        peptideListPanel.addPeptideList(pepList, expPanel.getPepCollection().getExperimentSet());
+                        expPanel.updatePepPanel(peptideListPanel.createTable());
                     }
                     if (item.getString("type").equals("protein")) {
                         Protein p = minProteins.get(item.getString("name"));

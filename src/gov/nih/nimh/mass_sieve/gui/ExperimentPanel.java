@@ -11,14 +11,12 @@ package gov.nih.nimh.mass_sieve.gui;
 
 import antlr.RecognitionException;
 import antlr.TokenStreamException;
-import com.javadocking.DockingManager;
-import com.javadocking.component.DefaultSwComponentFactory;
+import com.javadocking.dock.LeafDock;
 import com.javadocking.dock.Position;
 import com.javadocking.dock.SplitDock;
 import com.javadocking.dock.TabDock;
 import com.javadocking.dockable.DefaultDockable;
 import com.javadocking.dockable.DockingMode;
-import com.javadocking.model.FloatDockModel;
 import gov.nih.nimh.mass_sieve.*;
 import gov.nih.nimh.mass_sieve.io.FileInformation;
 import gov.nih.nimh.mass_sieve.io.ParseFile;
@@ -35,7 +33,6 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.StringReader;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import javax.swing.BoxLayout;
@@ -74,6 +71,7 @@ public class ExperimentPanel extends JPanel {
     private JSplitPane jSplitPaneMain;
     private JScrollPane graphPanel;
     private JPanel pepHitPanel, pepPanel, proPanel, detailPanel;
+    private DefaultDockable pepHitDockable, pepDockable, proDockable, graphDockable, detailDockable;
     private JTree jTreeMain;
     private MassSieveFrame msFrame;
     
@@ -118,11 +116,11 @@ public class ExperimentPanel extends JPanel {
         proPanel = new JPanel(new BorderLayout());
         detailPanel = new JPanel(new BorderLayout());
         graphPanel = new JScrollPane(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-        DefaultDockable pepHitDockable = new DefaultDockable("pepHits", pepHitPanel, "Peptide Hits", null, DockingMode.ALL - DockingMode.FLOAT);
-        DefaultDockable pepDockable = new DefaultDockable("pep", pepPanel, "Peptides", null, DockingMode.ALL - DockingMode.FLOAT);
-        DefaultDockable proDockable = new DefaultDockable("pro", proPanel, "Proteins", null, DockingMode.ALL - DockingMode.FLOAT);
-        DefaultDockable graphDockable = new DefaultDockable("graph", graphPanel, "Cluster Graph", null, DockingMode.ALL - DockingMode.FLOAT);
-        DefaultDockable detailDockable = new DefaultDockable("detail", detailPanel, "Details", null, DockingMode.ALL - DockingMode.FLOAT);
+        pepHitDockable = new DefaultDockable("pepHits", pepHitPanel, "Peptide Hits", null, DockingMode.ALL - DockingMode.FLOAT);
+        pepDockable = new DefaultDockable("pep", pepPanel, "Peptides", null, DockingMode.ALL - DockingMode.FLOAT);
+        proDockable = new DefaultDockable("pro", proPanel, "Proteins", null, DockingMode.ALL - DockingMode.FLOAT);
+        graphDockable = new DefaultDockable("graph", graphPanel, "Cluster Graph", null, DockingMode.ALL - DockingMode.FLOAT);
+        detailDockable = new DefaultDockable("detail", detailPanel, "Details", null, DockingMode.ALL - DockingMode.FLOAT);
         SplitDock rootDock = new SplitDock();
         TabDock tabDock = new TabDock();
         
@@ -158,9 +156,6 @@ public class ExperimentPanel extends JPanel {
         
         add(jSplitPaneMain, BorderLayout.CENTER);
     }
-    //public void resetDockModel() {
-    //    DockingManager.setDockModel(dockModel);
-    //}
     
     public void showPreferences() {
         if (prefDialog == null) {
@@ -354,20 +349,41 @@ public class ExperimentPanel extends JPanel {
         if (nodeInfo instanceof PeptideCollection) {
             PeptideCollection pc = (PeptideCollection)nodeInfo;
             updateGraphPanel(pc, null);
-            //upperFrameTitle = "Cluster " + pc.getClusterNum();
+            updatePepHitPanel(pc.getPeptideHitListPanel(this).createTable());
+            updatePepPanel(pc.getPeptideListPanel(this).createTable());
+            updateProPanel(pc.getProteinListPanel(this).createTable());
         }
         if (nodeInfo instanceof ListPanel) {
             ListPanel lp = (ListPanel)nodeInfo;
             if (nodeInfo instanceof PeptideHitListPanel) {
                 updatePepHitPanel(lp.createTable());
+                LeafDock dock = pepHitDockable.getDock();
+                if (dock instanceof TabDock) {
+                    ((TabDock)dock).setSelectedDockable(pepHitDockable);
+                }
+                updatePepPanel(pepCollection.getPeptideListPanel(this).createTable());
+                updateProPanel(pepCollection.getProteinListPanel(this).createTable());
             }
             if (nodeInfo instanceof PeptideListPanel) {
                 updatePepPanel(lp.createTable());
+                LeafDock dock = pepDockable.getDock();
+                if (dock instanceof TabDock) {
+                    ((TabDock)dock).setSelectedDockable(pepDockable);
+                }
+                updatePepHitPanel(pepCollection.getPeptideHitListPanel(this).createTable());
+                updateProPanel(pepCollection.getProteinListPanel(this).createTable());
             }
             if (nodeInfo instanceof ProteinListPanel) {
                 updateProPanel(lp.createTable());
+                LeafDock dock = proDockable.getDock();
+                if (dock instanceof TabDock) {
+                    ((TabDock)dock).setSelectedDockable(proDockable);
+                }
+                updatePepHitPanel(pepCollection.getPeptideHitListPanel(this).createTable());
+                updatePepPanel(pepCollection.getPeptideListPanel(this).createTable());
             }
-            //upperFrameTitle = lp.getName();
+            updateGraphPanel(new JLabel("No cluster, peptide, or protein selected"));
+            updateDetailPanel(new JLabel("No details for this item"));
         }
     }
     
@@ -412,28 +428,22 @@ public class ExperimentPanel extends JPanel {
         detailPanel.removeAll();
         detailPanel.add(BorderLayout.CENTER, comp);
         detailPanel.validate();
+        if (comp instanceof JScrollPane) {
+            JScrollPane jsp = (JScrollPane)comp;
+            jsp.revalidate();
+        }
     }
-    public int getDisplayHeight() {
-        //return jSplitPaneSecondary.getHeight();
-        return 200;
+    public int getDetailHeight() {
+        return detailPanel.getHeight();
     }
     
-    public int getDisplayWidth() {
-        //return jSplitPaneSecondary.getWidth();
-        return 200;
+    public int getDetailWidth() {
+        return detailPanel.getWidth();
     }
     
     public void showPeptide(Peptide p) {
         updatePepHitPanel(p.getInfoPanel(this));
         updateDetailPanel(new JLabel("No Data Availiable"));
-        //Peptide pep = pepCollection.getMinPeptides().get(p.getSequence());
-        //ArrayList<Peptide> pepList = new ArrayList<Peptide>();
-        //pepList.add(pep);
-        //PeptideListPanel peptideListPanel = new PeptideListPanel(this);
-        //peptideListPanel.addPeptideList(new ArrayList(pepList), pepCollection.getExperimentSet());
-        //updatePepPanel(peptideListPanel.createTable());
-        
-        //updateProPanel();
     }
     
     public void showProtein(Protein p) {
@@ -447,7 +457,7 @@ public class ExperimentPanel extends JPanel {
             seqPanel = p.getSequenceDisplay(detailPanel.getWidth());
         }
         updateDetailPanel(seqPanel);
-
+        
         // update peptide hit table
         PeptideHitListPanel lp = new PeptideHitListPanel(this);
         lp.addProteinPeptideHitList(p.getPeptideHitList());
@@ -463,16 +473,6 @@ public class ExperimentPanel extends JPanel {
         PeptideCollection pc = pepCollection.getCluster(i);
         updateGraphPanel(pc, null);
     }
-    
-//    public void showProteinsLower(HashSet<Protein> pSet) {
-//        ArrayList<Protein> pList = new ArrayList<Protein>(pSet);
-//        Collections.sort(pList);
-//        ProteinGroupListPanel cPanel = new ProteinGroupListPanel(this);
-//        cPanel.addProteinList(pList, pepCollection.getExperimentSet(), true);
-//        //jSplitPaneSecondary.setBottomComponent(cPanel.createTable());
-//        //jSplitPaneSecondary.setDividerLocation(0.5);
-//        //lowerFrameTitle = "Protein List";
-//    }
     
     private void updateDisplay() {
         treeModelOverview = pepCollection.getTree(this);

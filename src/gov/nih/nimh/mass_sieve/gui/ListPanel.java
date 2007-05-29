@@ -213,84 +213,6 @@ public class ListPanel {
         return;
     }
     
-//    public static final Icon EXPANDED_ICON = Icons.triangle(9, SwingConstants.EAST, Color.DARK_GRAY);
-//    public static final Icon COLLAPSED_ICON = Icons.triangle(9, SwingConstants.SOUTH, Color.DARK_GRAY);
-//    public static final Border EMPTY_TWO_PIXEL_BORDER = BorderFactory.createEmptyBorder(2, 2, 2, 2);
-//    /**
-//     * Render the issues separator.
-//     */
-//    public class ProteinSeparatorTableCell extends AbstractCellEditor implements TableCellRenderer, TableCellEditor, ActionListener {
-//
-//        private final MessageFormat clusterNameFormat = new MessageFormat("Cluster {0} ({1} proteins)");
-//        private final MessageFormat equivalentNameFormat = new MessageFormat("Putative Protein {0} ({1} candidate proteins)");
-//
-//        /** the separator list to lock */
-//        private final SeparatorList separatorList;
-//
-//        private final JPanel panel = new JPanel(new BorderLayout());
-//        private final JButton expandButton;
-//        private final JLabel nameLabel = new JLabel();
-//
-//        private SeparatorList.Separator<Protein> separator;
-//
-//        public ProteinSeparatorTableCell(SeparatorList separatorList) {
-//            this.separatorList = separatorList;
-//
-//            this.expandButton = new JButton(EXPANDED_ICON);
-//            this.expandButton.setOpaque(false);
-//            this.expandButton.setBorder(EMPTY_TWO_PIXEL_BORDER);
-//            this.expandButton.setIcon(EXPANDED_ICON);
-//            this.expandButton.setContentAreaFilled(false);
-//
-//            this.nameLabel.setFont(nameLabel.getFont().deriveFont(10.0f));
-//            this.nameLabel.setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 5));
-//
-//            this.expandButton.addActionListener(this);
-//
-//            this.panel.setBackground(Color.CYAN);
-//            this.panel.add(expandButton, BorderLayout.WEST);
-//            this.panel.add(nameLabel, BorderLayout.CENTER);
-//        }
-//
-//        public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
-//            configure(value);
-//            return panel;
-//        }
-//
-//        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-//            configure(value);
-//            return panel;
-//        }
-//
-//        public Object getCellEditorValue() {
-//            return this.separator;
-//        }
-//
-//        private void configure(Object value) {
-//            this.separator = (SeparatorList.Separator<Protein>)value;
-//            Protein pro = separator.first();
-//            if(pro == null) return; // handle 'late' rendering calls after this separator is invalid
-//            expandButton.setIcon(separator.getLimit() == 0 ? EXPANDED_ICON : COLLAPSED_ICON);
-//            if (useClusters) {
-//                nameLabel.setText(clusterNameFormat.format(new Object[] {pro.getCluster(), new Integer(separator.size())}));
-//            } else {
-//                nameLabel.setText(equivalentNameFormat.format(new Object[] {pro.getEquivalentGroup(), new Integer(separator.size())}));
-//            }
-//        }
-//
-//        public void actionPerformed(ActionEvent e) {
-//            separatorList.getReadWriteLock().writeLock().lock();
-//            boolean collapsed;
-//            try {
-//                collapsed = separator.getLimit() == 0;
-//                separator.setLimit(collapsed ? Integer.MAX_VALUE : 0);
-//            } finally {
-//                separatorList.getReadWriteLock().writeLock().unlock();
-//            }
-//            expandButton.setIcon(collapsed ? COLLAPSED_ICON : EXPANDED_ICON);
-//        }
-//    }
-    
     class RowSelectionListener implements ListSelectionListener {
         Object prevObject;
         public void valueChanged(ListSelectionEvent e) {
@@ -315,14 +237,14 @@ public class ListPanel {
                     if (selectedObject instanceof Protein) {
                         prevObject = selectedObject;
                         Protein pro = (Protein)selectedObject;
-                        //System.out.println(pro.getName());
                         expPanel.showProtein(pro);
+                        expPanel.showCluster(pro.getCluster());
                     }
                     if (selectedObject instanceof Peptide) {
                         prevObject = selectedObject;
                         Peptide pep = (Peptide)selectedObject;
-                        //System.out.println(pro.getName());
                         expPanel.showPeptide(pep);
+                        expPanel.showCluster(pep.getCluster());
                         prevObject = selectedObject;
                     }
                 }
