@@ -66,10 +66,24 @@
     properties which you can use, check the target you are overriding in the
     nbproject/build-impl.xml file. 
 
-    -->
+    -->       
     <property name="dist.website" location="dist.website"/>
+    <property name="dist" location="dist"/>
+    <property name="src" location="src"/>
+    <property name="test" location="test"/>
+    <property name="html" location="html"/>
+    <target name="-post-jar">
+    	<copy todir="${dist}">
+        	<fileset dir="${test}/"/>
+        </copy>
+    </target>
     <target name="dist.website" depends="jar" description="Creates the website" >
-        <delete dir="${dist.website)"/>
-        <mkdir dir="${dist.website)"/>
+        <delete dir="${dist.website}"/>
+        <mkdir dir="${dist.website}"/>
+        <zip destfile="${dist.website}/masssieve.zip" basedir="${dist}" />
+        <zip destfile="${dist.website}/masssieve_src.zip" basedir="${src}" />
+        <copy todir="${dist.website}">
+        	<fileset dir="${html}/" />
+        </copy>
     </target>
 </project>
