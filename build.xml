@@ -77,6 +77,9 @@
         	<fileset dir="${test}/"/>
         </copy>
     </target>
+    <target name="-post-clean">
+        <delete dir="${dist.website}"/>
+    </target>
     <target name="dist.website" depends="jar" description="Creates the website" >
         <delete dir="${dist.website}"/>
         <mkdir dir="${dist.website}"/>
