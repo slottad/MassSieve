@@ -88,5 +88,6 @@
         <copy todir="${dist.website}">
         	<fileset dir="${html}/" />
         </copy>
+        <copy file="masssieve_stable.zip" todir="${dist.website}"/>
     </target>
 </project>

@@ -1,42 +1,28 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-
 <!-- Design by Free CSS Templates http://www.freecsstemplates.org Released for free under a Creative Commons Attribution 2.5 License -->
   <meta content="text/html; charset=utf-8" http-equiv="content-type" />
   <title>Parsimony Definition</title>
-
-
   <meta content="proteomics peptides parsimony" name="keywords" />
-
   <meta content="Parsing and Parsimonious exploration of results from MS/MS search engines" name="description" />
-
   <link type="text/css" rel="stylesheet" href="default.css" />
-
 </head>
-
 
 <body>
 
 <div id="outer">
 <div id="header">
 <h1><a href="index.html">MassSieve</a></h1>
-
 <h2>Parsimoniously panning peptides for proteins since 2006</h2>
-
 </div>
 
 <div id="menu">
 <ul>
-
   <li class="first"><a href="index.html" accesskey="1" title="">Home</a></li>
-
   <li><a href="documentation.html" accesskey="2" title="">Documentation</a></li>
-
   <li><a href="parsimony.html" accesskey="3" title="">Parsimony</a></li>
-
   <li><a href="contact.html" accesskey="4" title="">Contact</a></li>
-
 </ul>
 
 <div class="clear"></div>
@@ -49,155 +35,87 @@
 <h2>Rules of Parsimony</h2>
 
 <table style="text-align: left; width: 100%;" cellpadding="2" cellspacing="2">
-
   <tbody>
-
     <tr class="rowH">
-
       <td colspan="2" rowspan="1">
-Since a given peptide sequence can map to more than one protein, a
-method is desired
-to reduce the complexity of the resulting set of proteins. The
-following parsimony rules and definitions are designed to reduce the
-number of proteins and yet still account for all of the
-observed spectra and isoforms.
+          Since a given peptide sequence can map to more than one protein, a method
+          is desired to reduce the complexity of the resulting set of proteins. The
+          following parsimony rules and definitions are designed to reduce the number
+          of proteins and yet still account for all of the observed spectra and isoforms.
       </td>
-
     </tr>
-
     <tr class="rowA">
-
       <td colspan="2" rowspan="1"><strong>Peptides</strong></td>
-
     </tr>
-
     <tr class="rowB">
-
       <td style="vertical-align: top;">Indeterminate</td>
-
-      <td>For a given scan, only the top scoring hit is used. If
-there is more than one match that ties for the top score, then the
-peptide is indeterminate.</td>
-
+      <td>For a given scan, only the top scoring hit is used. If there is more than one
+      match that ties for the top score, then the peptide is indeterminate.</td>
     </tr>
-
     <tr class="rowB">
-
       <td>Distinct</td>
-
       <td>A peptide that is assigned to exactly one protein.</td>
-
     </tr>
-
     <tr class="rowB">
-
       <td style="vertical-align: top;">Shared</td>
-
       <td>A peptide that is assigned to more than one protein.</td>
-
     </tr>
-
     <tr class="rowA">
-
       <td colspan="2" rowspan="1"><strong>Proteins</strong></td>
-
     </tr>
-
     <tr class="rowB">
-
       <td style="vertical-align: top;">Discrete</td>
-
-      <td>A protein identification that is identified by only
-distinct peptide(s).</td>
-
+      <td>A protein identification that is identified by only distinct peptide(s).</td>
     </tr>
-
     <tr class="rowB">
-
       <td style="vertical-align: top;">Differentiable</td>
-
-      <td>A protein identification that has at least one shared
-peptide, but can be distinguished from
-other proteins because it has at least one distinct peptide.</td>
-
+      <td>A protein identification that has at least one shared peptide, but can be
+      distinguished from other proteins because it has at least one distinct peptide.</td>
     </tr>
-
     <tr class="rowB">
-
       <td style="vertical-align: top;">Superset</td>
-
-      <td>A protein identification containing only shared peptides from other subset proteins where each subset is a proper subset.</td>
-
+      <td>A protein identification containing only shared peptides from other subset
+      proteins where each subset is a proper subset.</td>
     </tr>
-
     <tr class="rowB">
-
       <td style="vertical-align: top;">Subset</td>
-
-      <td>A protein identification contains peptides common to a
-larger set of peptides corresponding to another protein identification
-which is a superset.</td>
-
+      <td>A protein identification contains peptides common to a larger set of peptides
+      corresponding to another protein identification which is a superset.</td>
     </tr>
-
     <tr class="rowB">
-
       <td style="vertical-align: top;">Subsumable</td>
-
-      <td>A protein identification contains shared peptides that
-can be distributed as subsets of two or more other proteins. Formally,
-subsumable proteins are simply another class of subsets.</td>
-
+      <td>A protein identification contains shared peptides that can be distributed as
+      subsets of two or more other proteins. Formally, subsumable proteins are simply
+      another class of subsets.</td>
     </tr>
-
     <tr class="rowB">
-
       <td style="vertical-align: top;">Equivalent</td>
-
-      <td>Protein identifications that are based on the same set
-of shared peptide(s).</td>
-
+      <td>Protein identifications that are based on the same set of shared peptide(s).</td>
     </tr>
-
   </tbody>
 </table>
-
 </div>
-
 </div>
 
 <div id="tertiaryContent">
 <h3>Download<span></span></h3>
 
 <ul>
-
-  <li><a href="masssieve_v0.96.zip">Binary v0.96</a></li>
-
-  <li><a href="masssieve_v0.96_src.zip">Source v0.96</a></li>
-
+  <li><a href="masssieve_stable.zip">Latest Stable Binary</a></li>
+  <li><a href="masssieve.zip">Latest Development Binary</a></li>
+  <li><a href="masssieve_src.zip">Latest Development Source</a></li>
 </ul>
 
 <h3>Auxillary Java Libraries:<span></span></h3>
 
 <ul>
-
-  <li><a href="http://www.antlr.org/">ANTLR Parser
-Generator</a></li>
-
+  <li><a href="http://www.antlr.org/">ANTLR Parser Generator</a></li>
   <li><a href="http://biojava.org/wiki/Main_Page">BioJava</a></li>
-
-  <li><a href="http://publicobject.com/glazedlists/">Glazed
-Lists</a></li>
-
-  <li><a href="http://www.jhlabs.com/java/layout/index.html">JH
-Labs Layout</a></li>
-
-  <li><a href="http://genesis.ugent.be/MascotDatfile/">Mascot
-Datfile library</a></li>
-
-  <li><a href="http://www.prefuse.org/">Prefuse
-visualization toolkit</a></li>
-
+  <li><a href="http://publicobject.com/glazedlists/">Glazed Lists</a></li>
+  <li><a href="http://www.jhlabs.com/java/layout/index.html">JH Labs Layout</a></li>
+  <li><a href="http://genesis.ugent.be/MascotDatfile/">Mascot Datfile library</a></li>
+  <li><a href="http://www.prefuse.org/">Prefuse visualization toolkit</a></li>
+  <li><a href="http://www.javadocking.com/">Sanaware Java Docking</a></li>
 </ul>
 
 <h3>Website Design<span></span></h3>
