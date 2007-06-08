@@ -72,6 +72,7 @@
     <property name="src" location="src"/>
     <property name="test" location="test"/>
     <property name="html" location="html"/>
+    <property name="lib" location="lib"/>
     <target name="-post-jar">
     	<copy todir="${dist}">
         	<fileset dir="${test}/"/>
@@ -88,6 +89,14 @@
         <copy todir="${dist.website}">
         	<fileset dir="${html}/" />
         </copy>
+        <copy todir="${dist}/lib">
+        	<fileset dir="${lib}/" />
+        </copy>
+       <!-- make the dist zip -->
+       <zip destfile="${dist.website}/masssieve.zip"
+         basedir="${dist}"
+         update="true"
+        />
         <copy file="masssieve_stable.zip" todir="${dist.website}"/>
     </target>
 </project>
