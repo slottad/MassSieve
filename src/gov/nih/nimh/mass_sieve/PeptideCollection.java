@@ -74,7 +74,7 @@ public class PeptideCollection implements Serializable, Comparable<PeptideCollec
     transient private ProteinListPanel proteinListPanel;
     transient private ProteinGroupListPanel clusterListPanel, parsimonyListPanel;
     transient private Graph clusterGraph;
-    transient NodeItem highlightedItem;
+    transient private NodeItem highlightedItem;
     
     /** Creates a new instance of PeptideCollection */
     public PeptideCollection() {
@@ -977,7 +977,7 @@ public class PeptideCollection implements Serializable, Comparable<PeptideCollec
     public PeptideListPanel getPeptideListPanel(ExperimentPanel expPanel) {
         if (peptideListPanel == null) {
             peptideListPanel = new PeptideListPanel(expPanel);
-            peptideListPanel.addPeptideList(new ArrayList(minPeptides.values()), experimentSet);
+            peptideListPanel.addPeptideList(new ArrayList<Peptide>(minPeptides.values()), experimentSet);
             peptideListPanel.setName("Peptides (" + minPeptides.size() + ")");
         }
         return peptideListPanel;
@@ -986,7 +986,7 @@ public class PeptideCollection implements Serializable, Comparable<PeptideCollec
     public ProteinListPanel getProteinListPanel(ExperimentPanel expPanel) {
         if (proteinListPanel == null) {
             proteinListPanel = new ProteinListPanel(expPanel);
-            proteinListPanel.addProteinList(new ArrayList(minProteins.values()), experimentSet);
+            proteinListPanel.addProteinList(new ArrayList<Protein>(minProteins.values()), experimentSet);
             proteinListPanel.setName("Proteins (" + minProteins.size() + ")");
         }
         return proteinListPanel;
@@ -995,7 +995,7 @@ public class PeptideCollection implements Serializable, Comparable<PeptideCollec
     public ProteinGroupListPanel getClusterListPanel(ExperimentPanel expPanel) {
         if (clusterListPanel == null) {
             clusterListPanel = new ProteinGroupListPanel(expPanel);
-            clusterListPanel.addProteinList(new ArrayList(minProteins.values()), experimentSet, true);
+            clusterListPanel.addProteinList(new ArrayList<Protein>(minProteins.values()), experimentSet, true);
             clusterListPanel.setName("Clusters (" + clusters.size() + ")");
         }
         return clusterListPanel;

@@ -23,7 +23,6 @@ import javax.swing.tree.DefaultMutableTreeNode;
 public class Peptide implements Serializable, Comparable<Peptide> {
     private String sequence;
     private ArrayList<PeptideHit> peptideHits;
-    //private HashSet<PeptideHit> peptideHitsNR;
     private HashSet<String> uniqueScanNumbers;
     private ArrayList<PeptideHit> omssa;
     private ArrayList<PeptideHit> mascot;
@@ -39,7 +38,7 @@ public class Peptide implements Serializable, Comparable<Peptide> {
     private ParsimonyType pType;
     private PeptideIndeterminacyType indeterminateType;
     private double theoreticalMass;
-    private PeptideHitPanel infoPanel;
+    transient private PeptideHitPanel infoPanel;
     
     /**
      * Creates a new instance of Peptide
@@ -47,7 +46,6 @@ public class Peptide implements Serializable, Comparable<Peptide> {
     public Peptide(PeptideHit p) {
         sequence = p.getSequence();
         peptideHits = new ArrayList<PeptideHit>();
-        //peptideHitsNR = new HashSet<PeptideHit>();
         uniqueScanNumbers = new HashSet<String>();
         omssa = new ArrayList<PeptideHit>();
         mascot = new ArrayList<PeptideHit>();

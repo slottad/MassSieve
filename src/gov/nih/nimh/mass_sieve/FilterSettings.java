@@ -16,7 +16,7 @@ import java.io.Serializable;
  * @author slotta
  */
 public class FilterSettings implements Serializable {
-    private double omssaCutoff, mascotCutoff, xtandemCutoff;
+    private double omssaCutoff, mascotCutoff, xtandemCutoff, sequestCutoff;
     private String filterText;
     private boolean useIonIdent, useIndeterminates, filterPeptides, filterProteins, filterCoverage;
     private int pHitCutoffCount, peptideCutoffCount, coverageCutoffAmount;
@@ -25,8 +25,9 @@ public class FilterSettings implements Serializable {
         omssaCutoff = 0.05;
         mascotCutoff = 0.05;
         xtandemCutoff = 0.05;
+        sequestCutoff = 0.05;
         useIonIdent = true;
-        filterText = "o+m+x";
+        filterText = "o+m+x+s";
         useIndeterminates = true;
         filterPeptides = false;
         filterProteins = false;
@@ -38,6 +39,7 @@ public class FilterSettings implements Serializable {
         this.setOmssaCutoff(fromFilter.getOmssaCutoff());
         this.setMascotCutoff(fromFilter.getMascotCutoff());
         this.setXtandemCutoff(fromFilter.getXtandemCutoff());
+        this.setSequestCutoff(fromFilter.getSequestCutoff());
         this.setUseIonIdent(fromFilter.getUseIonIdent());
         this.setFilterText(fromFilter.getFilterText());
         this.setUseIndeterminates(fromFilter.getUseIndeterminates());
@@ -57,6 +59,9 @@ public class FilterSettings implements Serializable {
     public void setXtandemCutoff(String s) {
         xtandemCutoff = Double.parseDouble(s);
     }
+    public void setSequestCutoff(String s) {
+        sequestCutoff = Double.parseDouble(s);
+    }
     
     public void setOmssaCutoff(double d) {
         omssaCutoff = d;
@@ -67,6 +72,9 @@ public class FilterSettings implements Serializable {
     public void setXtandemCutoff(double d) {
         xtandemCutoff = d;
     }   
+    public void setSequestCutoff(double d) {
+        sequestCutoff = d;
+    }
     public void setUseIonIdent(boolean b) {
         useIonIdent = b;
         if (useIonIdent) {
@@ -85,6 +93,9 @@ public class FilterSettings implements Serializable {
     }
     public double getXtandemCutoff() {
         return xtandemCutoff;
+    }
+    public double getSequestCutoff() {
+        return sequestCutoff;
     }
     
     public String getFilterText() {

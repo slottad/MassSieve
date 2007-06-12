@@ -40,9 +40,9 @@ import org.biojava.bio.proteomics.ProteaseManager;
 public class FilterSettingsDialog extends JDialog {
     private ExperimentPanel    experiment;
     private int                width = 500;
-    private int                height = 450;
+    private int                height = 500;
     private int                spinWidth = 2;
-    private JTextField         pepFilterField, mascotCutoff, omssaCutoff, xtandemCutoff;
+    private JTextField         pepFilterField, mascotCutoff, omssaCutoff, xtandemCutoff, sequestCutoff;
     private JCheckBox          useIonIdentBox, useIndeterminatesBox, filterPeptidesBox, filterProteinsBox, filterCoverageBox;
     private JSpinner           pepHitSpinner, peptideSpinner, coverageSpinner;
     private SpinnerNumberModel pepHitCount, peptideCount, coverageAmount;
@@ -64,6 +64,7 @@ public class FilterSettingsDialog extends JDialog {
         mascotCutoff = new JTextField("0.5", 5);
         omssaCutoff = new JTextField("0.5", 5);
         xtandemCutoff = new JTextField("0.5", 5);
+        sequestCutoff = new JTextField("0.5", 5);
         useIonIdentBox = new JCheckBox("Use ION >= Ident");
         useIonIdentBox.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
@@ -126,14 +127,17 @@ public class FilterSettingsDialog extends JDialog {
         pepFilterPanel.setBorder(BorderFactory.createTitledBorder("Usage"));
         pepFilterPanel.add(new JLabel("O,o")); pepFilterPanel.add(new JLabel("OMSSA"));
         pepFilterPanel.add(new JLabel(" "));
-        pepFilterPanel.add(new JLabel("+"));   pepFilterPanel.add(new JLabel("Union"));
+        pepFilterPanel.add(new JLabel("-"));   pepFilterPanel.add(new JLabel("Difference"));
         pepFilterPanel.add(new JLabel("M,m")); pepFilterPanel.add(new JLabel("Mascot"));
         pepFilterPanel.add(new JLabel(" "));
-        pepFilterPanel.add(new JLabel("&"));   pepFilterPanel.add(new JLabel("Intersection"));
+        pepFilterPanel.add(new JLabel("+"));   pepFilterPanel.add(new JLabel("Union"));
         pepFilterPanel.add(new JLabel("X,x")); pepFilterPanel.add(new JLabel("X!Tandem"));
         pepFilterPanel.add(new JLabel(" "));
+        pepFilterPanel.add(new JLabel("&"));   pepFilterPanel.add(new JLabel("Intersection"));
+        pepFilterPanel.add(new JLabel("S,s")); pepFilterPanel.add(new JLabel("Sequest"));
+        pepFilterPanel.add(new JLabel(" "));
         pepFilterPanel.add(new JLabel("~"));   pepFilterPanel.add(new JLabel("Complement"));
-        pepFilterPanel.add(new JLabel("-"));   pepFilterPanel.add(new JLabel("Difference"));
+        pepFilterPanel.add(new JLabel(" "));   pepFilterPanel.add(new JLabel(" "));
         pepFilterPanel.add(new JLabel(" "));
         pepFilterPanel.add(new JLabel("( )")); pepFilterPanel.add(new JLabel("Precedence"));
         centerPanel.add(pepFilterPanel, ParagraphLayout.NEW_LINE);
@@ -141,6 +145,8 @@ public class FilterSettingsDialog extends JDialog {
         centerPanel.add(omssaCutoff);
         centerPanel.add(new JLabel("X!Tandem cutoff:"), ParagraphLayout.NEW_PARAGRAPH);
         centerPanel.add(xtandemCutoff);
+        centerPanel.add(new JLabel("Sequest cutoff:"), ParagraphLayout.NEW_PARAGRAPH);
+        centerPanel.add(sequestCutoff);
         centerPanel.add(new JLabel("Mascot cutoff:"), ParagraphLayout.NEW_PARAGRAPH);
         centerPanel.add(mascotCutoff);
         centerPanel.add(useIonIdentBox);
@@ -247,6 +253,7 @@ public class FilterSettingsDialog extends JDialog {
         filterSettings.setOmssaCutoff(omssaCutoff.getText());
         filterSettings.setXtandemCutoff(xtandemCutoff.getText());
         filterSettings.setMascotCutoff(mascotCutoff.getText());
+        filterSettings.setSequestCutoff(sequestCutoff.getText());
         filterSettings.setUseIonIdent(useIonIdent);
         filterSettings.setFilterText(pepFilterField.getText());
         filterSettings.setUseIndeterminates(useIndeterminates);
@@ -267,6 +274,7 @@ public class FilterSettingsDialog extends JDialog {
         this.setOmssaCutoff(filterSettings.getOmssaCutoff());
         this.setXtandemCutoff(filterSettings.getXtandemCutoff());
         this.setMascotCutoff(filterSettings.getMascotCutoff());
+        this.setSequestCutoff(filterSettings.getSequestCutoff());
         this.setUseIonIdent(filterSettings.getUseIonIdent());
         this.setPepFilterField(filterSettings.getFilterText());
         this.setUseIndeterminates(filterSettings.getUseIndeterminates());
@@ -292,6 +300,10 @@ public class FilterSettingsDialog extends JDialog {
         xtandemCutoff.setText(d.toString());
     }
     
+    public void setSequestCutoff(Double d) {
+        sequestCutoff.setText(d.toString());
+    }
+
     public void setUseIonIdent(boolean b) {
         if (b) {
             useIonIdent = true;
