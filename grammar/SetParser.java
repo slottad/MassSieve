@@ -1,5 +1,8 @@
-// $ANTLR 2.7.5 (20060418): "SetParser.g" -> "SetParser.java"$
-package gov.nih.nimh.mass_sieve;
+// $ANTLR 2.7.7 (20070412): "SetParser.g" -> "SetParser.java"$
+
+package gov.nih.nimh.mass_sieve.io;
+import gov.nih.nimh.mass_sieve.*;
+
 import antlr.TokenBuffer;
 import antlr.TokenStreamException;
 import antlr.TokenStreamIOException;
@@ -164,6 +167,11 @@ public SetParser(ParserSharedInputState state) {
 				case 'x':
 				case 'X': {
 				result = pepCollect.getXTandem();
+				break;
+				}
+				case 's':
+				case 'S': {
+				result = pepCollect.getSequest();
 				break;
 				}
 				}

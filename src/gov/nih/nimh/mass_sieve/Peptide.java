@@ -28,6 +28,7 @@ public class Peptide implements Serializable, Comparable<Peptide> {
     private ArrayList<PeptideHit> omssa;
     private ArrayList<PeptideHit> mascot;
     private ArrayList<PeptideHit> xtandem;
+    private ArrayList<PeptideHit> sequest;
     private HashSet<String> proteinSet;
     private HashSet<String> experimentSet;
     private String experimentList;
@@ -51,6 +52,7 @@ public class Peptide implements Serializable, Comparable<Peptide> {
         omssa = new ArrayList<PeptideHit>();
         mascot = new ArrayList<PeptideHit>();
         xtandem = new ArrayList<PeptideHit>();
+        sequest = new ArrayList<PeptideHit>();
         proteinSet = new HashSet<String>();
         experimentSet = new HashSet<String>();
         fileSet = new HashSet<String>();
@@ -74,6 +76,7 @@ public class Peptide implements Serializable, Comparable<Peptide> {
             case MASCOT:  mascot.add(p);  break;
             case OMSSA:   omssa.add(p);   break;
             case XTANDEM: xtandem.add(p); break;
+            case SEQUEST: sequest.add(p); break;
             case UNKNOWN:
                 System.err.println("Unable to determine source of peptide");
                 System.exit(1);
@@ -187,6 +190,11 @@ public class Peptide implements Serializable, Comparable<Peptide> {
     
     public boolean containsXTandem() {
         if ( xtandem.size() > 0 ) return true;
+        return false;
+    }
+    
+    public boolean containsSequest() {
+        if ( sequest.size() > 0 ) return true;
         return false;
     }
     

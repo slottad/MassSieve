@@ -796,6 +796,16 @@ public class PeptideCollection implements Serializable, Comparable<PeptideCollec
         return new_pc;
     }
     
+    public PeptideCollection getSequest() {
+        PeptideCollection new_pc = new PeptideCollection();
+        for (Peptide pg:minPeptides.values()) {
+            if (pg.containsSequest()) {
+                new_pc.minPeptides.put(pg.getSequence(),pg);
+            }
+        }
+        return new_pc;
+    }
+
     public PeptideCollection Union(PeptideCollection pc) {
         PeptideCollection new_pc = new PeptideCollection();
         new_pc.minPeptides.putAll(pc.minPeptides);

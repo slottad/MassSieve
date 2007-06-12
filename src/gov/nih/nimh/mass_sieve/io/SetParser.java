@@ -1,5 +1,8 @@
-// $ANTLR 2.7.5 (20050128): "SetParser.g" -> "SetParser.java"$
+// $ANTLR 2.7.7 (20070412): "SetParser.g" -> "SetParser.java"$
+
 package gov.nih.nimh.mass_sieve.io;
+import gov.nih.nimh.mass_sieve.*;
+
 import antlr.TokenBuffer;
 import antlr.TokenStreamException;
 import antlr.TokenStreamIOException;
@@ -13,7 +16,6 @@ import antlr.MismatchedTokenException;
 import antlr.SemanticException;
 import antlr.ParserSharedInputState;
 import antlr.collections.impl.BitSet;
-import gov.nih.nimh.mass_sieve.*;
 
 public class SetParser extends antlr.LLkParser       implements SetParserTokenTypes
  {
@@ -165,6 +167,11 @@ public SetParser(ParserSharedInputState state) {
 				case 'x':
 				case 'X': {
 				result = pepCollect.getXTandem();
+				break;
+				}
+				case 's':
+				case 'S': {
+				result = pepCollect.getSequest();
 				break;
 				}
 				}

@@ -15,4 +15,4 @@ import gov.nih.nimh.mass_sieve.*;
  *
  * @author Douglas Slotta
  */
-public enum AnalysisProgramType { OMSSA, MASCOT, XTANDEM, UNKNOWN };
+public enum AnalysisProgramType { OMSSA, MASCOT, XTANDEM, SEQUEST, UNKNOWN };

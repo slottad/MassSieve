@@ -1,5 +1,8 @@
-// $ANTLR 2.7.5 (20060418): "SetParser.g" -> "SetLexer.java"$
-package gov.nih.nimh.mass_sieve;
+// $ANTLR 2.7.7 (20070412): "SetParser.g" -> "SetLexer.java"$
+
+package gov.nih.nimh.mass_sieve.io;
+import gov.nih.nimh.mass_sieve.*;
+
 import java.io.InputStream;
 import antlr.TokenStreamException;
 import antlr.TokenStreamIOException;
@@ -88,8 +91,8 @@ tryAgain:
 					theRetToken=_returnToken;
 					break;
 				}
-				case 'M':  case 'O':  case 'X':  case 'm':
-				case 'o':  case 'x':
+				case 'M':  case 'O':  case 'S':  case 'X':
+				case 'm':  case 'o':  case 's':  case 'x':
 				{
 					mSET(true);
 					theRetToken=_returnToken;
@@ -241,6 +244,16 @@ tryAgain:
 		case 'X':
 		{
 			match('X');
+			break;
+		}
+		case 's':
+		{
+			match('s');
+			break;
+		}
+		case 'S':
+		{
+			match('S');
 			break;
 		}
 		default:

@@ -1,6 +1,6 @@
 header {
-package gov.nih.nimh.mass_sieve.io;
-import gov.nih.nimh.mass_sieve.*;
+package gov.nih.nimh.mass_sieve;
+import gov.nih.nimh.mass_sieve.PeptideCollection;
 }
 
 class SetParser extends Parser;
@@ -25,11 +25,23 @@ expr returns [PeptideCollection result = new PeptideCollection()]
         )*
     ;
 
+cmpexpr returns [PeptideCollection result = new PeptideCollection()]
+{PeptideCollection x; double y;}
+    :   result=cexpr 
+        ( GT x=cexpr {result = result.Union(x);}
+        | LT x=cexpr {result = result.Difference(x);}
+        | INTERSECT x=cexpr {result = result.Intersection(x);}
+        )*
+    ;
+
 cexpr returns [PeptideCollection result = new PeptideCollection()]
 {PeptideCollection x;}
     :   (x=atom {result = x;}
         | COMPLEMENT x=atom {result = pepCollect.Difference(x);})*
     ;
+
+nexpr returns [Double value=0.0]
+    :   d:DOUBLE {value=Double.parseDouble(i.getText());}
 
 atom returns [PeptideCollection result = new PeptideCollection()]
 {PeptideCollection x;
@@ -52,11 +64,6 @@ char subset;}
                     result = pepCollect.getXTandem();
                     break;
                 }
-                case 's':
-                case 'S': {
-                    result = pepCollect.getSequest();
-                    break;
-                }
             }
         }
     |   LPAREN x=expr RPAREN {result=x;} 
@@ -74,8 +81,13 @@ RPAREN    : ')' ;
 UNION     : '+' ;
 DIFF      : '-' ;
 INTERSECT : '&' ;
+LT        : '>' ;
+GT        : '<' ;
+NUMBER    : (DIGIT)+ ('.' (DIGIT)+ )?
+            | '.' (DIGIT)+;
+DIGIT     : ('0'..'9');
 COMPLEMENT: '~' ;
-SET       : ('m'|'M'|'o'|'O'|'x'|'X'|'s'|'S') ;
+SET       : ('m'|'M'|'o'|'O'|'x'|'X') ;
 WS        : (' '|'\t')
             {$setType(Token.SKIP);}
           ;
