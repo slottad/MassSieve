@@ -80,7 +80,6 @@
         <copy todir="${dist}/lib">
         	<fileset dir="${lib}/" />
         </copy>
-
     </target>
     <target name="-post-clean">
         <delete dir="${dist.website}"/>
