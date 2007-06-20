@@ -70,13 +70,17 @@
     <property name="dist.website" location="dist.website"/>
     <property name="dist" location="dist"/>
     <property name="src" location="src"/>
-    <property name="test" location="test"/>
+    <property name="scripts" location="scripts"/>
     <property name="html" location="html"/>
     <property name="lib" location="lib"/>
     <target name="-post-jar">
     	<copy todir="${dist}">
-        	<fileset dir="${test}/"/>
+        	<fileset dir="${scripts}/"/>
         </copy>
+        <copy todir="${dist}/lib">
+        	<fileset dir="${lib}/" />
+        </copy>
+
     </target>
     <target name="-post-clean">
         <delete dir="${dist.website}"/>
@@ -88,9 +92,6 @@
         <zip destfile="${dist.website}/masssieve_src.zip" basedir="${src}" />
         <copy todir="${dist.website}">
         	<fileset dir="${html}/" />
-        </copy>
-        <copy todir="${dist}/lib">
-        	<fileset dir="${lib}/" />
         </copy>
        <!-- make the dist zip -->
        <zip destfile="${dist.website}/masssieve.zip"
