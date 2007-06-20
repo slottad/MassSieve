@@ -40,6 +40,11 @@ public class ParseFile {
             mascotDatHandler mdh = new mascotDatHandler(filename, parent);
             mdh.mascotDatParse();
             handler = mdh;
+        } else if (filename.endsWith(".sqt")) {
+            System.err.println("Parsing " + filename + " as a Sequest sqt file");
+            sequestSqtHandler sh = new sequestSqtHandler(filename, parent);
+            sh.sequestSqtParse();
+            handler = sh;
         } else {  // Maybe it is an XML file?
             
             CheckXMLFiletype();
