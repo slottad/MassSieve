@@ -337,6 +337,13 @@ public class ExperimentPanel extends JPanel {
             PeptideCollection pc = pepCollection.getCluster(p.getCluster());
             updateGraphPanel(pc, p.getSequence());
             //upperFrameTitle = "Cluster " + p.getCluster();
+            ArrayList<Protein> proteins = new ArrayList<Protein>();
+            for (String pName:p.getProteins()) {
+                proteins.add(pepCollection.getMinProteins().get(pName));
+            }
+            ProteinListPanel lp = new ProteinListPanel(this);
+            lp.addProteinList(proteins, pepCollection.getExperimentSet());
+            updateProPanel(lp.createTable());
             showPeptide(p);
         }
         if (nodeInfo instanceof Protein) {
@@ -441,8 +448,21 @@ public class ExperimentPanel extends JPanel {
         return detailPanel.getWidth();
     }
     
+    public void selectPeptide() {
+        
+    }
+    
+    public void selectProtein() {
+        
+    }
+    
     public void showPeptide(Peptide p) {
-        updatePepHitPanel(p.getInfoPanel(this));
+        //updatePepHitPanel(p.getInfoPanel(this));
+        // update peptide hit table
+        PeptideHitListPanel lp = new PeptideHitListPanel(this);
+        lp.addProteinPeptideHitList(p.getPeptideHits());
+        updatePepHitPanel(lp.createTable());
+        
         updateDetailPanel(new JLabel("No Data Availiable"));
     }
     
