@@ -340,11 +340,11 @@ public class MassSieveFrame extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(jTabbedPaneMain, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 800, Short.MAX_VALUE)
+            .add(jTabbedPaneMain, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 1000, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(org.jdesktop.layout.GroupLayout.TRAILING, jTabbedPaneMain, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 679, Short.MAX_VALUE)
+            .add(org.jdesktop.layout.GroupLayout.TRAILING, jTabbedPaneMain, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 727, Short.MAX_VALUE)
         );
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -628,6 +628,7 @@ public class MassSieveFrame extends javax.swing.JFrame {
                             try {
                                 RichSequence seq = seqItr.nextRichSequence();
                                 String seqName = seq.getName();
+                                //System.out.println(seqName);
                                 if (proteinDB.containsKey(seqName)) {
                                     RichSequence daSeq = proteinDB.get(seqName);
                                     if (daSeq != null) {

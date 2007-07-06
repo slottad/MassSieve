@@ -122,16 +122,34 @@ public class ExperimentPanel extends JPanel {
         graphDockable = new DefaultDockable("graph", graphPanel, "Cluster Graph", null, DockingMode.ALL - DockingMode.FLOAT);
         detailDockable = new DefaultDockable("detail", detailPanel, "Details", null, DockingMode.ALL - DockingMode.FLOAT);
         SplitDock rootDock = new SplitDock();
-        TabDock tabDock = new TabDock();
+        SplitDock leftDock = new SplitDock();
+        SplitDock leftSubDock = new SplitDock();
+        SplitDock rightDock = new SplitDock();
+        TabDock tabDock1 = new TabDock();
+        TabDock tabDock2 = new TabDock();
+        TabDock tabDock3 = new TabDock();
+        TabDock tabDock4 = new TabDock();
+        TabDock tabDock5 = new TabDock();
         
-        tabDock.addDockable(proDockable, new Position(0));
-        tabDock.addDockable(pepDockable, new Position(1));
-        tabDock.addDockable(pepHitDockable, new Position(2));
-        tabDock.addDockable(graphDockable, new Position(3));
-        tabDock.addDockable(detailDockable, new Position(4));
-        tabDock.setSelectedDockable(proDockable);
-        rootDock.setSingleChildDock(tabDock);
-        
+        tabDock1.addDockable(proDockable, new Position(0));
+        tabDock2.addDockable(pepDockable, new Position(0));
+        tabDock3.addDockable(pepHitDockable, new Position(0));
+        tabDock4.addDockable(graphDockable, new Position(0));
+        tabDock5.addDockable(detailDockable, new Position(0));
+        leftDock.addChildDock(tabDock1, new Position(Position.TOP));
+        leftSubDock.addChildDock(tabDock2, new Position(Position.TOP));
+        leftSubDock.addChildDock(tabDock3, new Position(Position.BOTTOM));
+        leftDock.addChildDock(leftSubDock, new Position(Position.BOTTOM));
+        rightDock.addChildDock(tabDock4, new Position(Position.TOP));
+        rightDock.addChildDock(tabDock5, new Position(Position.BOTTOM));
+        rootDock.addChildDock(leftDock, new Position(Position.LEFT));
+        rootDock.addChildDock(rightDock, new Position(Position.RIGHT));
+        //tabDock.setSelectedDockable(proDockable);
+        //rootDock.setSingleChildDock(tabDock);
+        rootDock.setDividerLocation(450);
+        rightDock.setDividerLocation(400);
+        leftDock.setDividerLocation(300);
+        leftSubDock.setDividerLocation(200);
         
         // Add the root docks to the dock model.
         //dockModel.addRootDock("dock" + this.getName(), rootDock, msFrame);

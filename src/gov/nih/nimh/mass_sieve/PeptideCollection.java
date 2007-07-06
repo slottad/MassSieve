@@ -596,18 +596,32 @@ public class PeptideCollection implements Serializable, Comparable<PeptideCollec
             public void itemClicked(VisualItem item, MouseEvent evt) {
                 if (item.isInGroup("graph.nodes")) {
                     if (item.getString("type").equals("peptide")) {
-                        Peptide p = minPeptides.get(item.getString("name"));
-                        expPanel.showPeptide(p);
+                        Peptide pep = minPeptides.get(item.getString("name"));
+                        expPanel.showPeptide(pep);
                         // Update peptide table
                         PeptideListPanel peptideListPanel = new PeptideListPanel(expPanel);
                         ArrayList<Peptide> pepList = new ArrayList<Peptide>();
-                        pepList.add(p);
+                        pepList.add(pep);
                         peptideListPanel.addPeptideList(pepList, expPanel.getPepCollection().getExperimentSet());
                         expPanel.updatePepPanel(peptideListPanel.createTable());
+                        // Update protein table
+                        ProteinListPanel proteinListPanel = new ProteinListPanel(expPanel);
+                        ArrayList<Protein> proList = new ArrayList<Protein>();
+                        for (String proName:pep.getProteins()) {
+                            proList.add(minProteins.get(proName));
+                        }
+                        proteinListPanel.addProteinList(proList, expPanel.getPepCollection().getExperimentSet());
+                        expPanel.updateProPanel(proteinListPanel.createTable());
                     }
                     if (item.getString("type").equals("protein")) {
-                        Protein p = minProteins.get(item.getString("name"));
-                        expPanel.showProtein(p);
+                        Protein pro = minProteins.get(item.getString("name"));
+                        expPanel.showProtein(pro);
+                        // Update protein table
+                        ProteinListPanel proteinListPanel = new ProteinListPanel(expPanel);
+                        ArrayList<Protein> proList = new ArrayList<Protein>();
+                        proList.add(pro);
+                        proteinListPanel.addProteinList(proList, expPanel.getPepCollection().getExperimentSet());
+                        expPanel.updateProPanel(proteinListPanel.createTable());
                     }
                     String pred  = "name='" + item.getString("name") + "'";
                     Iterator iter = item.getVisualization().items("graph.nodes", ExpressionParser.predicate(pred));
@@ -805,7 +819,7 @@ public class PeptideCollection implements Serializable, Comparable<PeptideCollec
         }
         return new_pc;
     }
-
+    
     public PeptideCollection Union(PeptideCollection pc) {
         PeptideCollection new_pc = new PeptideCollection();
         new_pc.minPeptides.putAll(pc.minPeptides);
