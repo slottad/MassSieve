@@ -122,34 +122,35 @@ public class ExperimentPanel extends JPanel {
         graphDockable = new DefaultDockable("graph", graphPanel, "Cluster Graph", null, DockingMode.ALL - DockingMode.FLOAT);
         detailDockable = new DefaultDockable("detail", detailPanel, "Details", null, DockingMode.ALL - DockingMode.FLOAT);
         SplitDock rootDock = new SplitDock();
-        SplitDock leftDock = new SplitDock();
-        SplitDock leftSubDock = new SplitDock();
-        SplitDock rightDock = new SplitDock();
-        TabDock tabDock1 = new TabDock();
-        TabDock tabDock2 = new TabDock();
-        TabDock tabDock3 = new TabDock();
-        TabDock tabDock4 = new TabDock();
-        TabDock tabDock5 = new TabDock();
+        //SplitDock topDock = new SplitDock();
+        //SplitDock bottomDock = new SplitDock();
+        //SplitDock rightDock = new SplitDock();
+        TabDock tabDockTop = new TabDock();
+        TabDock tabDockBottom = new TabDock();
+        //TabDock tabDock3 = new TabDock();
+        //TabDock tabDock4 = new TabDock();
+        //TabDock tabDock5 = new TabDock();
         
-        tabDock1.addDockable(proDockable, new Position(0));
-        tabDock2.addDockable(pepDockable, new Position(0));
-        tabDock3.addDockable(pepHitDockable, new Position(0));
-        tabDock4.addDockable(graphDockable, new Position(0));
-        tabDock5.addDockable(detailDockable, new Position(0));
-        leftDock.addChildDock(tabDock1, new Position(Position.TOP));
-        leftSubDock.addChildDock(tabDock2, new Position(Position.TOP));
-        leftSubDock.addChildDock(tabDock3, new Position(Position.BOTTOM));
-        leftDock.addChildDock(leftSubDock, new Position(Position.BOTTOM));
-        rightDock.addChildDock(tabDock4, new Position(Position.TOP));
-        rightDock.addChildDock(tabDock5, new Position(Position.BOTTOM));
-        rootDock.addChildDock(leftDock, new Position(Position.LEFT));
-        rootDock.addChildDock(rightDock, new Position(Position.RIGHT));
-        //tabDock.setSelectedDockable(proDockable);
+        tabDockTop.addDockable(proDockable, new Position(0));
+        tabDockTop.addDockable(pepDockable, new Position(1));
+        tabDockTop.addDockable(pepHitDockable, new Position(2));
+        tabDockBottom.addDockable(graphDockable, new Position(0));
+        tabDockBottom.addDockable(detailDockable, new Position(1));
+        //leftDock.addChildDock(tabDock1, new Position(Position.TOP));
+        //leftSubDock.addChildDock(tabDock2, new Position(Position.TOP));
+        //leftSubDock.addChildDock(tabDock3, new Position(Position.BOTTOM));
+        //leftDock.addChildDock(leftSubDock, new Position(Position.BOTTOM));
+        //rightDock.addChildDock(tabDock4, new Position(Position.TOP));
+        //rightDock.addChildDock(tabDock5, new Position(Position.BOTTOM));
+        rootDock.addChildDock(tabDockTop, new Position(Position.TOP));
+        rootDock.addChildDock(tabDockBottom, new Position(Position.BOTTOM));
+        tabDockTop.setSelectedDockable(proDockable);
+        tabDockBottom.setSelectedDockable(graphDockable);
         //rootDock.setSingleChildDock(tabDock);
-        rootDock.setDividerLocation(450);
-        rightDock.setDividerLocation(400);
-        leftDock.setDividerLocation(300);
-        leftSubDock.setDividerLocation(200);
+        rootDock.setDividerLocation(400);
+        //rightDock.setDividerLocation(400);
+        //leftDock.setDividerLocation(300);
+        //leftSubDock.setDividerLocation(200);
         
         // Add the root docks to the dock model.
         //dockModel.addRootDock("dock" + this.getName(), rootDock, msFrame);
@@ -362,14 +363,14 @@ public class ExperimentPanel extends JPanel {
             ProteinListPanel lp = new ProteinListPanel(this);
             lp.addProteinList(proteins, pepCollection.getExperimentSet());
             updateProPanel(lp.createTable());
-            showPeptide(p);
+            showPeptide(p, true);
         }
         if (nodeInfo instanceof Protein) {
             Protein p = (Protein)nodeInfo;
             PeptideCollection pc = pepCollection.getCluster(p.getCluster());
             updateGraphPanel(pc, p.getName());
             //upperFrameTitle = "Cluster " + p.getCluster();
-            showProtein(p);
+            showProtein(p, true);
         }
         if (nodeInfo instanceof PeptideCollection) {
             PeptideCollection pc = (PeptideCollection)nodeInfo;
@@ -474,8 +475,25 @@ public class ExperimentPanel extends JPanel {
         
     }
     
-    public void showPeptide(Peptide p) {
-        //updatePepHitPanel(p.getInfoPanel(this));
+    public void showPeptide(Peptide p, boolean updatePepTable) {
+        if (updatePepTable) {
+            // Update peptide table
+            PeptideListPanel peptideListPanel = new PeptideListPanel(this);
+            ArrayList<Peptide> pepList = new ArrayList<Peptide>();
+            pepList.add(p);
+            peptideListPanel.addPeptideList(pepList, pepCollection.getExperimentSet());
+            updatePepPanel(peptideListPanel.createTable());
+        }
+        
+        // Update protein table
+        ProteinListPanel proteinListPanel = new ProteinListPanel(this);
+        ArrayList<Protein> proList = new ArrayList<Protein>();
+        for (String proName:p.getProteins()) {
+            proList.add(pepCollection.getMinProteins().get(proName));
+        }
+        proteinListPanel.addProteinList(proList, pepCollection.getExperimentSet());
+        updateProPanel(proteinListPanel.createTable());
+        
         // update peptide hit table
         PeptideHitListPanel lp = new PeptideHitListPanel(this);
         lp.addProteinPeptideHitList(p.getPeptideHits());
@@ -484,7 +502,16 @@ public class ExperimentPanel extends JPanel {
         updateDetailPanel(new JLabel("No Data Availiable"));
     }
     
-    public void showProtein(Protein p) {
+    public void showProtein(Protein p, boolean updateProTable) {
+        if (updateProTable) {
+            // Update protein table
+            ProteinListPanel proteinListPanel = new ProteinListPanel(this);
+            ArrayList<Protein> proList = new ArrayList<Protein>();
+            proList.add(p);
+            proteinListPanel.addProteinList(proList, pepCollection.getExperimentSet());
+            updateProPanel(proteinListPanel.createTable());
+        }
+        
         // Show protein detail
         JPanel jPanel = new JPanel();
         jPanel.setLayout(new BoxLayout(jPanel, BoxLayout.Y_AXIS));

@@ -237,13 +237,13 @@ public class ListPanel {
                     if (selectedObject instanceof Protein) {
                         prevObject = selectedObject;
                         Protein pro = (Protein)selectedObject;
-                        expPanel.showProtein(pro);
+                        expPanel.showProtein(pro, false);
                         expPanel.showCluster(pro.getCluster());
                     }
                     if (selectedObject instanceof Peptide) {
                         prevObject = selectedObject;
                         Peptide pep = (Peptide)selectedObject;
-                        expPanel.showPeptide(pep);
+                        expPanel.showPeptide(pep, false);
                         expPanel.showCluster(pep.getCluster());
                         prevObject = selectedObject;
                     }
