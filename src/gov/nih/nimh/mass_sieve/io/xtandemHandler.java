@@ -34,7 +34,7 @@ class xtandemHandler extends AnalysisHandler {
         if (sName == "domain") {
             
             curPep = new PeptideHit();
-            curPep.setQueryNum(attrs.getValue("id"));
+            curPep.setQueryNum(stripID(attrs.getValue("id")));
             //curPep.setScanNum(pepScan);
             //curPep.setSourceFile(source_file);
             curPep.setSourceType(analysisProgram);
@@ -54,5 +54,13 @@ class xtandemHandler extends AnalysisHandler {
             addPeptideHit(curPep);
             curPep = null;
         }
+    }
+    
+    private String stripID(String iStr) {
+        int loc = iStr.indexOf('.');
+        if (loc > 0) {
+            return iStr.substring(0,loc);
+        }
+        return iStr;
     }
 }

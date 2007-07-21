@@ -292,6 +292,7 @@ public class PeptideCollection implements Serializable, Comparable<PeptideCollec
         Collections.sort(sortClusterNum);
         for (Integer i:sortClusterNum) {
             PeptideCollection pc = clusters.get(i);
+            pc.overrideProteins(this.minProteins);
             child = new DefaultMutableTreeNode(pc);
             root.add(child);
             grandchild = pc.getPeptideTree(expPanel);
@@ -300,6 +301,12 @@ public class PeptideCollection implements Serializable, Comparable<PeptideCollec
             child.add(grandchild);
         }
         return root;
+    }
+    
+    private void overrideProteins(HashMap<String, Protein> overrideProts) {
+        for (String pName:minProteins.keySet()) {
+            minProteins.put(pName, overrideProts.get(pName));
+        }
     }
     
     private DefaultMutableTreeNode getPeptideTree(ExperimentPanel expPanel) {
@@ -322,7 +329,8 @@ public class PeptideCollection implements Serializable, Comparable<PeptideCollec
     }
     
     private DefaultMutableTreeNode getProteinTree(ExperimentPanel expPanel) {
-        DefaultMutableTreeNode root=new DefaultMutableTreeNode(getProteinListPanel(expPanel));
+        ProteinListPanel plp = getProteinListPanel(expPanel);
+        DefaultMutableTreeNode root=new DefaultMutableTreeNode(plp);
         DefaultMutableTreeNode child;
         ArrayList<Protein> sortProteins = new ArrayList<Protein>();
         sortProteins.addAll(minProteins.values());
@@ -334,6 +342,7 @@ public class PeptideCollection implements Serializable, Comparable<PeptideCollec
         }
         return root;
     }
+    
     
     private DefaultMutableTreeNode getParsimonyTree(ExperimentPanel expPanel) {
         DefaultMutableTreeNode root=new DefaultMutableTreeNode(getParsimonyListPanel(expPanel));

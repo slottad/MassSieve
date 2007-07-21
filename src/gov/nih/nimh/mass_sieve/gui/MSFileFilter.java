@@ -40,7 +40,7 @@ public class MSFileFilter extends FileFilter {
         String extension = getExtension(f);
         if (extension != null) {
             if (extension.equals("dat") ||
-                //extension.equals("xml") ||
+                extension.equals("xml") ||
                 extension.equals("omx")) {
                     return true;
             } else {
