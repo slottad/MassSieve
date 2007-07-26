@@ -25,7 +25,7 @@ public class omssaHandler extends AnalysisHandler {
     private HashMap<Integer, String> QueryToRawFile;
     private Integer currentQuery;
     private double scaleFactor;
-    int pepQueryNum;
+    private String pepQueryNum;
     
     /** Creates a new instance of omssaHandler */
     public omssaHandler(String fn) {
@@ -124,7 +124,7 @@ public class omssaHandler extends AnalysisHandler {
         }
         if (inMSHitSet) {
             if (sName == "MSHits_mzhits") collectData = true;
-            if (sName == "MSHitSet_number") pepQueryNum = Integer.parseInt(data);
+            if (sName == "MSHitSet_number") pepQueryNum = data;
             if (sName == "MSHits_charge") curPep.setCharge(data);
             if (sName == "MSHits_mass") curPep.setExpNeutralMass(Integer.parseInt(data));
             if (sName == "MSHits_theomass") curPep.setTheoreticalMass(Integer.parseInt(data));

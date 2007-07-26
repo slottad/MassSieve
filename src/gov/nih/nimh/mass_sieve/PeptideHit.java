@@ -14,7 +14,7 @@ import java.math.BigDecimal;
 import java.util.HashSet;
 
 public class PeptideHit implements Serializable, Comparable<PeptideHit> {
-    private int queryNum;
+    private String queryNum;
     private int scanNum;
     private double expMass;
     private double expNeutralMass;
@@ -27,9 +27,6 @@ public class PeptideHit implements Serializable, Comparable<PeptideHit> {
     private double ident;
     private int Z;
     private int cluster;
-    //private String proName;
-    //private int start;
-    //private int end;
     private HashSet<ProteinHit> proteinHits;
     private HashSet<String> proteinNames;
     private boolean indeterminate;
@@ -113,7 +110,7 @@ public class PeptideHit implements Serializable, Comparable<PeptideHit> {
         PeptideHit p = (PeptideHit)obj;
         if (p.getSequence().equals(sequence)) {
             if (p.getScanNum() == scanNum) {
-                if (p.getQueryNum() == queryNum) {
+                if (p.getQueryNum().equals(queryNum)) {
                     if (p.getSourceType().equals(sourceType)) {
                         if (p.getSourceFile().equals(sourceFile)) {
                             if (p.getExperiment().equals(experiment)) {
@@ -260,16 +257,17 @@ public class PeptideHit implements Serializable, Comparable<PeptideHit> {
         return sourceFile;
     }
     
-    public int getQueryNum() {
+    public String getQueryNum() {
         return queryNum;
     }
     
-    public void setQueryNum(int qn) {
-        queryNum = qn;
-    }
+    //public void setQueryNum(int qn) {
+    //    queryNum = qn;
+    //}
     
     public void setQueryNum(String qn) {
-        queryNum = Integer.parseInt(qn);
+        //queryNum = Integer.parseInt(qn);
+        queryNum = qn;
     }
     
     public int getScanNum() {
