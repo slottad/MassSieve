@@ -287,10 +287,10 @@ public class ExperimentPanel extends JPanel {
                     acceptedProteins.addAll(p.getProteinNames());
                 }
             }
-            HashMap<String, RichSequence> pDB = pf.getProteinDB();
+            HashMap<String, ProteinInfo> pDB = pf.getProteinDB();
             for (String pName:pDB.keySet()) {
                 if (acceptedProteins.contains(pName)) {
-                    msFrame.addProtein(pName, pDB.get(pName));
+                    msFrame.addProtein(pDB.get(pName));
                 }
             }
             FileInformation fInfo = pf.getFileInformation();

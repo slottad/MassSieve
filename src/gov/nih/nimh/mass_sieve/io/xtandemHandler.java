@@ -39,7 +39,7 @@ class xtandemHandler extends AnalysisHandler {
         }
 
         if (sName == "protein") {
-            curPro = new Protein();
+            curPro = new ProteinInfo();
             curProHit = new ProteinHit();
             val = stripDescription(attrs.getValue("label"));
             if (val.endsWith("|")) {

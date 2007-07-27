@@ -119,14 +119,11 @@ public class mascotDatHandler extends AnalysisHandler {
             
             for (String p:minProteins) {
                 try {
+                    ProteinInfo pInfo = new ProteinInfo(p);
                     String desc = proMap.getProteinDescription(p);
-                    //String desc = mdf.getProteinDesicriptionbyAccessionNumber(p);
-                    //String desc = mdf.getProteinDescriptionbyProteinHitAccession(p);
-                    //desc = desc.substring(1,desc.length()-1);
                     desc = desc.trim();
-                    RichSequence rs = RichSequence.Tools.createRichSequence(p,SymbolList.EMPTY_LIST);
-                    rs.setDescription(desc);
-                    proteinDB.put(p, rs);
+                    pInfo.setDescription(desc);
+                    proteinDB.put(p, pInfo);
                 } catch (IllegalArgumentException ex) {} // Ignore this, why should we care
             }
         } catch (FileNotFoundException ex) {

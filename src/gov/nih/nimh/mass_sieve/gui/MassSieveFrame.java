@@ -52,7 +52,8 @@ public class MassSieveFrame extends javax.swing.JFrame {
     private GraphLayoutType glType;
     private PreferencesDialog optDialog;
     private BatchLoadDialog batchLoadDialog;
-    private static HashMap<String, RichSequence> proteinDB  = new HashMap<String, RichSequence>();
+    //private static HashMap<String, RichSequence> proteinDB  = new HashMap<String, RichSequence>();
+    private static HashMap<String, ProteinInfo> proteinDB;
     private MSFileFilter msFilter;
     private MSVFileFilter msvFilter;
     private FastaFileFilter fastaFilter;
@@ -69,6 +70,7 @@ public class MassSieveFrame extends javax.swing.JFrame {
     /** Creates new form MassSieveFrame */
     public MassSieveFrame() {
         initComponents();
+        proteinDB = new HashMap<String, ProteinInfo>();
         jFileChooserLoad.setMultiSelectionEnabled(true);
         msFilter = new MSFileFilter();
         msvFilter = new MSVFileFilter();
@@ -394,7 +396,8 @@ public class MassSieveFrame extends javax.swing.JFrame {
                     Experiment exp = (Experiment) obj;
                     if (this.createExperiment(exp.getName())) {
                         currentExperiment.reloadData(exp);
-                        for (String proName:currentExperiment.getProteins().keySet()) this.addProtein(proName);
+                        // Figure out why this was here
+                        //for (String proName:currentExperiment.getProteins().keySet()) this.addProtein(proName);
                     }
                 }
             } catch (FileNotFoundException ex) {
@@ -475,7 +478,7 @@ public class MassSieveFrame extends javax.swing.JFrame {
                     minProteins.addAll(exp.getProteins().keySet());
                 }
                 for (String prot:minProteins) {
-                    RichSequence rs = proteinDB.get(prot);
+                    RichSequence rs = proteinDB.get(prot).getRichSequence();
                     if (rs != null) {
                         if (rs.length() > 0) {
                             RichSequence.IOTools.writeFasta(fos,rs,null);
@@ -607,7 +610,7 @@ public class MassSieveFrame extends javax.swing.JFrame {
         new Thread(new Runnable() {
             public void run() {
                 int seqCount = 0;
-                int dupCount = 0;
+                //int dupCount = 0;
                 for (File f:files) {
                     System.err.println("Parsing " + f.getName() + " as the sequence database");
                     setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
@@ -630,11 +633,13 @@ public class MassSieveFrame extends javax.swing.JFrame {
                                 String seqName = seq.getName();
                                 //System.out.println(seqName);
                                 if (proteinDB.containsKey(seqName)) {
-                                    RichSequence daSeq = proteinDB.get(seqName);
-                                    if (daSeq != null) {
-                                        if (daSeq.getInternalSymbolList() != SymbolList.EMPTY_LIST ) dupCount++;
-                                    }
-                                    proteinDB.put(seqName, seq);
+                                    ProteinInfo pInfo =  proteinDB.get(seqName);
+                                    pInfo.updateFromRichSequence(seq);
+                                    //RichSequence daSeq = proteinDB.get(seqName);
+                                    //if (daSeq != null) {
+                                    //    if (daSeq.getInternalSymbolList() != SymbolList.EMPTY_LIST ) dupCount++;
+                                    //}
+                                    //proteinDB.put(seqName, seq);
                                     System.err.println(seqName);
                                     seqCount++;
                                 }
@@ -651,34 +656,38 @@ public class MassSieveFrame extends javax.swing.JFrame {
                     }
                     setCursor(null);
                 }
-                jOptionPaneAbout.showMessageDialog(MassSieveFrame.this, "Imported " + seqCount + " sequences, with " + dupCount + " duplicates.");
+                //jOptionPaneAbout.showMessageDialog(MassSieveFrame.this, "Imported " + seqCount + " sequences, with " + dupCount + " duplicates.");
+                jOptionPaneAbout.showMessageDialog(MassSieveFrame.this, "Imported " + seqCount + " sequences");
             }
         }).start();
     }
     
-    public static void addProtein(String pname) {
-        if (!proteinDB.containsKey(pname)) {
-            proteinDB.put(pname, null);
-        }
-    }
-    
-    public static void addProtein(String pname, RichSequence rs) {
-        if (!proteinDB.containsKey(pname)) {
-            proteinDB.put(pname, rs);
+    public static void addProtein(ProteinInfo pInfo) {
+        String pName = pInfo.getName();
+        if (!proteinDB.containsKey(pName)) {
+            proteinDB.put(pName, pInfo);
         } else {
-            RichSequence mainRS = proteinDB.get(pname);
-            if (mainRS == null) {
-                proteinDB.put(pname,rs);
-            } else {
-                if (mainRS.getDescription().length() < rs.getDescription().length()) {
-                    mainRS.setDescription(rs.getDescription());
-                }
-            }
+            ProteinInfo pInfoOld = proteinDB.get(pName);
         }
     }
     
-    public static RichSequence getProtein(String pname) {
-        return proteinDB.get(pname);
+//    public static void addProtein(String pname, RichSequence rs) {
+//        if (!proteinDB.containsKey(pname)) {
+//            proteinDB.put(pname, rs);
+//        } else {
+//            RichSequence mainRS = proteinDB.get(pname);
+//            if (mainRS == null) {
+//                proteinDB.put(pname,rs);
+//            } else {
+//                if (mainRS.getDescription().length() < rs.getDescription().length()) {
+//                    mainRS.setDescription(rs.getDescription());
+//                }
+//            }
+//        }
+//    }
+    
+    public static ProteinInfo getProtein(String pName) {
+        return proteinDB.get(pName);
     }
     
     private void jMenuCloseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuCloseActionPerformed

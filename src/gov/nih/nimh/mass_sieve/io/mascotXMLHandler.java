@@ -50,7 +50,7 @@ public class mascotXMLHandler extends AnalysisHandler {
         }
         if (inHits) {
             if (sName == "protein") {
-                curPro = new Protein();
+                curPro = new ProteinInfo();
                 curPro.setName(attrs.getValue("accession"));
                 collectData = true;
             }
@@ -107,7 +107,7 @@ public class mascotXMLHandler extends AnalysisHandler {
                     }
                 } else {
                     if (sName == "prot_desc") curPro.setDescription(data);
-                    if (sName == "prot_mass") curPro.setMass(Double.parseDouble(data));
+                    //if (sName == "prot_mass") curPro.setMass(Double.parseDouble(data));
                     if (sName == "prot_score") prot_score = data;
                     if (sName == "prot_cover") prot_cover = data;
                     if (sName == "protein") {

@@ -28,11 +28,11 @@ abstract public class AnalysisHandler extends DefaultHandler {
     protected HashSet<String> rawFiles;
     
     protected ArrayList<PeptideHit> peptide_hits;
-    protected HashMap<String, RichSequence> proteinDB;
+    protected HashMap<String, ProteinInfo> proteinDB;
     private HashMap<Integer, Double> scanExpectFilter;
     private HashMap<Integer, Boolean> scanExpectIndeterminate;
     
-    Protein curPro;
+    ProteinInfo curPro;
     PeptideHit curPep;
     ProteinHit curProHit;
     
@@ -43,7 +43,7 @@ abstract public class AnalysisHandler extends DefaultHandler {
         rawFiles = new HashSet<String>();
         pepHitCount = 0;
         peptide_hits = new ArrayList<PeptideHit>();
-        proteinDB = new HashMap<String, RichSequence>();
+        proteinDB = new HashMap<String, ProteinInfo>();
         scanExpectFilter = new HashMap<Integer, Double>();
         scanExpectIndeterminate = new HashMap<Integer, Boolean>();
     }
@@ -134,7 +134,7 @@ abstract public class AnalysisHandler extends DefaultHandler {
         return val;
     }
     
-    public HashMap<String, RichSequence> getProteinDB() {
+    public HashMap<String, ProteinInfo> getProteinDB() {
         return proteinDB;
     }
     

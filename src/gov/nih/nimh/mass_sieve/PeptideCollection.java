@@ -172,7 +172,11 @@ public class PeptideCollection implements Serializable, Comparable<PeptideCollec
             }
         }
         for (Protein p:minProteins.values()) {
-            MassSieveFrame.addProtein(p.getName());
+            ProteinInfo pInfo = new ProteinInfo();
+            pInfo.setName(p.getName());
+            pInfo.setDescription(p.getDescription());
+            pInfo.setLength(p.getLength());
+            MassSieveFrame.addProtein(pInfo);
         }
     }
     

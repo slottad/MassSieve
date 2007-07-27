@@ -38,7 +38,7 @@ import org.biojavax.bio.seq.RichSequence;
 public class Protein implements Serializable, Comparable<Protein> {
     
     private String name;
-    private String id;
+    //private String id;
     private String description;
     private double mass;
     private double pI;
@@ -103,7 +103,7 @@ public class Protein implements Serializable, Comparable<Protein> {
     }
     
     public void addPeptideHitFeatures() {
-        HashSet<Integer> coverage = new HashSet<Integer>();
+        //HashSet<Integer> coverage = new HashSet<Integer>();
         for (Peptide pep:allPeptides) {
             ArrayList<PeptideHit> pHits = pep.getPeptideHits();
             for (PeptideHit p:pHits) {
@@ -112,10 +112,10 @@ public class Protein implements Serializable, Comparable<Protein> {
                         //if (p.getProteinName().equals(name)) {
                         //scanNumbers.add(p.getScanNum());
                         // Compute coverage
-                        for (int i=pro.getStart(); i<=pro.getEnd(); i++) {
-                            //for (int i=p.getStart(); i<=p.getEnd(); i++) {
-                            coverage.add(i);
-                        }
+                        //for (int i=pro.getStart(); i<=pro.getEnd(); i++) {
+                        //for (int i=p.getStart(); i<=p.getEnd(); i++) {
+                        //    coverage.add(i);
+                        //}
                         Feature.Template templ = new Feature.Template();
                         
                         //fill in the template
@@ -135,7 +135,7 @@ public class Protein implements Serializable, Comparable<Protein> {
                 }
             }
         }
-        coverageNum = coverage.size();
+        //coverageNum = coverage.size();
     }
     
     public double getMass() {
@@ -179,11 +179,11 @@ public class Protein implements Serializable, Comparable<Protein> {
     }
     
     public int getLength() {
-        if (getSeqObj() == null) {
-            return 0;
-        }
-        if (length == 0) {
-            length = seqObj.length();
+        //if (getSeqObj() == null) {
+        //    return 0;
+        //}
+        if (length <= 0) {
+            length = MassSieveFrame.getProtein(this.name).getLength();
         }
         return length;
     }
@@ -198,6 +198,23 @@ public class Protein implements Serializable, Comparable<Protein> {
     }
     
     public int getCoverageNum() {
+        if (coverageNum <= 0) {
+            HashSet<Integer> coverage = new HashSet<Integer>();
+            for (Peptide pep:allPeptides) {
+                ArrayList<PeptideHit> pHits = pep.getPeptideHits();
+                for (PeptideHit p:pHits) {
+                    for (ProteinHit pro:p.getProteinHits()) {
+                        if (pro.getName().equals(name)) {
+                            // Compute coverage
+                            for (int i=pro.getStart(); i<=pro.getEnd(); i++) {
+                                coverage.add(i);
+                            }
+                        }
+                    }
+                }
+            }
+            coverageNum = coverage.size();
+        }
         return coverageNum;
     }
     
@@ -324,23 +341,18 @@ public class Protein implements Serializable, Comparable<Protein> {
     
     public void print() {
         System.out.print("Name: " + name);
-        System.out.print(" Id: " + id);
+        //System.out.print(" Id: " + id);
         System.out.print(" Mass: " + getMass());
         System.out.println(" Desc: " + description);
         System.out.println("  " + peptideSet.toString());
     }
     
-    public void fixIDandName() {
-        if (name == null) name = id;
-        if (id == null) id = name;
-    }
-    
     public void setName(String a) {
         name = a;
     }
-    public void setID(String a) {
-        id = a;
-    }
+    //public void setID(String a) {
+    //    id = a;
+    //}
     public void setDescription(String d) {
         description = d;
     }
@@ -352,9 +364,9 @@ public class Protein implements Serializable, Comparable<Protein> {
     public String getName() {
         return name;
     }
-    public String getID() {
-        return id;
-    }
+    //public String getID() {
+    //    return id;
+    //}
     public void setMass(double m) {
         mass = m;
     }
@@ -380,7 +392,7 @@ public class Protein implements Serializable, Comparable<Protein> {
     
     public ViewSequence getSeqObj() {
         if (seqObj == null) {
-            setSeqObj(MassSieveFrame.getProtein(this.name));
+            setSeqObj(MassSieveFrame.getProtein(this.name).getRichSequence());
         }
         return seqObj;
     }

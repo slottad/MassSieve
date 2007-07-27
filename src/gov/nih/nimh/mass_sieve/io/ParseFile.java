@@ -9,6 +9,7 @@
 package gov.nih.nimh.mass_sieve.io;
 
 import gov.nih.nimh.mass_sieve.PeptideHit;
+import gov.nih.nimh.mass_sieve.ProteinInfo;
 import java.awt.Component;
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -16,7 +17,6 @@ import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import javax.swing.ProgressMonitorInputStream;
-import org.biojavax.bio.seq.RichSequence;
 import org.xml.sax.*;
 import org.xml.sax.helpers.*;
 
@@ -77,7 +77,7 @@ public class ParseFile {
         return handler.getPeptideHits();
     }
     
-    public HashMap<String, RichSequence> getProteinDB() {
+    public HashMap<String, ProteinInfo> getProteinDB() {
         return handler.getProteinDB();
     }
     
