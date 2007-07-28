@@ -202,9 +202,11 @@ public class omssaHandler extends AnalysisHandler {
     }
     
     public void addProtein(ProteinInfo p) {
-        //if (!proteinDB.containsKey(p.getName())) {
-        proteinDB.put(p.getName(), p);
-        //}
+        if (!proteinDB.containsKey(p.getName())) {
+            proteinDB.get(p.getName()).update(p);
+        } else {
+            proteinDB.put(p.getName(), p);
+        }
     }
     
     private void initDecode() {

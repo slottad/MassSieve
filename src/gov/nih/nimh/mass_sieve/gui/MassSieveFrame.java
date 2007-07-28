@@ -668,6 +668,7 @@ public class MassSieveFrame extends javax.swing.JFrame {
             proteinDB.put(pName, pInfo);
         } else {
             ProteinInfo pInfoOld = proteinDB.get(pName);
+            pInfoOld.update(pInfo);
         }
     }
     
