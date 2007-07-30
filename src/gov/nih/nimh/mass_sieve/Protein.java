@@ -242,7 +242,8 @@ public class Protein implements Serializable, Comparable<Protein> {
     
     public double getCoveragePercent() {
         int len = getLength();
-        if (len == 0 || coverageNum == 0) {
+        int cNum = getCoverageNum();
+        if (len == 0 || cNum == 0) {
             return 0.0;
         }
         double pcov = new BigDecimal((double)coverageNum/len*100.0).setScale(1,BigDecimal.ROUND_HALF_EVEN).doubleValue();
@@ -391,9 +392,9 @@ public class Protein implements Serializable, Comparable<Protein> {
     }
     
     public ViewSequence getSeqObj() {
-        if (seqObj == null) {
+        //if (seqObj == null) {
             setSeqObj(MassSieveFrame.getProtein(this.name).getRichSequence());
-        }
+        //}
         return seqObj;
     }
     
