@@ -81,10 +81,7 @@ abstract public class AnalysisHandler extends DefaultHandler {
                 if (p.getExpect() <= scanExpectFilter.get(scan)) {
                     p.setIndeterminate(scanExpectIndeterminate.get(scan));
                     filtered_hits.add(p);
-                } //else {
-                //    System.out.print("Rejected: ");
-                //    p.print();
-                //}
+                }
             }
             return filtered_hits;
         } else {
@@ -132,6 +129,14 @@ abstract public class AnalysisHandler extends DefaultHandler {
             val = sb.substring(0,start);
         }
         return val;
+    }
+    
+    public void addProtein(ProteinInfo p) {
+        if (proteinDB.containsKey(p.getName())) {
+            proteinDB.get(p.getName()).update(p);
+        } else {
+            proteinDB.put(p.getName(), p);
+        }
     }
     
     public HashMap<String, ProteinInfo> getProteinDB() {

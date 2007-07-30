@@ -56,7 +56,7 @@ public class mascotXMLHandler extends AnalysisHandler {
             }
             if (sName == "peptide") {
                 curPep = new PeptideHit();
-                curPep.setQueryNum(attrs.getValue("query"));
+                curPep.setQueryNum(Integer.parseInt(attrs.getValue("query")));
                 //curPep.setProteinName(curPro.getName());
                 //curPep.setSourceFile(source_file);
                 curPep.setSourceType(analysisProgram);

@@ -53,7 +53,7 @@ public class MSFileFilter extends FileFilter {
 
     //The description of this filter
     public String getDescription() {
-        return "MS/MS Search Results (*.dat, *.omx)";
+        return "MS/MS Search Results (*.dat, *.omx, *.xml)";
     }
     
 }

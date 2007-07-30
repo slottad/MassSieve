@@ -14,7 +14,7 @@ import java.math.BigDecimal;
 import java.util.HashSet;
 
 public class PeptideHit implements Serializable, Comparable<PeptideHit> {
-    private String queryNum;
+    private int queryNum;
     private int scanNum;
     private double expMass;
     private double expNeutralMass;
@@ -110,7 +110,7 @@ public class PeptideHit implements Serializable, Comparable<PeptideHit> {
         PeptideHit p = (PeptideHit)obj;
         if (p.getSequence().equals(sequence)) {
             if (p.getScanNum() == scanNum) {
-                if (p.getQueryNum().equals(queryNum)) {
+                if (p.getQueryNum() == queryNum) {
                     if (p.getSourceType().equals(sourceType)) {
                         if (p.getSourceFile().equals(sourceFile)) {
                             if (p.getExperiment().equals(experiment)) {
@@ -257,18 +257,18 @@ public class PeptideHit implements Serializable, Comparable<PeptideHit> {
         return sourceFile;
     }
     
-    public String getQueryNum() {
+    public int getQueryNum() {
         return queryNum;
     }
     
-    //public void setQueryNum(int qn) {
-    //    queryNum = qn;
-    //}
-    
-    public void setQueryNum(String qn) {
-        //queryNum = Integer.parseInt(qn);
+    public void setQueryNum(int qn) {
         queryNum = qn;
     }
+    
+    //public void setQueryNum(String qn) {
+    //    queryNum = Integer.parseInt(qn);
+    //    //queryNum = qn;
+    //}
     
     public int getScanNum() {
         return scanNum;

@@ -76,6 +76,7 @@ public class ProteinInfo implements Serializable {
     
     public void setSequence(String sequence) {
         this.sequence = sequence;
+        length = sequence.length();
     }
     
     public RichSequence getRichSequence() {

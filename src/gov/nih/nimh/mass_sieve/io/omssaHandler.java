@@ -21,12 +21,12 @@ public class omssaHandler extends AnalysisHandler {
     private boolean inMSSpectrum;
     private boolean inBioseqs;
     private ArrayList<PeptideHit> peptideHits;
-    private HashMap<String, Integer> QueryToScan;
-    private HashMap<String, Double> QueryToMass;
-    private HashMap<String, String> QueryToRawFile;
-    private String currentQuery;
+    private HashMap<Integer, Integer> QueryToScan;
+    private HashMap<Integer, Double> QueryToMass;
+    private HashMap<Integer, String> QueryToRawFile;
+    private int currentQuery;
     private double scaleFactor;
-    private String pepQueryNum;
+    private int pepQueryNum;
     private HashMap<String, String> decode;
     private HashMap<String, String> OIDtoName;
     private String curProAcc;
@@ -41,9 +41,9 @@ public class omssaHandler extends AnalysisHandler {
         inMSHitSet = false;
         inMSSpectrum = false;
         inBioseqs = false;
-        QueryToScan = new HashMap<String, Integer>();
-        QueryToMass = new HashMap<String, Double>();
-        QueryToRawFile = new HashMap<String, String>();
+        QueryToScan = new HashMap<Integer, Integer>();
+        QueryToMass = new HashMap<Integer, Double>();
+        QueryToRawFile = new HashMap<Integer, String>();
         peptideHits = new ArrayList<PeptideHit>();
         scaleFactor = 100.0;
         OIDtoName = new HashMap<String, String>();
@@ -148,7 +148,7 @@ public class omssaHandler extends AnalysisHandler {
         }
         if (inMSHitSet) {
             if (sName == "MSHits_mzhits") collectData = true;
-            if (sName == "MSHitSet_number") pepQueryNum = data;
+            if (sName == "MSHitSet_number") pepQueryNum = Integer.parseInt(data);
             if (sName == "MSHits_charge") curPep.setCharge(data);
             if (sName == "MSHits_mass") curPep.setExpNeutralMass(Integer.parseInt(data));
             if (sName == "MSHits_theomass") curPep.setTheoreticalMass(Integer.parseInt(data));
@@ -164,7 +164,7 @@ public class omssaHandler extends AnalysisHandler {
             data = "";
         }
         if (inMSSpectrum) {
-            if (sName == "MSSpectrum_number") currentQuery = data;
+            if (sName == "MSSpectrum_number") currentQuery = Integer.parseInt(data);
             if (sName == "MSSpectrum_precursormz") {
                 QueryToMass.put(currentQuery,Double.parseDouble(data));
             }
@@ -198,14 +198,6 @@ public class omssaHandler extends AnalysisHandler {
             ph.setExpMass(ph.getExpMass() / scaleFactor);
             ph.setExpNeutralMass(ph.getExpNeutralMass() / scaleFactor);
             ph.setTheoreticalMass(ph.getTheoreticalMass() / scaleFactor);
-        }
-    }
-    
-    public void addProtein(ProteinInfo p) {
-        if (!proteinDB.containsKey(p.getName())) {
-            proteinDB.get(p.getName()).update(p);
-        } else {
-            proteinDB.put(p.getName(), p);
         }
     }
     
