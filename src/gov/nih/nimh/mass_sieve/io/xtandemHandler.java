@@ -75,8 +75,8 @@ class xtandemHandler extends AnalysisHandler {
             curPep.setCharge(curCharge);
             nMass = curMass - 1.007277;  // minus mass of hydrogen
             curPep.setExpNeutralMass(nMass);
-            curPep.setExpMass((nMass + (curCharge * 1.007277)) / curCharge);
-            curPep.setTheoreticalMass(Double.parseDouble(attrs.getValue("mh"))-1.007277);  // minus mass of hydrogen
+            curPep.setExpMass((nMass + (curCharge * MASS_HYDROGEN)) / curCharge);
+            curPep.setTheoreticalMass(Double.parseDouble(attrs.getValue("mh"))-MASS_HYDROGEN);  // minus mass of hydrogen
             curProHit.setStart(Integer.parseInt(attrs.getValue("start")));
             curProHit.setEnd(Integer.parseInt(attrs.getValue("end")));
             curPep.setExpect(attrs.getValue("expect"));

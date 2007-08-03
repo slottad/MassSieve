@@ -18,6 +18,8 @@ import org.xml.sax.helpers.DefaultHandler;
 
 abstract public class AnalysisHandler extends DefaultHandler {
     
+    public final static double MASS_HYDROGEN = 1.007277;
+    
     protected boolean collectData;
     protected String data;
     
