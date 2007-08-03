@@ -35,6 +35,7 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Set;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.JFileChooser;
@@ -48,7 +49,6 @@ import javax.swing.ScrollPaneConstants;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeSelectionModel;
-import org.biojavax.bio.seq.RichSequence;
 import prefuse.Display;
 
 /**
@@ -336,7 +336,7 @@ public class ExperimentPanel extends JPanel {
         if (node == null) return;
         Object nodeInfo = node.getUserObject();
         if (nodeInfo instanceof String) {
-            System.out.println("Main node selected");
+            msFrame.updateStatusMessage(nodeInfo.toString() + " selected");
             if (pepCollection == null) {
                 updatePepHitPanel(new JLabel("Please add search results to this experiment"));
                 updatePepPanel(new JLabel("Please add search results to this experiment"));
@@ -353,6 +353,7 @@ public class ExperimentPanel extends JPanel {
         }
         if (nodeInfo instanceof Peptide) {
             Peptide p = (Peptide)nodeInfo;
+            msFrame.updateStatusMessage("Peptide " + p.getSequence() + " selected");
             PeptideCollection pc = pepCollection.getCluster(p.getCluster());
             updateGraphPanel(pc, p.getSequence());
             //upperFrameTitle = "Cluster " + p.getCluster();
@@ -367,6 +368,7 @@ public class ExperimentPanel extends JPanel {
         }
         if (nodeInfo instanceof Protein) {
             Protein p = (Protein)nodeInfo;
+            msFrame.updateStatusMessage("Protein " + p.getName() + " selected");
             PeptideCollection pc = pepCollection.getCluster(p.getCluster());
             updateGraphPanel(pc, p.getName());
             //upperFrameTitle = "Cluster " + p.getCluster();
@@ -374,13 +376,25 @@ public class ExperimentPanel extends JPanel {
         }
         if (nodeInfo instanceof PeptideCollection) {
             PeptideCollection pc = (PeptideCollection)nodeInfo;
+            msFrame.updateStatusMessage(pc.toString() + " selected");
             updateGraphPanel(pc, null);
-            updatePepHitPanel(pc.getPeptideHitListPanel(this).createTable());
-            updatePepPanel(pc.getPeptideListPanel(this).createTable());
-            updateProPanel(pc.getProteinListPanel(this).createTable());
+            Set<String> peps = pc.getPeptideNames();
+            Set<String> pros = pc.getProteinNames();
+            updatePepHitPanel(pepCollection.getPeptideHitListPanel(this, peps).createTable());
+            updatePepPanel(pepCollection.getPeptideListPanel(this, peps).createTable());
+            updateProPanel(pepCollection.getProteinListPanel(this, pros).createTable());
+        }
+        if (nodeInfo instanceof PeptideProteinNameSet) {
+            PeptideProteinNameSet pps = (PeptideProteinNameSet)nodeInfo;
+            msFrame.updateStatusMessage(pps.toString() + " selected");
+            //updateGraphPanel(pc, null);
+            updatePepHitPanel(pepCollection.getPeptideHitListPanel(this, pps.getPeptides()).createTable());
+            updatePepPanel(pepCollection.getPeptideListPanel(this, pps.getPeptides()).createTable());
+            updateProPanel(pepCollection.getProteinListPanel(this, pps.getProteins()).createTable());
         }
         if (nodeInfo instanceof ListPanel) {
             ListPanel lp = (ListPanel)nodeInfo;
+            msFrame.updateStatusMessage(lp.toString() + " selected");
             if (nodeInfo instanceof PeptideHitListPanel) {
                 updatePepHitPanel(lp.createTable());
                 LeafDock dock = pepHitDockable.getDock();
@@ -577,6 +591,5 @@ public class ExperimentPanel extends JPanel {
     public void setFileInfos(ArrayList<FileInformation> fileInfos) {
         this.fileInfos = fileInfos;
     }
-    
     
 }

@@ -139,18 +139,22 @@ public class Protein implements Serializable, Comparable<Protein> {
     }
     
     public double getMass() {
-        if (mass < 0 && getSeqObj() != null && seqObj.length() > 0) {
-            MassCalc mc = new MassCalc(SymbolPropertyTable.AVG_MASS, false);
-            try {
-                mass = mc.getMass(seqObj);
-            } catch (IllegalSymbolException ex) {
-                //ex.printStackTrace();
-            } catch (BioException ex) {
-                ex.printStackTrace();
-            } catch (NullPointerException ex) {
-                //ex.printStackTrace();
+        if (mass < 0) {
+            mass = MassSieveFrame.getProtein(this.name).getMass();
+            if (mass < 0 && getSeqObj() != null && seqObj.length() > 0) {
+                MassCalc mc = new MassCalc(SymbolPropertyTable.AVG_MASS, false);
+                try {
+                    mass = mc.getMass(seqObj);
+                    mass = (new BigDecimal(mass)).setScale(2,BigDecimal.ROUND_HALF_EVEN).doubleValue();
+                    MassSieveFrame.getProtein(this.name).setMass(mass);
+                } catch (IllegalSymbolException ex) {
+                    //ex.printStackTrace();
+                } catch (BioException ex) {
+                    ex.printStackTrace();
+                } catch (NullPointerException ex) {
+                    //ex.printStackTrace();
+                }
             }
-            mass = (new BigDecimal(mass)).setScale(2,BigDecimal.ROUND_HALF_EVEN).doubleValue();
         }
         if (mass < 0) {
             return 0.0;
@@ -373,7 +377,8 @@ public class Protein implements Serializable, Comparable<Protein> {
     }
     public String getDescription() {
         if (description == null) {
-            return "";
+            description = MassSieveFrame.getProtein(this.name).getDescription();
+            //return "";
         }
         return description;
     }
@@ -393,7 +398,7 @@ public class Protein implements Serializable, Comparable<Protein> {
     
     public ViewSequence getSeqObj() {
         //if (seqObj == null) {
-            setSeqObj(MassSieveFrame.getProtein(this.name).getRichSequence());
+        setSeqObj(MassSieveFrame.getProtein(this.name).getRichSequence());
         //}
         return seqObj;
     }

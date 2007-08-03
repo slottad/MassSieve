@@ -23,6 +23,7 @@ public class ProteinInfo implements Serializable {
     private String name;
     private String description;
     private String sequence;
+    private double mass;
     
     /** Creates a new instance of ProteinInfo */
     public ProteinInfo() {
@@ -30,6 +31,7 @@ public class ProteinInfo implements Serializable {
         description = "";
         sequence = "";
         name = "";
+        mass = -1;
     }
     
     public ProteinInfo(RichSequence rs) {
@@ -108,5 +110,13 @@ public class ProteinInfo implements Serializable {
         } else {
             System.err.println("Trying to update " + name + " with data from " + pInfo.getName());
         }
+    }
+
+    public double getMass() {
+        return mass;
+    }
+
+    public void setMass(double mass) {
+        this.mass = mass;
     }
 }

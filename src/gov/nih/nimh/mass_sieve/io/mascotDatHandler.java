@@ -122,7 +122,8 @@ public class mascotDatHandler extends AnalysisHandler {
                     ProteinInfo pInfo = new ProteinInfo(p);
                     String desc = proMap.getProteinDescription(p);
                     desc = desc.trim();
-                    pInfo.setDescription(desc);
+                    pInfo.setDescription(desc);  
+                    pInfo.setMass(proMap.getProteinID(p).getMass());
                     proteinDB.put(p, pInfo);
                 } catch (IllegalArgumentException ex) {} // Ignore this, why should we care
             }

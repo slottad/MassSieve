@@ -12,8 +12,10 @@ import com.javadocking.dock.Dock;
 import com.javadocking.model.FloatDockModel;
 import gov.nih.nimh.mass_sieve.*;
 import gov.nih.nimh.mass_sieve.io.FileInformation;
+import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Cursor;
+import java.awt.Dimension;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -27,12 +29,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import javax.swing.JFileChooser;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
+import javax.swing.JTabbedPane;
 import javax.swing.ProgressMonitorInputStream;
 import org.biojava.bio.BioException;
-import org.biojava.bio.symbol.SymbolList;
 import org.biojavax.Namespace;
 import org.biojavax.RichObjectFactory;
 import org.biojavax.bio.seq.RichSequence;
@@ -58,6 +61,8 @@ public class MassSieveFrame extends javax.swing.JFrame {
     private MSVFileFilter msvFilter;
     private FastaFileFilter fastaFilter;
     private FloatDockModel dockModel;
+    private JTabbedPane jTabbedPaneMain;
+    private StatusBar statusBar;
     
     private class MyComponentFactory extends DefaultSwComponentFactory {
         public JSplitPane createJSplitPane() {
@@ -67,9 +72,28 @@ public class MassSieveFrame extends javax.swing.JFrame {
         }
     }
     
+    private class StatusBar extends JLabel {
+        
+        /** Creates a new instance of StatusBar */
+        public StatusBar() {
+            super();
+            super.setPreferredSize(new Dimension(100, 16));
+            setMessage("Ready");
+        }
+        
+        public void setMessage(String message) {
+            setText(" "+message);
+        }
+    }
+    
     /** Creates new form MassSieveFrame */
     public MassSieveFrame() {
         initComponents();
+        jTabbedPaneMain = new JTabbedPane();
+        this.setSize(1000,750);
+        getContentPane().add(jTabbedPaneMain, BorderLayout.CENTER);
+        statusBar = new StatusBar();
+        getContentPane().add(statusBar, BorderLayout.SOUTH);
         proteinDB = new HashMap<String, ProteinInfo>();
         jFileChooserLoad.setMultiSelectionEnabled(true);
         msFilter = new MSFileFilter();
@@ -106,6 +130,9 @@ public class MassSieveFrame extends javax.swing.JFrame {
         batchLoadDialog = new BatchLoadDialog(this);
         expSet = new HashMap<String, ExperimentPanel>();
     }
+    public void updateStatusMessage(String message) {
+        statusBar.setMessage(message);
+    }
     
     public void addRootDock(String name, Dock dock) {
         // Add the root docks to the dock model.
@@ -122,7 +149,6 @@ public class MassSieveFrame extends javax.swing.JFrame {
         buttonGroupTreeSource = new javax.swing.ButtonGroup();
         jFileChooserLoad = new javax.swing.JFileChooser();
         jOptionPaneAbout = new javax.swing.JOptionPane();
-        jTabbedPaneMain = new javax.swing.JTabbedPane();
         jMenuBarMain = new javax.swing.JMenuBar();
         jMenuFile = new javax.swing.JMenu();
         jMenuNewExperiment = new javax.swing.JMenuItem();
@@ -156,12 +182,6 @@ public class MassSieveFrame extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("MassSieve v0.99");
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-        jTabbedPaneMain.addChangeListener(new javax.swing.event.ChangeListener() {
-            public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                jTabbedPaneMainStateChanged(evt);
-            }
-        });
-
         jMenuFile.setText("File");
         jMenuNewExperiment.setText("New Experiment");
         jMenuNewExperiment.addActionListener(new java.awt.event.ActionListener() {
@@ -338,16 +358,6 @@ public class MassSieveFrame extends javax.swing.JFrame {
 
         setJMenuBar(jMenuBarMain);
 
-        org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(jTabbedPaneMain, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 1000, Short.MAX_VALUE)
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(org.jdesktop.layout.GroupLayout.TRAILING, jTabbedPaneMain, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 727, Short.MAX_VALUE)
-        );
         pack();
     }// </editor-fold>//GEN-END:initComponents
     
@@ -371,6 +381,7 @@ public class MassSieveFrame extends javax.swing.JFrame {
                     ExperimentPanel expPanel = (ExperimentPanel)jTabbedPaneMain.getComponentAt(i);
                     expPanel.saveExperiment(os);
                 }
+                os.writeObject(proteinDB);
                 os.close();
             } catch (FileNotFoundException ex) {
                 ex.printStackTrace();
@@ -386,19 +397,25 @@ public class MassSieveFrame extends javax.swing.JFrame {
         if (status == JFileChooser.APPROVE_OPTION) {
             File selectedFile = jFileChooserLoad.getSelectedFile();
             try {
+                Object obj;
                 FileInputStream fin = new FileInputStream(selectedFile);
                 ObjectInputStream oin = new ObjectInputStream(fin);
                 int expCount = oin.readInt();
                 if (expCount == 1) System.out.println("File contains " + expCount + " experiment");
                 else System.out.println("File contains " + expCount + " experiments");
                 for (int i=0; i<expCount; i++) {
-                    Object obj = oin.readObject();
+                    obj = oin.readObject();
                     Experiment exp = (Experiment) obj;
                     if (this.createExperiment(exp.getName())) {
                         currentExperiment.reloadData(exp);
                         // Figure out why this was here
                         //for (String proName:currentExperiment.getProteins().keySet()) this.addProtein(proName);
                     }
+                }
+                obj = oin.readObject();
+                HashMap<String, ProteinInfo> newProteinDB = (HashMap<String, ProteinInfo>)obj;
+                for (ProteinInfo pi: newProteinDB.values()) {
+                    this.addProtein(pi);
                 }
             } catch (FileNotFoundException ex) {
                 ex.printStackTrace();
@@ -427,6 +444,7 @@ public class MassSieveFrame extends javax.swing.JFrame {
                 ObjectOutputStream os = new ObjectOutputStream(fs);
                 os.writeInt(1);
                 currentExperiment.saveExperiment(os);
+                os.writeObject(proteinDB);
                 os.close();
             } catch (FileNotFoundException ex) {
                 ex.printStackTrace();
@@ -435,22 +453,6 @@ public class MassSieveFrame extends javax.swing.JFrame {
             }
         }
     }//GEN-LAST:event_jMenuSaveExpActionPerformed
-    
-    private void jTabbedPaneMainStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jTabbedPaneMainStateChanged
-        if (jTabbedPaneMain.getTabCount() > 1) {
-            if ((jTabbedPaneMain.getSelectedComponent() instanceof ExperimentPanel)) {
-                jMenuAddSearchResults.setEnabled(true);
-                jMenuOpenSeqDB.setEnabled(true);
-                jMenuFilterPrefs.setEnabled(true);
-                //((ExperimentPanel)jTabbedPaneMain.getSelectedComponent()).resetDockModel();
-            }
-            jMenuClose.setEnabled(true);
-            jMenuClose.setText("Close '" + jTabbedPaneMain.getSelectedComponent().getName() + "'" );
-            jMenuSaveExp.setEnabled(true);
-            jMenuSaveExp.setText("Save '" + jTabbedPaneMain.getSelectedComponent().getName() + "'" );
-            jMenuSaveExpSet.setEnabled(true);
-        }
-    }//GEN-LAST:event_jTabbedPaneMainStateChanged
     
     private void jMenuShowSummaryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuShowSummaryActionPerformed
         currentExperiment = (ExperimentPanel)jTabbedPaneMain.getSelectedComponent();
@@ -854,7 +856,6 @@ public class MassSieveFrame extends javax.swing.JFrame {
     private javax.swing.JSeparator jSeparator4;
     private javax.swing.JSeparator jSeparator5;
     private javax.swing.JSeparator jSeparatorCompare;
-    private javax.swing.JTabbedPane jTabbedPaneMain;
     // End of variables declaration//GEN-END:variables
     
 }
