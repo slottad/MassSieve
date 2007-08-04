@@ -26,7 +26,7 @@ public class PeptideHit implements Serializable, Comparable<PeptideHit> {
     private double ionScore;
     private double ident;
     private int Z;
-    private int cluster;
+    //private int cluster;
     private HashSet<ProteinHit> proteinHits;
     private HashSet<String> proteinNames;
     private boolean indeterminate;
@@ -173,13 +173,13 @@ public class PeptideHit implements Serializable, Comparable<PeptideHit> {
 //        end = i;
 //    }
     
-    public int getCluster() {
-        return cluster;
-    }
-    
-    public void setCluster(Integer c) {
-        cluster = c;
-    }
+//    public int getCluster() {
+//        return cluster;
+//    }
+//    
+//    public void setCluster(Integer c) {
+//        cluster = c;
+//    }
     
     public void setExpect(String s) {
         expect = Double.parseDouble(s);

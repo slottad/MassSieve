@@ -11,12 +11,15 @@ package gov.nih.nimh.mass_sieve.gui;
 
 import antlr.RecognitionException;
 import antlr.TokenStreamException;
+import com.javadocking.DockingManager;
+import com.javadocking.component.DefaultSwComponentFactory;
 import com.javadocking.dock.LeafDock;
 import com.javadocking.dock.Position;
 import com.javadocking.dock.SplitDock;
 import com.javadocking.dock.TabDock;
 import com.javadocking.dockable.DefaultDockable;
 import com.javadocking.dockable.DockingMode;
+import com.javadocking.model.FloatDockModel;
 import gov.nih.nimh.mass_sieve.*;
 import gov.nih.nimh.mass_sieve.io.FileInformation;
 import gov.nih.nimh.mass_sieve.io.ParseFile;
@@ -71,12 +74,20 @@ public class ExperimentPanel extends JPanel {
     private JSplitPane jSplitPaneMain;
     private JScrollPane graphPanel;
     private JPanel pepHitPanel, pepPanel, proPanel, detailPanel;
+    private FloatDockModel dockModel;
     private DefaultDockable pepHitDockable, pepDockable, proDockable, graphDockable, detailDockable;
     private JTree jTreeMain;
     private MassSieveFrame msFrame;
     
     //private String lowerFrameTitle, upperFrameTitle;
     
+    private class MyComponentFactory extends DefaultSwComponentFactory {
+        public JSplitPane createJSplitPane() {
+            JSplitPane splitPane = super.createJSplitPane();
+            splitPane.setDividerSize(5);
+            return splitPane;
+        }
+    }
     
     /** Creates a new instance of ExperimentPanel */
     public ExperimentPanel(MassSieveFrame frm, String name) {
@@ -102,8 +113,24 @@ public class ExperimentPanel extends JPanel {
         jTreeMain.setSelectionRow(0);
     }
     
+    public void resetDockingManager() {
+        DockingManager.setDockModel(dockModel);
+    }
+    
+    public void updateDockModel() {
+        DockingManager.setDockModel(dockModel);
+    }
+    
     private void initComponents() {
         setLayout(new BorderLayout());
+        
+        // Create the dock model for the docks.
+        dockModel = new FloatDockModel();
+        dockModel.addOwner(this.getName(), msFrame);
+        
+        // Give the dock model to the docking manager.
+        DockingManager.setComponentFactory(new MyComponentFactory());
+        DockingManager.setDockModel(dockModel);
         
         buttonGroupTreeSource = new ButtonGroup();
         jFileChooserLoad = new JFileChooser();
@@ -154,8 +181,8 @@ public class ExperimentPanel extends JPanel {
         
         // Add the root docks to the dock model.
         //dockModel.addRootDock("dock" + this.getName(), rootDock, msFrame);
-        msFrame.addRootDock("dock" + this.getName(), rootDock);
-        
+        //msFrame.addRootDock("dock" + this.getName(), rootDock);
+        dockModel.addRootDock("dock" + this.getName(), rootDock, msFrame);
         
         jFileChooserLoad.setDialogTitle("Open Files");
         jSplitPaneMain.setBorder(null);
@@ -353,7 +380,6 @@ public class ExperimentPanel extends JPanel {
         }
         if (nodeInfo instanceof Peptide) {
             Peptide p = (Peptide)nodeInfo;
-            msFrame.updateStatusMessage("Peptide " + p.getSequence() + " selected");
             PeptideCollection pc = pepCollection.getCluster(p.getCluster());
             updateGraphPanel(pc, p.getSequence());
             //upperFrameTitle = "Cluster " + p.getCluster();
@@ -368,7 +394,6 @@ public class ExperimentPanel extends JPanel {
         }
         if (nodeInfo instanceof Protein) {
             Protein p = (Protein)nodeInfo;
-            msFrame.updateStatusMessage("Protein " + p.getName() + " selected");
             PeptideCollection pc = pepCollection.getCluster(p.getCluster());
             updateGraphPanel(pc, p.getName());
             //upperFrameTitle = "Cluster " + p.getCluster();
@@ -481,12 +506,29 @@ public class ExperimentPanel extends JPanel {
         return detailPanel.getWidth();
     }
     
-    public void selectPeptide() {
+    public void showPeptideHit(PeptideHit ph) {
+        Peptide p = pepCollection.getMinPeptides().get(ph.getSequence());
         
-    }
-    
-    public void selectProtein() {
+        // Update peptide table
+        PeptideListPanel peptideListPanel = new PeptideListPanel(this);
+        ArrayList<Peptide> pepList = new ArrayList<Peptide>();
+        pepList.add(p);
+        peptideListPanel.addPeptideList(pepList, pepCollection.getExperimentSet());
+        updatePepPanel(peptideListPanel.createTable());
         
+        // Update protein table
+        ProteinListPanel proteinListPanel = new ProteinListPanel(this);
+        ArrayList<Protein> proList = new ArrayList<Protein>();
+        for (String proName:p.getProteins()) {
+            proList.add(pepCollection.getMinProteins().get(proName));
+        }
+        proteinListPanel.addProteinList(proList, pepCollection.getExperimentSet());
+        updateProPanel(proteinListPanel.createTable());
+        
+        // Update cluster view
+        //showCluster(p.getCluster());
+        PeptideCollection pc = pepCollection.getCluster(p.getCluster());
+        updateGraphPanel(pc, p.getSequence());
     }
     
     public void showPeptide(Peptide p, boolean updatePepTable) {
@@ -514,6 +556,8 @@ public class ExperimentPanel extends JPanel {
         updatePepHitPanel(lp.createTable());
         
         updateDetailPanel(new JLabel("No Data Availiable"));
+        
+        msFrame.updateStatusMessage("Peptide " + p.getSequence() + " selected");
     }
     
     public void showProtein(Protein p, boolean updateProTable) {
@@ -546,6 +590,8 @@ public class ExperimentPanel extends JPanel {
         PeptideListPanel peptideListPanel = new PeptideListPanel(this);
         peptideListPanel.addPeptideList(p.getAllPeptides(), pepCollection.getExperimentSet());
         updatePepPanel(peptideListPanel.createTable());
+        
+        msFrame.updateStatusMessage("Protein " + p.getName() + " selected");
     }
     
     public void showCluster(int i) {

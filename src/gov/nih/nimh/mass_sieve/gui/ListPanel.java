@@ -219,8 +219,8 @@ public class ListPanel {
             if(selectionModel.getSelected().size() > 0) {
                 Object selectedObject = selectionModel.getSelected().get(0);
                 if (!(prevObject == selectedObject)) {
+                    prevObject = selectedObject;
                     if (selectedObject instanceof SeparatorList.Separator) {
-                        prevObject = selectedObject;
                         SeparatorList.Separator<Protein> separator = (SeparatorList.Separator<Protein>)selectedObject;
                         if (useClusters) {
                             //expPanel.showClusterLower(separator.first().getCluster());
@@ -235,17 +235,18 @@ public class ListPanel {
                         }
                     }
                     if (selectedObject instanceof Protein) {
-                        prevObject = selectedObject;
                         Protein pro = (Protein)selectedObject;
                         expPanel.showProtein(pro, false);
                         expPanel.showCluster(pro.getCluster());
                     }
                     if (selectedObject instanceof Peptide) {
-                        prevObject = selectedObject;
                         Peptide pep = (Peptide)selectedObject;
                         expPanel.showPeptide(pep, false);
                         expPanel.showCluster(pep.getCluster());
-                        prevObject = selectedObject;
+                    }
+                    if (selectedObject instanceof PeptideHit) {
+                        PeptideHit pepHit = (PeptideHit)selectedObject;
+                        expPanel.showPeptideHit(pepHit);
                     }
                 }
             }

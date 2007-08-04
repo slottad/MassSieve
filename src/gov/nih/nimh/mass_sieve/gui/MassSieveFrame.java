@@ -60,17 +60,17 @@ public class MassSieveFrame extends javax.swing.JFrame {
     private MSFileFilter msFilter;
     private MSVFileFilter msvFilter;
     private FastaFileFilter fastaFilter;
-    private FloatDockModel dockModel;
+    //private FloatDockModel dockModel;
     private JTabbedPane jTabbedPaneMain;
     private StatusBar statusBar;
     
-    private class MyComponentFactory extends DefaultSwComponentFactory {
-        public JSplitPane createJSplitPane() {
-            JSplitPane splitPane = super.createJSplitPane();
-            splitPane.setDividerSize(5);
-            return splitPane;
-        }
-    }
+//    private class MyComponentFactory extends DefaultSwComponentFactory {
+//        public JSplitPane createJSplitPane() {
+//            JSplitPane splitPane = super.createJSplitPane();
+//            splitPane.setDividerSize(5);
+//            return splitPane;
+//        }
+//    }
     
     private class StatusBar extends JLabel {
         
@@ -92,6 +92,11 @@ public class MassSieveFrame extends javax.swing.JFrame {
         jTabbedPaneMain = new JTabbedPane();
         this.setSize(1000,750);
         getContentPane().add(jTabbedPaneMain, BorderLayout.CENTER);
+        jTabbedPaneMain.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                jTabbedPaneMainStateChanged(evt);
+            }
+        });
         statusBar = new StatusBar();
         getContentPane().add(statusBar, BorderLayout.SOUTH);
         proteinDB = new HashMap<String, ProteinInfo>();
@@ -119,13 +124,13 @@ public class MassSieveFrame extends javax.swing.JFrame {
         useMultiColumnSort = false;
         glType = GraphLayoutType.NODE_LINK_TREE;
         
-        // Create the dock model for the docks.
-        dockModel = new FloatDockModel();
-        dockModel.addOwner("msFrame", this);
-        
-        // Give the dock model to the docking manager.
-        DockingManager.setComponentFactory(new MyComponentFactory());
-        DockingManager.setDockModel(dockModel);
+//        // Create the dock model for the docks.
+//        dockModel = new FloatDockModel();
+//        dockModel.addOwner("msFrame", this);
+//
+//        // Give the dock model to the docking manager.
+//        DockingManager.setComponentFactory(new MyComponentFactory());
+//        DockingManager.setDockModel(dockModel);
         optDialog = new PreferencesDialog(this);
         batchLoadDialog = new BatchLoadDialog(this);
         expSet = new HashMap<String, ExperimentPanel>();
@@ -134,10 +139,14 @@ public class MassSieveFrame extends javax.swing.JFrame {
         statusBar.setMessage(message);
     }
     
-    public void addRootDock(String name, Dock dock) {
-        // Add the root docks to the dock model.
-        dockModel.addRootDock(name, dock, this);
+    private void jTabbedPaneMainStateChanged(javax.swing.event.ChangeEvent evt) {
+        currentExperiment = (ExperimentPanel)jTabbedPaneMain.getSelectedComponent();
+        currentExperiment.updateDockModel();
     }
+//    public void addRootDock(String name, Dock dock) {
+//        // Add the root docks to the dock model.
+//        dockModel.addRootDock(name, dock, this);
+//    }
     
     /** This method is called from within the constructor to
      * initialize the form.

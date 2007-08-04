@@ -125,9 +125,9 @@ public class Peptide implements Serializable, Comparable<Peptide> {
     
     public void setCluster(Integer c) {
         cluster = c;
-        for (PeptideHit p:peptideHits) {
-            p.setCluster(c);
-        }
+        //for (PeptideHit p:peptideHits) {
+        //    p.setCluster(c);
+        //}
     }
     
     public ArrayList<PeptideHit> getOmssa() {
