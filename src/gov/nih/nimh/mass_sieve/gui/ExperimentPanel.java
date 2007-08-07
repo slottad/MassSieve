@@ -20,6 +20,8 @@ import com.javadocking.dock.TabDock;
 import com.javadocking.dockable.DefaultDockable;
 import com.javadocking.dockable.DockingMode;
 import com.javadocking.model.FloatDockModel;
+import com.javadocking.model.codec.DockModelPropertiesDecoder;
+import com.javadocking.model.codec.DockModelPropertiesEncoder;
 import gov.nih.nimh.mass_sieve.*;
 import gov.nih.nimh.mass_sieve.io.FileInformation;
 import gov.nih.nimh.mass_sieve.io.ParseFile;
@@ -32,12 +34,14 @@ import java.awt.Frame;
 import java.awt.Toolkit;
 import java.awt.event.MouseEvent;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
@@ -78,6 +82,9 @@ public class ExperimentPanel extends JPanel {
     private DefaultDockable pepHitDockable, pepDockable, proDockable, graphDockable, detailDockable;
     private JTree jTreeMain;
     private MassSieveFrame msFrame;
+    private final static String DOCK_NAME = "MassSieve";
+    private final static String DOCK_FILE = "MassSieve.dck";
+    private SplitDock rootDock;
     
     //private String lowerFrameTitle, upperFrameTitle;
     
@@ -94,6 +101,7 @@ public class ExperimentPanel extends JPanel {
         msFrame = frm;
         this.setName(name);
         initComponents();
+        loadDockState();
         jFileChooserLoad.setMultiSelectionEnabled(true);
         allFiles = new ArrayList<File>();
         fileInfos = new ArrayList<FileInformation>();
@@ -113,8 +121,56 @@ public class ExperimentPanel extends JPanel {
         jTreeMain.setSelectionRow(0);
     }
     
-    public void resetDockingManager() {
-        DockingManager.setDockModel(dockModel);
+    public void loadDockState() {
+        // Try to decode the dock model from file.
+        DockModelPropertiesDecoder dockModelDecoder = new DockModelPropertiesDecoder();
+        if (dockModelDecoder.canDecodeSource(DOCK_FILE)) {
+            try {
+                // Create the map with the dockables, that the decoder needs.
+                Map dockablesMap = new HashMap();
+                dockablesMap.put(pepHitDockable.getID(), pepHitDockable);
+                dockablesMap.put(pepDockable.getID(), pepDockable);
+                dockablesMap.put(proDockable.getID(), proDockable);
+                dockablesMap.put(graphDockable.getID(), graphDockable);
+                dockablesMap.put(detailDockable.getID(), detailDockable);
+                
+                // Create the map with the owner windows, that the decoder needs.
+                Map ownersMap = new HashMap();
+                ownersMap.put(DOCK_NAME, msFrame);
+                
+                // Create the map with the visualizers, that the decoder needs.
+                Map visualizersMap = new HashMap();
+                //visualizersMap.put("maximizer", maximizer);
+                //visualizersMap.put("minimizer", minimizer);
+                
+                // Decode the file.
+                dockModel = (FloatDockModel)dockModelDecoder.decode(DOCK_FILE, dockablesMap, ownersMap, visualizersMap);
+                rootDock = (SplitDock)dockModel.getRootDock("msRootDock");
+                DockingManager.setDockModel(dockModel);
+                jSplitPaneMain.setRightComponent(rootDock);
+            } catch (FileNotFoundException fileNotFoundException){
+                System.out.println("Could not find the file [" + DOCK_FILE + "] with the saved dock model.");
+                System.out.println("Continuing with the default dock model.");
+            } catch (IOException ioException){
+                System.out.println("Could not decode a dock model: [" + ioException + "].");
+                ioException.printStackTrace();
+                System.out.println("Continuing with the default dock model.");
+            }
+        }
+    }
+    
+    public void saveDockState() {
+        DockModelPropertiesEncoder encoder = new DockModelPropertiesEncoder();
+        if (encoder.canExport(dockModel, DOCK_FILE)) {
+            try {
+                encoder.export(dockModel, DOCK_FILE);
+            } catch (Exception e) {
+                System.out.println("Error while saving the dock model.");
+                e.printStackTrace();
+            }
+        } else {
+            System.out.println("Could not save the dock model.");
+        }
     }
     
     public void updateDockModel() {
@@ -126,7 +182,8 @@ public class ExperimentPanel extends JPanel {
         
         // Create the dock model for the docks.
         dockModel = new FloatDockModel();
-        dockModel.addOwner(this.getName(), msFrame);
+        //dockModel.addOwner(this.getName(), msFrame);
+        dockModel.addOwner(DOCK_NAME, msFrame);
         
         // Give the dock model to the docking manager.
         DockingManager.setComponentFactory(new MyComponentFactory());
@@ -148,7 +205,7 @@ public class ExperimentPanel extends JPanel {
         proDockable = new DefaultDockable("pro", proPanel, "Proteins", null, DockingMode.ALL - DockingMode.FLOAT);
         graphDockable = new DefaultDockable("graph", graphPanel, "Cluster Graph", null, DockingMode.ALL - DockingMode.FLOAT);
         detailDockable = new DefaultDockable("detail", detailPanel, "Details", null, DockingMode.ALL - DockingMode.FLOAT);
-        SplitDock rootDock = new SplitDock();
+        rootDock = new SplitDock();
         //SplitDock topDock = new SplitDock();
         //SplitDock bottomDock = new SplitDock();
         //SplitDock rightDock = new SplitDock();
@@ -182,7 +239,8 @@ public class ExperimentPanel extends JPanel {
         // Add the root docks to the dock model.
         //dockModel.addRootDock("dock" + this.getName(), rootDock, msFrame);
         //msFrame.addRootDock("dock" + this.getName(), rootDock);
-        dockModel.addRootDock("dock" + this.getName(), rootDock, msFrame);
+        //dockModel.addRootDock("dock" + this.getName(), rootDock, msFrame);
+        dockModel.addRootDock("msRootDock", rootDock, msFrame);
         
         jFileChooserLoad.setDialogTitle("Open Files");
         jSplitPaneMain.setBorder(null);

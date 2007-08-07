@@ -758,6 +758,7 @@ public class MassSieveFrame extends javax.swing.JFrame {
     }
     
     private void jMenuQuitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuQuitActionPerformed
+        if (currentExperiment != null) currentExperiment.saveDockState();
         System.exit(0);
     }//GEN-LAST:event_jMenuQuitActionPerformed
     
