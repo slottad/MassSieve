@@ -84,6 +84,7 @@ public class ExperimentPanel extends JPanel {
     private MassSieveFrame msFrame;
     private final static String DOCK_NAME = "MassSieve";
     private final static String DOCK_FILE = "MassSieve.dck";
+    private final static String ROOT_DOCK = "msRootDock";
     private SplitDock rootDock;
     
     //private String lowerFrameTitle, upperFrameTitle;
@@ -140,13 +141,10 @@ public class ExperimentPanel extends JPanel {
                 
                 // Create the map with the visualizers, that the decoder needs.
                 Map visualizersMap = new HashMap();
-                //visualizersMap.put("maximizer", maximizer);
-                //visualizersMap.put("minimizer", minimizer);
                 
                 // Decode the file.
                 dockModel = (FloatDockModel)dockModelDecoder.decode(DOCK_FILE, dockablesMap, ownersMap, visualizersMap);
-                rootDock = (SplitDock)dockModel.getRootDock("msRootDock");
-                DockingManager.setDockModel(dockModel);
+                rootDock = (SplitDock)dockModel.getRootDock(ROOT_DOCK);
                 jSplitPaneMain.setRightComponent(rootDock);
             } catch (FileNotFoundException fileNotFoundException){
                 System.out.println("Could not find the file [" + DOCK_FILE + "] with the saved dock model.");
@@ -157,6 +155,7 @@ public class ExperimentPanel extends JPanel {
                 System.out.println("Continuing with the default dock model.");
             }
         }
+        DockingManager.setDockModel(dockModel);
     }
     
     public void saveDockState() {
@@ -172,11 +171,7 @@ public class ExperimentPanel extends JPanel {
             System.out.println("Could not save the dock model.");
         }
     }
-    
-    public void updateDockModel() {
-        DockingManager.setDockModel(dockModel);
-    }
-    
+        
     private void initComponents() {
         setLayout(new BorderLayout());
         
@@ -206,41 +201,22 @@ public class ExperimentPanel extends JPanel {
         graphDockable = new DefaultDockable("graph", graphPanel, "Cluster Graph", null, DockingMode.ALL - DockingMode.FLOAT);
         detailDockable = new DefaultDockable("detail", detailPanel, "Details", null, DockingMode.ALL - DockingMode.FLOAT);
         rootDock = new SplitDock();
-        //SplitDock topDock = new SplitDock();
-        //SplitDock bottomDock = new SplitDock();
-        //SplitDock rightDock = new SplitDock();
         TabDock tabDockTop = new TabDock();
         TabDock tabDockBottom = new TabDock();
-        //TabDock tabDock3 = new TabDock();
-        //TabDock tabDock4 = new TabDock();
-        //TabDock tabDock5 = new TabDock();
         
         tabDockTop.addDockable(proDockable, new Position(0));
         tabDockTop.addDockable(pepDockable, new Position(1));
         tabDockTop.addDockable(pepHitDockable, new Position(2));
         tabDockBottom.addDockable(graphDockable, new Position(0));
         tabDockBottom.addDockable(detailDockable, new Position(1));
-        //leftDock.addChildDock(tabDock1, new Position(Position.TOP));
-        //leftSubDock.addChildDock(tabDock2, new Position(Position.TOP));
-        //leftSubDock.addChildDock(tabDock3, new Position(Position.BOTTOM));
-        //leftDock.addChildDock(leftSubDock, new Position(Position.BOTTOM));
-        //rightDock.addChildDock(tabDock4, new Position(Position.TOP));
-        //rightDock.addChildDock(tabDock5, new Position(Position.BOTTOM));
         rootDock.addChildDock(tabDockTop, new Position(Position.TOP));
         rootDock.addChildDock(tabDockBottom, new Position(Position.BOTTOM));
         tabDockTop.setSelectedDockable(proDockable);
         tabDockBottom.setSelectedDockable(graphDockable);
-        //rootDock.setSingleChildDock(tabDock);
         rootDock.setDividerLocation(400);
-        //rightDock.setDividerLocation(400);
-        //leftDock.setDividerLocation(300);
-        //leftSubDock.setDividerLocation(200);
         
         // Add the root docks to the dock model.
-        //dockModel.addRootDock("dock" + this.getName(), rootDock, msFrame);
-        //msFrame.addRootDock("dock" + this.getName(), rootDock);
-        //dockModel.addRootDock("dock" + this.getName(), rootDock, msFrame);
-        dockModel.addRootDock("msRootDock", rootDock, msFrame);
+        dockModel.addRootDock(ROOT_DOCK, rootDock, msFrame);
         
         jFileChooserLoad.setDialogTitle("Open Files");
         jSplitPaneMain.setBorder(null);
@@ -440,7 +416,6 @@ public class ExperimentPanel extends JPanel {
             Peptide p = (Peptide)nodeInfo;
             PeptideCollection pc = pepCollection.getCluster(p.getCluster());
             updateGraphPanel(pc, p.getSequence());
-            //upperFrameTitle = "Cluster " + p.getCluster();
             ArrayList<Protein> proteins = new ArrayList<Protein>();
             for (String pName:p.getProteins()) {
                 proteins.add(pepCollection.getMinProteins().get(pName));
@@ -454,7 +429,6 @@ public class ExperimentPanel extends JPanel {
             Protein p = (Protein)nodeInfo;
             PeptideCollection pc = pepCollection.getCluster(p.getCluster());
             updateGraphPanel(pc, p.getName());
-            //upperFrameTitle = "Cluster " + p.getCluster();
             showProtein(p, true);
         }
         if (nodeInfo instanceof PeptideCollection) {
@@ -533,7 +507,6 @@ public class ExperimentPanel extends JPanel {
         graphPanel.validate();
         new Thread(new Runnable() {
             public void run() {
-                //Display display = (Display)jSplitPaneSecondary.getTopComponent();
                 try {
                     Thread.sleep(250);
                 } catch (InterruptedException e) {}
@@ -587,6 +560,7 @@ public class ExperimentPanel extends JPanel {
         //showCluster(p.getCluster());
         PeptideCollection pc = pepCollection.getCluster(p.getCluster());
         updateGraphPanel(pc, p.getSequence());
+        msFrame.updateStatusMessage("Peptide Hit " + p.getSequence() + " (Scan: " + ph.getScanNum() + ") selected");
     }
     
     public void showPeptide(Peptide p, boolean updatePepTable) {

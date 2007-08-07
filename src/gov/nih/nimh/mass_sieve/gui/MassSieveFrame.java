@@ -55,22 +55,13 @@ public class MassSieveFrame extends javax.swing.JFrame {
     private GraphLayoutType glType;
     private PreferencesDialog optDialog;
     private BatchLoadDialog batchLoadDialog;
-    //private static HashMap<String, RichSequence> proteinDB  = new HashMap<String, RichSequence>();
     private static HashMap<String, ProteinInfo> proteinDB;
     private MSFileFilter msFilter;
     private MSVFileFilter msvFilter;
     private FastaFileFilter fastaFilter;
-    //private FloatDockModel dockModel;
     private JTabbedPane jTabbedPaneMain;
     private StatusBar statusBar;
     
-//    private class MyComponentFactory extends DefaultSwComponentFactory {
-//        public JSplitPane createJSplitPane() {
-//            JSplitPane splitPane = super.createJSplitPane();
-//            splitPane.setDividerSize(5);
-//            return splitPane;
-//        }
-//    }
     
     private class StatusBar extends JLabel {
         
@@ -124,29 +115,22 @@ public class MassSieveFrame extends javax.swing.JFrame {
         useMultiColumnSort = false;
         glType = GraphLayoutType.NODE_LINK_TREE;
         
-//        // Create the dock model for the docks.
-//        dockModel = new FloatDockModel();
-//        dockModel.addOwner("msFrame", this);
-//
-//        // Give the dock model to the docking manager.
-//        DockingManager.setComponentFactory(new MyComponentFactory());
-//        DockingManager.setDockModel(dockModel);
         optDialog = new PreferencesDialog(this);
         batchLoadDialog = new BatchLoadDialog(this);
         expSet = new HashMap<String, ExperimentPanel>();
+        updateStatusMessage("Please create or load an experiment");
     }
     public void updateStatusMessage(String message) {
         statusBar.setMessage(message);
     }
     
     private void jTabbedPaneMainStateChanged(javax.swing.event.ChangeEvent evt) {
+        if (currentExperiment != null && currentExperiment != (ExperimentPanel)jTabbedPaneMain.getSelectedComponent()) {
+            currentExperiment.saveDockState();
+        }
         currentExperiment = (ExperimentPanel)jTabbedPaneMain.getSelectedComponent();
-        currentExperiment.updateDockModel();
+        currentExperiment.loadDockState();
     }
-//    public void addRootDock(String name, Dock dock) {
-//        // Add the root docks to the dock model.
-//        dockModel.addRootDock(name, dock, this);
-//    }
     
     /** This method is called from within the constructor to
      * initialize the form.
@@ -191,6 +175,12 @@ public class MassSieveFrame extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("MassSieve v0.99");
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                formWindowClosing(evt);
+            }
+        });
+
         jMenuFile.setText("File");
         jMenuNewExperiment.setText("New Experiment");
         jMenuNewExperiment.addActionListener(new java.awt.event.ActionListener() {
@@ -369,6 +359,12 @@ public class MassSieveFrame extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+    
+    private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
+        if (currentExperiment != null) {
+            currentExperiment.saveDockState();
+        }
+    }//GEN-LAST:event_formWindowClosing
     
     private void jMenuSaveExpSetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuSaveExpSetActionPerformed
         jFileChooserLoad.setFileFilter(msvFilter);
@@ -682,22 +678,7 @@ public class MassSieveFrame extends javax.swing.JFrame {
             pInfoOld.update(pInfo);
         }
     }
-    
-//    public static void addProtein(String pname, RichSequence rs) {
-//        if (!proteinDB.containsKey(pname)) {
-//            proteinDB.put(pname, rs);
-//        } else {
-//            RichSequence mainRS = proteinDB.get(pname);
-//            if (mainRS == null) {
-//                proteinDB.put(pname,rs);
-//            } else {
-//                if (mainRS.getDescription().length() < rs.getDescription().length()) {
-//                    mainRS.setDescription(rs.getDescription());
-//                }
-//            }
-//        }
-//    }
-    
+        
     public static ProteinInfo getProtein(String pName) {
         return proteinDB.get(pName);
     }
@@ -776,15 +757,7 @@ public class MassSieveFrame extends javax.swing.JFrame {
         String res = new String("Memory used: " + val + "MB");
         return res;
     }
-    
-//    private String checkStackSize() {
-//        Runtime.getRuntime().
-//        long val = (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory())/1024;
-//        val /= 1024;
-//        String res = new String("Memory used: " + val + "MB");
-//        return res;
-//    }
-    
+        
     private String checkAvailMem() {
         long val = (Runtime.getRuntime().totalMemory())/1024;
         val /= 1024;
