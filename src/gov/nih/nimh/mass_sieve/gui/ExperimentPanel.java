@@ -560,7 +560,7 @@ public class ExperimentPanel extends JPanel {
         //showCluster(p.getCluster());
         PeptideCollection pc = pepCollection.getCluster(p.getCluster());
         updateGraphPanel(pc, p.getSequence());
-        msFrame.updateStatusMessage("Peptide Hit " + p.getSequence() + " (Scan: " + ph.getScanNum() + ") selected");
+        msFrame.updateStatusMessage("Peptide Hit " + p.getSequence() + " (Scan:" + ph.getScanNum() + ", " + ph.getSourceType() + ", Query: " + ph.getQueryNum() + ") selected");
     }
     
     public void showPeptide(Peptide p, boolean updatePepTable) {

@@ -62,7 +62,6 @@ public class MassSieveFrame extends javax.swing.JFrame {
     private JTabbedPane jTabbedPaneMain;
     private StatusBar statusBar;
     
-    
     private class StatusBar extends JLabel {
         
         /** Creates a new instance of StatusBar */
@@ -114,7 +113,6 @@ public class MassSieveFrame extends javax.swing.JFrame {
         digestName = "Trypsin";
         useMultiColumnSort = false;
         glType = GraphLayoutType.NODE_LINK_TREE;
-        
         optDialog = new PreferencesDialog(this);
         batchLoadDialog = new BatchLoadDialog(this);
         expSet = new HashMap<String, ExperimentPanel>();
@@ -125,11 +123,13 @@ public class MassSieveFrame extends javax.swing.JFrame {
     }
     
     private void jTabbedPaneMainStateChanged(javax.swing.event.ChangeEvent evt) {
-        if (currentExperiment != null && currentExperiment != (ExperimentPanel)jTabbedPaneMain.getSelectedComponent()) {
-            currentExperiment.saveDockState();
+        if (jTabbedPaneMain.getSelectedComponent() instanceof ExperimentPanel) {
+            if (currentExperiment != null && currentExperiment != (ExperimentPanel)jTabbedPaneMain.getSelectedComponent()) {
+                currentExperiment.saveDockState();
+            }
+            currentExperiment = (ExperimentPanel)jTabbedPaneMain.getSelectedComponent();
+            currentExperiment.loadDockState();
         }
-        currentExperiment = (ExperimentPanel)jTabbedPaneMain.getSelectedComponent();
-        currentExperiment.loadDockState();
     }
     
     /** This method is called from within the constructor to
@@ -389,8 +389,10 @@ public class MassSieveFrame extends javax.swing.JFrame {
                 os.writeObject(proteinDB);
                 os.close();
             } catch (FileNotFoundException ex) {
+                jOptionPaneAbout.showMessageDialog(this, "Unable to save file", "File Error", jOptionPaneAbout.ERROR_MESSAGE);
                 ex.printStackTrace();
             } catch (IOException ex) {
+                jOptionPaneAbout.showMessageDialog(this, "Unable to save file", "File Error", jOptionPaneAbout.ERROR_MESSAGE);
                 ex.printStackTrace();
             }
         }
@@ -413,8 +415,6 @@ public class MassSieveFrame extends javax.swing.JFrame {
                     Experiment exp = (Experiment) obj;
                     if (this.createExperiment(exp.getName())) {
                         currentExperiment.reloadData(exp);
-                        // Figure out why this was here
-                        //for (String proName:currentExperiment.getProteins().keySet()) this.addProtein(proName);
                     }
                 }
                 obj = oin.readObject();
@@ -423,10 +423,13 @@ public class MassSieveFrame extends javax.swing.JFrame {
                     this.addProtein(pi);
                 }
             } catch (FileNotFoundException ex) {
+                jOptionPaneAbout.showMessageDialog(this, "Unable to open file", "File Error", jOptionPaneAbout.ERROR_MESSAGE);
                 ex.printStackTrace();
             } catch (ClassNotFoundException ex) {
+                jOptionPaneAbout.showMessageDialog(this, "File format does not match current MassSieve version", "File Error", jOptionPaneAbout.ERROR_MESSAGE);
                 ex.printStackTrace();
             } catch (IOException ex) {
+                jOptionPaneAbout.showMessageDialog(this, "Unable to open file", "File Error", jOptionPaneAbout.ERROR_MESSAGE);
                 ex.printStackTrace();
             }
         }
@@ -439,6 +442,7 @@ public class MassSieveFrame extends javax.swing.JFrame {
             File selectedFile = jFileChooserLoad.getSelectedFile();
             currentExperiment = (ExperimentPanel)jTabbedPaneMain.getSelectedComponent();
             try {
+                selectedFile = addExtension(selectedFile);
                 if (!selectedFile.createNewFile()) {
                     status = jOptionPaneAbout.showConfirmDialog(this,
                             selectedFile.getName() + " exists, are you sure you wish to overwrite it?",
@@ -452,12 +456,21 @@ public class MassSieveFrame extends javax.swing.JFrame {
                 os.writeObject(proteinDB);
                 os.close();
             } catch (FileNotFoundException ex) {
+                jOptionPaneAbout.showMessageDialog(this, "Unable to save file", "File Error", jOptionPaneAbout.ERROR_MESSAGE);
                 ex.printStackTrace();
             } catch (IOException ex) {
+                jOptionPaneAbout.showMessageDialog(this, "Unable to save file", "File Error", jOptionPaneAbout.ERROR_MESSAGE);
                 ex.printStackTrace();
             }
         }
     }//GEN-LAST:event_jMenuSaveExpActionPerformed
+    
+    private File addExtension(File file) throws IOException {
+        if (!file.getCanonicalPath().endsWith(".msv")) {
+            return new File(file.getCanonicalPath() + ".msv");
+        }
+        return file;
+    }
     
     private void jMenuShowSummaryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuShowSummaryActionPerformed
         currentExperiment = (ExperimentPanel)jTabbedPaneMain.getSelectedComponent();
@@ -495,8 +508,10 @@ public class MassSieveFrame extends javax.swing.JFrame {
                 }
                 jOptionPaneAbout.showMessageDialog(this, "Exported " + seqCount + " sequences.");
             } catch (FileNotFoundException ex) {
+                jOptionPaneAbout.showMessageDialog(this, "Unable to export sequences", "File Error", jOptionPaneAbout.ERROR_MESSAGE);
                 ex.printStackTrace();
             } catch (IOException ex) {
+                jOptionPaneAbout.showMessageDialog(this, "Unable to export sequences", "File Error", jOptionPaneAbout.ERROR_MESSAGE);
                 ex.printStackTrace();
             }
         }
