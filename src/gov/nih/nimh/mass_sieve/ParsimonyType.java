@@ -10,7 +10,7 @@
 package gov.nih.nimh.mass_sieve;
 
 /**
- *
- * @author slotta
+ * Enumerates that parsimony classes for proteins.
+ * @author Douglas J. Slotta
  */
 public enum ParsimonyType { DISTINCT, SHARED, EQUIVALENT, SUBSET, SUPERSET, SUBSUMABLE, DIFFERENTIABLE, DISCRETE, ERROR };

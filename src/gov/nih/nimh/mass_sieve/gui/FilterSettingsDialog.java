@@ -259,7 +259,7 @@ public class FilterSettingsDialog extends JDialog {
         filterSettings.setUseIndeterminates(useIndeterminates);
         filterSettings.setFilterPeptides(filterPeptides);
         setVisible(false);
-        if (filterPeptides) filterSettings.setPHitCutoffCount(pepHitCount.getNumber().intValue());
+        if (filterPeptides) filterSettings.setPepHitCutoffCount(pepHitCount.getNumber().intValue());
         filterSettings.setFilterProteins(filterProteins);
         if (filterProteins) filterSettings.setPeptideCutoffCount(peptideCount.getNumber().intValue());
         filterSettings.setFilterCoverage(filterCoverage);
@@ -279,7 +279,7 @@ public class FilterSettingsDialog extends JDialog {
         this.setPepFilterField(filterSettings.getFilterText());
         this.setUseIndeterminates(filterSettings.getUseIndeterminates());
         this.setFilterPeptides(filterSettings.getFilterPeptides());
-        this.setPepHitCount(filterSettings.getPHitCutoffCount());
+        this.setPepHitCount(filterSettings.getPepHitCutoffCount());
         this.setFilterProteins(filterSettings.getFilterProteins());
         this.setPeptideCount(filterSettings.getPeptideCutoffCount());
     }

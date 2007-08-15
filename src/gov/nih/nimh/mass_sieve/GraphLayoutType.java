@@ -10,7 +10,7 @@
 package gov.nih.nimh.mass_sieve;
 
 /**
- *
- * @author slotta
+ * This enumerates the possible algorithms for graph layouts for the peptide-protein graphs.
+ * @author Douglas J. Slotta
  */
 public enum GraphLayoutType { BALLOON_TREE, FORCE_DIRECTED, NODE_LINK_TREE, RADIAL_TREE }

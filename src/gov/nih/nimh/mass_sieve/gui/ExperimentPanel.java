@@ -305,7 +305,7 @@ public class ExperimentPanel extends JPanel {
         pepFiltered = pepFiltered.getCutoffCollection(filterSettings.getOmssaCutoff(), filterSettings.getMascotCutoff(), filterSettings.getXtandemCutoff(), filterSettings.getUseIonIdent());
         pepFiltered = FilterBySearchProgram(pepFiltered);
         if (filterSettings.getFilterPeptides()) {
-            pepFiltered = pepFiltered.getPeptidesByHits(filterSettings.getPHitCutoffCount());
+            pepFiltered = pepFiltered.getPeptidesByHits(filterSettings.getPepHitCutoffCount());
         }
         pepFiltered.createProteinList();
         if (filterSettings.getFilterProteins()) {

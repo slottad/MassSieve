@@ -20,6 +20,10 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.tree.DefaultMutableTreeNode;
 
+/**
+ * Holds all the information pertaining to a given peptide. Including all of its peptide hits
+ * and proteins it belongs to. A peptide can be viewed as a collection of peptide hits.
+ */
 public class Peptide implements Serializable, Comparable<Peptide> {
     private String sequence;
     private ArrayList<PeptideHit> peptideHits;
@@ -41,7 +45,8 @@ public class Peptide implements Serializable, Comparable<Peptide> {
     transient private PeptideHitPanel infoPanel;
     
     /**
-     * Creates a new instance of Peptide
+     * Creates a new instance of Peptide from a peptide hit.
+     * @param p The initial peptide hit that forms the basis for this peptide.
      */
     public Peptide(PeptideHit p) {
         sequence = p.getSequence();
@@ -61,6 +66,10 @@ public class Peptide implements Serializable, Comparable<Peptide> {
         this.addPeptideHit(p);
     }
     
+    /**
+     * Adds a new PeptideHit to the peptide object.  Must have the same peptide sequence.
+     * @param p The peptide hit to be added.
+     */
     public void addPeptideHit(PeptideHit p) {
         if (!p.getSequence().contentEquals(sequence)) {
             System.err.println(sequence);
@@ -111,18 +120,34 @@ public class Peptide implements Serializable, Comparable<Peptide> {
         fileSet.add(p.getRawFile());
     }
     
+    /**
+     * Returns the amino acid sequence for this peptide
+     * @return The string of amino acids.
+     */
     public String getSequence() {
         return sequence;
     }
     
+    /**
+     * Retrieves the list of PeptideHits
+     * @return list of PeptideHits
+     */
     public ArrayList<PeptideHit> getPeptideHits() {
         return peptideHits;
     }
     
+    /**
+     * Retrieves the number of the cluster that this peptide belongs to.
+     * @return Cluster number
+     */
     public int getCluster() {
         return cluster;
     }
     
+    /**
+     * Sets the number of the cluster that the peptide belongs to.
+     * @param c Cluster number
+     */
     public void setCluster(Integer c) {
         cluster = c;
         //for (PeptideHit p:peptideHits) {
@@ -130,19 +155,40 @@ public class Peptide implements Serializable, Comparable<Peptide> {
         //}
     }
     
+    /**
+     * Returns the list of PeptideHits found by OMSSA.
+     * @return The list of PeptideHits found by OMSSA
+     */
     public ArrayList<PeptideHit> getOmssa() {
         return omssa;
     }
+    /**
+     * Returns the list of PeptideHits found by X!Tandem
+     * @return The list of PeptideHits found by X!Tandem
+     */
     public ArrayList<PeptideHit> getXTandem() {
         return xtandem;
     }
+    /**
+     * Returns the list of PeptideHits found by Mascot
+     * @return The list of PeptideHits found by Mascot
+     */
     public ArrayList<PeptideHit> getMascot() {
         return mascot;
     }
+    /**
+     * Returns a list of the names of the proteins to which this peptide belongs
+     * @return List of protein names
+     */
     public HashSet<String> getProteins() {
         return proteinSet;
     }
     
+    /**
+     * Since the proteins are constructed after the peptides, this method allows the protein objects
+     * to be added to the peptide.
+     * @param mProteins The set of proteins to be updated
+     */
     public void updateProteins(HashMap<String, Protein> mProteins) {
         proteinList = new ArrayList<Protein>();
         Iterator<String> i = proteinSet.iterator();
@@ -152,14 +198,22 @@ public class Peptide implements Serializable, Comparable<Peptide> {
         }
     }
     
-    public DefaultMutableTreeNode getTree() {
-        DefaultMutableTreeNode node = new DefaultMutableTreeNode(this);
-        for (Protein pro:proteinList) {
-            node.add(new DefaultMutableTreeNode(pro));
-        }
-        return node;
-    }
+    /**
+     * 
+     * @return 
+     */
+//    public DefaultMutableTreeNode getTree() {
+//        DefaultMutableTreeNode node = new DefaultMutableTreeNode(this);
+//        for (Protein pro:proteinList) {
+//            node.add(new DefaultMutableTreeNode(pro));
+//        }
+//        return node;
+//    }
     
+    /**
+     * 
+     * @return 
+     */
     public String getSourceTypes() {
         StringBuilder sb = new StringBuilder();
         if (containsMascot()) {
@@ -176,31 +230,55 @@ public class Peptide implements Serializable, Comparable<Peptide> {
         return sb.toString();
     }
     
+    /**
+     * 
+     * @return 
+     */
     public boolean containsOmssa() {
         if ( omssa.size() > 0 ) return true;
         return false;
     }
     
+    /**
+     * 
+     * @return 
+     */
     public boolean containsMascot() {
         if ( mascot.size() > 0 ) return true;
         return false;
     }
     
+    /**
+     * 
+     * @return 
+     */
     public boolean containsXTandem() {
         if ( xtandem.size() > 0 ) return true;
         return false;
     }
     
+    /**
+     * 
+     * @return 
+     */
     public boolean containsSequest() {
         if ( sequest.size() > 0 ) return true;
         return false;
     }
     
+    /**
+     * 
+     * @return 
+     */
     public String toString() {
         //return sequence + " (" + proteinSet.size() + ")";
         return sequence;
     }
     
+    /**
+     * 
+     * @return 
+     */
     public String toCSVString() {
         return sequence + ","
                 + getNumPeptideHits() + ","
@@ -211,19 +289,40 @@ public class Peptide implements Serializable, Comparable<Peptide> {
                 + getSourceTypes();
     }
     
+    /**
+     * 
+     * @return 
+     */
     public Integer getNumPeptideHits() {
         return uniqueScanNumbers.size();
     }
+    /**
+     * 
+     * @return 
+     */
     public Integer getNumProteins() {
         return proteinSet.size();
     }
+    /**
+     * 
+     * @return 
+     */
     public Double getTheoreticalMass() {
         return theoreticalMass;
     }
+    /**
+     * 
+     * @return 
+     */
     public Integer getLength() {
         return sequence.length();
     }
     
+    /**
+     * 
+     * @param ePanel 
+     * @return 
+     */
     public JPanel getInfoPanel(ExperimentPanel ePanel) {
         if (infoPanel == null) {
             infoPanel = new PeptideHitPanel(this, ePanel);
@@ -231,6 +330,11 @@ public class Peptide implements Serializable, Comparable<Peptide> {
         return infoPanel;
     }
     
+    /**
+     * 
+     * @param ePanel 
+     * @return 
+     */
     public JScrollPane getJTable(ExperimentPanel ePanel) {
         PeptideHitListPanel lp = new PeptideHitListPanel(ePanel);
         lp.addPeptideHitList(peptideHits);
@@ -243,18 +347,34 @@ public class Peptide implements Serializable, Comparable<Peptide> {
 //        return lp.createTable();
 //    }
     
+    /**
+     * 
+     * @return 
+     */
     public ParsimonyType getPeptideType() {
         return pType;
     }
     
+    /**
+     * 
+     * @return 
+     */
     public HashSet<String> getExperimentSet() {
         return experimentSet;
     }
     
+    /**
+     * 
+     * @return 
+     */
     public HashSet<String> getFileSet() {
         return fileSet;
     }
     
+    /**
+     * 
+     * @return 
+     */
     public String getExperimentList() {
         if (experimentList == null) {
             String buf = null;
@@ -272,6 +392,10 @@ public class Peptide implements Serializable, Comparable<Peptide> {
         return experimentList;
     }
     
+    /**
+     * 
+     * @return 
+     */
     public String getFileList() {
         if (fileList == null) {
             String buf = null;
@@ -289,10 +413,19 @@ public class Peptide implements Serializable, Comparable<Peptide> {
         return fileList;
     }
     
+    /**
+     * 
+     * @param p 
+     * @return 
+     */
     public int compareTo(Peptide p) {
         return sequence.compareTo(p.getSequence());
     }
     
+    /**
+     * 
+     * @return 
+     */
     public PeptideIndeterminacyType getIndeterminateType() {
         return indeterminateType;
     }
