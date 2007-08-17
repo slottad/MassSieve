@@ -281,7 +281,7 @@ public class PeptideCollection implements Serializable, Comparable<PeptideCollec
         return new DefaultTreeModel(root);
     }
     
-    public PeptideProteinNameSet getPeptideProteinNameSet() {
+    private PeptideProteinNameSet getPeptideProteinNameSet() {
         PeptideProteinNameSet pps = new PeptideProteinNameSet();
         pps.setPeptides(minPeptides.keySet());
         pps.setProteins(minProteins.keySet());

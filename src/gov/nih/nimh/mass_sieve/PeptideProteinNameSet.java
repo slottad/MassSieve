@@ -25,30 +25,58 @@ public class PeptideProteinNameSet {
         name = "Generic Peptide Protein Set";
     }
 
+    /**
+     * 
+     * @return 
+     */
     public Set<String> getPeptides() {
         return peptides;
     }
 
+    /**
+     * 
+     * @param peptides 
+     */
     public void setPeptides(Set<String> peptides) {
         this.peptides = peptides;
     }
 
+    /**
+     * 
+     * @return 
+     */
     public Set<String> getProteins() {
         return proteins;
     }
 
+    /**
+     * 
+     * @param proteins 
+     */
     public void setProteins(Set<String> proteins) {
         this.proteins = proteins;
     }
 
+    /**
+     * 
+     * @return 
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * 
+     * @param name 
+     */
     public void setName(String name) {
         this.name = name;
     }
     
+    /**
+     * 
+     * @return 
+     */
     public String toString() {
         return name;
     }
