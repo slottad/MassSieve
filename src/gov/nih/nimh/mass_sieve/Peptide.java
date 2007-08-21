@@ -199,8 +199,8 @@ public class Peptide implements Serializable, Comparable<Peptide> {
     }
     
     /**
-     * 
-     * @return 
+     *
+     * @return
      */
 //    public DefaultMutableTreeNode getTree() {
 //        DefaultMutableTreeNode node = new DefaultMutableTreeNode(this);
@@ -214,7 +214,7 @@ public class Peptide implements Serializable, Comparable<Peptide> {
      * Retreives a string listing the search engines which found this Peptide
      * @return An alphabetical list of search engines.
      */
-    public String getSourceTypes() {
+    public String getSourceTypes(boolean useQuotes) {
         StringBuilder sb = new StringBuilder();
         if (containsMascot()) {
             sb.append("MASCOT");
@@ -231,11 +231,15 @@ public class Peptide implements Serializable, Comparable<Peptide> {
             if (sb.length() > 0) sb.append(",");
             sb.append("XTANDEM");
         }
+        if (useQuotes) {
+            sb.insert(0,'"');
+            sb.append('"');
+        }
         return sb.toString();
     }
     
     /**
-     * Retrns True if an of the PeptideHits contained by this Peptide were found by OMSSA, false otherwise.
+     * Retrns True if any of the PeptideHits contained by this Peptide were found by OMSSA, false otherwise.
      * @return True if found by the OMSSA algorithm, false otherwise.
      */
     public boolean containsOmssa() {
@@ -244,7 +248,7 @@ public class Peptide implements Serializable, Comparable<Peptide> {
     }
     
     /**
-     * Retrns True if an of the PeptideHits contained by this Peptide were found by Mascot, false otherwise.
+     * Retrns True if any of the PeptideHits contained by this Peptide were found by Mascot, false otherwise.
      * @return True if found by the Mascot algorithm, false otherwise.
      */
     public boolean containsMascot() {
@@ -253,7 +257,7 @@ public class Peptide implements Serializable, Comparable<Peptide> {
     }
     
     /**
-     * Retrns True if an of the PeptideHits contained by this Peptide were found by X!Tandem, false otherwise.
+     * Retrns True if any of the PeptideHits contained by this Peptide were found by X!Tandem, false otherwise.
      * @return True if found by the X!Tandem algorithm, false otherwise.
      */
     public boolean containsXTandem() {
@@ -262,7 +266,7 @@ public class Peptide implements Serializable, Comparable<Peptide> {
     }
     
     /**
-     * Retrns True if an of the PeptideHits contained by this Peptide were found by Sequest, false otherwise.
+     * Retrns True if any of the PeptideHits contained by this Peptide were found by Sequest, false otherwise.
      * @return True if found by the Sequest algorithm, false otherwise.
      */
     public boolean containsSequest() {
@@ -283,14 +287,23 @@ public class Peptide implements Serializable, Comparable<Peptide> {
      * A string-ified version of this peptide for exporting purposes.
      * @return A CVS string for this peptide
      */
-    public String toCSVString() {
-        return sequence + ","
-                + getNumPeptideHits() + ","
+    public String toCSVString(HashSet<String> exp) {
+        StringBuilder pepHitsStr = new StringBuilder();
+        
+        if (exp.size() > 1) {
+            for (String e:exp) {
+                pepHitsStr.append(getNumPeptideHits(e).toString() + ",");
+            }
+        } else {
+            pepHitsStr.append(getNumPeptideHits().toString() + ",");
+        }
+        return sequence + "," + pepHitsStr
+                //+ getNumPeptideHits() + ","
                 + getLength() + ","
                 + getNumProteins() + ","
                 + getTheoreticalMass() + ","
                 + getPeptideType() + ","
-                + getSourceTypes();
+                + getSourceTypes(true);
     }
     
     /**
@@ -300,6 +313,18 @@ public class Peptide implements Serializable, Comparable<Peptide> {
     public Integer getNumPeptideHits() {
         return uniqueScanNumbers.size();
     }
+    
+    public Integer getNumPeptideHits(String exp) {
+        HashSet<String> scanNumbers = new HashSet<String>();
+        for (PeptideHit p:peptideHits) {
+            if (exp.equals(p.getExperiment())) {
+                String combName = p.getSourceFile() + p.getScanNum();
+                scanNumbers.add(combName);
+            }
+        }
+        return scanNumbers.size();
+    }
+    
     /**
      * Returns the number of proteins that contain this peptide
      * @return The number of proteins that contain this peptide.
@@ -326,7 +351,7 @@ public class Peptide implements Serializable, Comparable<Peptide> {
     /**
      * Returns a table containing a list of all PeptideHits
      * @param ePanel The current experiment panel
-     * @return A table containing the list of PeptideHits 
+     * @return A table containing the list of PeptideHits
      */
     public JScrollPane getJTable(ExperimentPanel ePanel) {
         PeptideHitListPanel lp = new PeptideHitListPanel(ePanel);

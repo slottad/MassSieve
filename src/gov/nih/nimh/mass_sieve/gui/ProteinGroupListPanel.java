@@ -60,6 +60,7 @@ public class ProteinGroupListPanel extends ProteinListPanel {
     }
     
     public void addProteinList(ArrayList<Protein> list, HashSet<String> exp, boolean useClusters) {
+        experiments = exp;
         evList.addAll(list);
         pTableFormat = new ProteinTableFormat(exp, evList, !useClusters);
         sortList = new SortedList(evList, null);
@@ -138,10 +139,7 @@ public class ProteinGroupListPanel extends ProteinListPanel {
                     
                     if ((obj instanceof Protein) && addPeptides) {
                         Protein pro = (Protein)obj;
-                        pepString.append(",Sequence,Peptide Hits,Length,Num Proteins,Theoretical Mass,Type,Found by\n");
-                        for (Peptide pep:pro.getAllPeptides()) {
-                            pepString.append("," + pep.toCSVString() + "\n");
-                        }
+                        writePeptides(fw, pro);
                     }
                 }
             }
@@ -165,10 +163,7 @@ public class ProteinGroupListPanel extends ProteinListPanel {
                     if (pro.isMostEquivalent()) {
                         printRow(fw, row);
                         if (addPeptides) {
-                            fw.write(",Sequence,Peptide Hits,Length,Num Proteins,Theoretical Mass,Type,Found by\n");
-                            for (Peptide pep:pro.getAllPeptides()) {
-                                fw.write("," + pep.toCSVString() + "\n");
-                            }
+                            writePeptides(fw, pro);
                         }
                     }
                 }

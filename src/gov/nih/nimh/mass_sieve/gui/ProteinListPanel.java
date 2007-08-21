@@ -51,6 +51,7 @@ import javax.swing.table.TableCellRenderer;
  * @author slotta
  */
 public class ProteinListPanel extends ListPanel {
+    protected HashSet<String> experiments;
     
     /** Creates a new instance of ProteinListPanel */
     public ProteinListPanel() {
@@ -62,6 +63,7 @@ public class ProteinListPanel extends ListPanel {
     }
     
     public void addProteinList(ArrayList<Protein> list, HashSet<String> exp) {
+        experiments = exp;
         pTableFormat = new ProteinTableFormat(exp, evList, false);
         this.addList(list);
     }
@@ -89,10 +91,7 @@ public class ProteinListPanel extends ListPanel {
                 
                 if ((obj instanceof Protein) && addPeptides) {
                     Protein pro = (Protein)obj;
-                    fw.write(",Sequence,Peptide Hits,Length,Num Proteins,Theoretical Mass,Type,Found by\n");
-                    for (Peptide pep:pro.getAllPeptides()) {
-                        fw.write("," + pep.toCSVString() + "\n");
-                    }
+                    writePeptides(fw, pro);
                 }
             }
             fw.close();
@@ -100,6 +99,21 @@ public class ProteinListPanel extends ListPanel {
             ex.printStackTrace();
         }
         return;
+    }
+    
+    protected void writePeptides(FileWriter fw, Protein pro) throws IOException {
+        fw.write(",Sequence,");
+        if (experiments.size() > 1) {
+            for (String e:experiments) {
+                fw.write(e + " PepHits,");
+            }
+        } else {
+            fw.write("PepHits,");
+        }
+        fw.write("Length,Num Proteins,Theoretical Mass,Type,Found by\n");        
+        for (Peptide pep:pro.getAllPeptides()) {
+            fw.write("," + pep.toCSVString(experiments) + "\n");
+        }        
     }
     
     protected JPopupMenu createPopupMenu() {
