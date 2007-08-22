@@ -129,7 +129,12 @@ public class MassSieveFrame extends javax.swing.JFrame {
             }
             currentExperiment = (ExperimentPanel)jTabbedPaneMain.getSelectedComponent();
             currentExperiment.loadDockState();
+            jMenuSaveExp.setEnabled(true);
+            jMenuSaveExp.setText("Save '" + jTabbedPaneMain.getSelectedComponent().getName() + "'" ); 
+        } else {
+            jMenuSaveExp.setEnabled(false);
         }
+        jMenuClose.setText("Close '" + jTabbedPaneMain.getSelectedComponent().getName() + "'" );
     }
     
     /** This method is called from within the constructor to
@@ -693,7 +698,7 @@ public class MassSieveFrame extends javax.swing.JFrame {
             pInfoOld.update(pInfo);
         }
     }
-        
+    
     public static ProteinInfo getProtein(String pName) {
         return proteinDB.get(pName);
     }
@@ -772,7 +777,7 @@ public class MassSieveFrame extends javax.swing.JFrame {
         String res = new String("Memory used: " + val + "MB");
         return res;
     }
-        
+    
     private String checkAvailMem() {
         long val = (Runtime.getRuntime().totalMemory())/1024;
         val /= 1024;

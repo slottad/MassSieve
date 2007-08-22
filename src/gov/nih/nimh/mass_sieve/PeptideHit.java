@@ -25,6 +25,8 @@ public class PeptideHit implements Serializable, Comparable<PeptideHit> {
     private double expect;
     private double ionScore;
     private double ident;
+    private double xcorr;
+    private double pepProphet;
     private int Z;
     //private int cluster;
     private HashSet<ProteinHit> proteinHits;

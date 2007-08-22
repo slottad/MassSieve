@@ -78,7 +78,7 @@ public class Peptide implements Serializable, Comparable<Peptide> {
             System.exit(1);
         }
         peptideHits.add(p);
-        uniqueScanNumbers.add(p.getSourceFile() + p.getScanNum());
+        uniqueScanNumbers.add(p.getRawFile() + p.getScanNum());
         switch (p.getSourceType()) {
             case MASCOT:  mascot.add(p);  break;
             case OMSSA:   omssa.add(p);   break;
@@ -318,7 +318,7 @@ public class Peptide implements Serializable, Comparable<Peptide> {
         HashSet<String> scanNumbers = new HashSet<String>();
         for (PeptideHit p:peptideHits) {
             if (exp.equals(p.getExperiment())) {
-                String combName = p.getSourceFile() + p.getScanNum();
+                String combName = p.getRawFile() + p.getScanNum();
                 scanNumbers.add(combName);
             }
         }

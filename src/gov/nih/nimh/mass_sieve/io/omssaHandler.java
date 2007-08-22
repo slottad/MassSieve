@@ -138,10 +138,6 @@ public class omssaHandler extends AnalysisHandler {
             OIDtoName.put(curProOID, curPro.getName());
             addProtein(curPro);
             curPep.addProteinHit(curProHit);
-            //curPep.setProteinName(curProHit.getName());
-            //curPep.setStart(curProHit.getStart());
-            //curPep.setEnd(curProHit.getEnd());
-            //PeptideHit ph = curPep.createClone();
             
             curPro = null;
             curProHit = null;

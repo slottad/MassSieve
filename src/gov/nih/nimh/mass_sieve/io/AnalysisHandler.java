@@ -132,6 +132,23 @@ abstract public class AnalysisHandler extends DefaultHandler {
         }
         return val;
     }
+
+    protected String stripPathAndExtension(String iStr) {
+        int loc;
+        String newStr;
+        
+        loc = iStr.lastIndexOf('\\');
+        if (loc > 0) newStr = iStr.substring(loc+1);
+        else newStr = iStr;
+        
+        loc = newStr.lastIndexOf('/');
+        if (loc > 0) newStr = newStr.substring(loc+1);
+        
+        loc = newStr.lastIndexOf('.');
+        if (loc > 0) newStr = newStr.substring(0,loc);
+        
+        return newStr;
+    }
     
     public void addProtein(ProteinInfo p) {
         if (proteinDB.containsKey(p.getName())) {

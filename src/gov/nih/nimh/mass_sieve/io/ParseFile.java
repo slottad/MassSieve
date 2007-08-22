@@ -66,6 +66,11 @@ public class ParseFile {
                     handler = new xtandemHandler(filename);
                     XMLParse();
                     break;
+                case PEPXML:
+                    System.err.println("Parsing " + filename + " as a PepXML file");
+                    handler = new pepXMLHandler(filename);
+                    XMLParse();
+                    break;
                 case UNKNOWN:
                     System.err.println("Unable to determine filetype for: " + filename);
                     break;
@@ -143,7 +148,10 @@ class CheckTypeHandler extends DefaultHandler {
         if (sName == "bioml") {
             throw new TypeFoundException(AnalysisProgramType.XTANDEM);
         }
-        if (sName == "mascot_search_results") {
+        if (sName == "msms_pipeline_analysis") {
+            throw new TypeFoundException(AnalysisProgramType.PEPXML);
+        }
+        if (sName == "mascot_search_results") {   
             throw new TypeFoundException(AnalysisProgramType.MASCOT);
         }
     }

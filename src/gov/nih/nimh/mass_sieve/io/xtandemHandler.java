@@ -32,7 +32,7 @@ class xtandemHandler extends AnalysisHandler {
         double nMass;
         
         if (sName == "bioml") {
-            mzFileName = attrs.getValue("label");
+            mzFileName = stripPathAndExtension(attrs.getValue("label"));
         }
         
         if (sName == "group") {
@@ -64,9 +64,6 @@ class xtandemHandler extends AnalysisHandler {
         if (sName == "domain") {
             
             curPep = new PeptideHit();
-            //val = attrs.getValue("id");
-            //curPep.setQueryNum(val);
-            //curPep.setScanNum(stripID(val));
             curPep.setQueryNum(curID);
             curPep.setScanNum(curID);
             curPep.setSourceFile(sourceFile);
@@ -82,7 +79,6 @@ class xtandemHandler extends AnalysisHandler {
             curPep.setExpect(attrs.getValue("expect"));
             curPep.setSequence(attrs.getValue("seq"));
             curPep.setExperiment("");
-            //curPep.setProteinName(curPro.getName());
         }
     }
     
@@ -136,4 +132,5 @@ class xtandemHandler extends AnalysisHandler {
         }
         return iStr;
     }
+    
 }
