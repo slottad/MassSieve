@@ -28,11 +28,11 @@ public class PeptideHit implements Serializable, Comparable<PeptideHit> {
     private double xcorr;
     private double pepProphet;
     private int Z;
-    //private int cluster;
     private HashSet<ProteinHit> proteinHits;
     private HashSet<String> proteinNames;
     private boolean indeterminate;
     private AnalysisProgramType sourceType;
+    private boolean pepXML;
     private String sourceFile;
     private String rawFile;
     private String experiment;
@@ -50,9 +50,10 @@ public class PeptideHit implements Serializable, Comparable<PeptideHit> {
         proteinNames = new HashSet<String>();
         theoreticalMass = -1;
         indeterminate = false;
+        pepXML = false;
     }
     
-    public PeptideHit createClone() {
+    private PeptideHit createClone() {
         PeptideHit ph = new PeptideHit();
         ph.queryNum = queryNum;
         ph.scanNum = scanNum;
@@ -65,12 +66,12 @@ public class PeptideHit implements Serializable, Comparable<PeptideHit> {
         ph.expect = expect;
         ph.ionScore = ionScore;
         ph.ident = ident;
+        ph.xcorr = xcorr;
+        ph.pepProphet = pepProphet;
         ph.Z = Z;
-        //ph.proName = proName;
-        //ph.start = start;
-        //ph.end = end;
         ph.indeterminate = indeterminate;
         ph.sourceType = sourceType;
+        ph.pepXML = pepXML;
         ph.sourceFile = sourceFile;
         ph.rawFile = rawFile;
         ph.experiment = experiment;
@@ -156,33 +157,9 @@ public class PeptideHit implements Serializable, Comparable<PeptideHit> {
         System.out.print(" Z: " + Z);
         System.out.print(" Expect: " + expect);
         System.out.print(" Seq: " + sequence);
-        //System.out.print(" Pro: " + proName);
-        //System.out.print(" Start: " + start);
-        //System.out.print(" End: " + end);
         System.out.println(" Src: " + sourceFile);
     }
-    
-//    public void setStart(String s) {
-//        start = Integer.parseInt(s);
-//    }
-//    public void setEnd(String e) {
-//        end = Integer.parseInt(e);
-//    }
-//    public void setStart(int i) {
-//        start = i;
-//    }
-//    public void setEnd(int i) {
-//        end = i;
-//    }
-    
-//    public int getCluster() {
-//        return cluster;
-//    }
-//    
-//    public void setCluster(Integer c) {
-//        cluster = c;
-//    }
-    
+        
     public void setExpect(String s) {
         expect = Double.parseDouble(s);
     }
@@ -223,10 +200,6 @@ public class PeptideHit implements Serializable, Comparable<PeptideHit> {
         return false;
     }
     
-//    public void setProteinName(String p) {
-//        proName = new String(p);
-//    }
-    
     public void setSourceType(AnalysisProgramType t) {
         sourceType = t;
     }
@@ -234,12 +207,6 @@ public class PeptideHit implements Serializable, Comparable<PeptideHit> {
         sourceFile = s.intern();
     }
     
-//    public int getStart() {
-//        return start;
-//    }
-//    public int getEnd() {
-//        return end;
-//    }
     public double getExpect() {
         return expect;
     }
@@ -249,9 +216,7 @@ public class PeptideHit implements Serializable, Comparable<PeptideHit> {
     public int getZ() {
         return Z;
     }
-//    public String getProteinName() {
-//        return proName;
-//    }
+
     public AnalysisProgramType getSourceType() {
         return sourceType;
     }
@@ -388,5 +353,29 @@ public class PeptideHit implements Serializable, Comparable<PeptideHit> {
     
     public void setRawFile(String s) {
         rawFile = s;
+    }
+
+    public double getXcorr() {
+        return xcorr;
+    }
+
+    public void setXcorr(double xcorr) {
+        this.xcorr = xcorr;
+    }
+
+    public double getPepProphet() {
+        return pepProphet;
+    }
+
+    public void setPepProphet(double pepProphet) {
+        this.pepProphet = pepProphet;
+    }
+
+    public boolean isPepXML() {
+        return pepXML;
+    }
+
+    public void setPepXML(boolean pepXML) {
+        this.pepXML = pepXML;
     }
 }

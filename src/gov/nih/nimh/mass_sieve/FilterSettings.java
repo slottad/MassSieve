@@ -17,7 +17,7 @@ import java.io.Serializable;
  * @author Douglas J. Slotta
  */
 public class FilterSettings implements Serializable {
-    private double omssaCutoff, mascotCutoff, xtandemCutoff, sequestCutoff;
+    private double omssaCutoff, mascotCutoff, xtandemCutoff, sequestCutoff, peptideProphetCutoff;
     private String filterText;
     private boolean useIonIdent, useIndeterminates, filterPeptides, filterProteins, filterCoverage;
     private int pHitCutoffCount, peptideCutoffCount, coverageCutoffAmount;
@@ -27,6 +27,7 @@ public class FilterSettings implements Serializable {
         mascotCutoff = 0.05;
         xtandemCutoff = 0.05;
         sequestCutoff = 0.05;
+        peptideProphetCutoff = 0.95;
         useIonIdent = true;
         filterText = "o+m+x+s";
         useIndeterminates = true;
@@ -82,6 +83,13 @@ public class FilterSettings implements Serializable {
      */
     public void setSequestCutoff(String s) {
         sequestCutoff = Double.parseDouble(s);
+    }
+    /**
+     * Set the Peptide Prophet cutoff score.
+     * @param s Peptide Prophet cutoff score
+     */
+    public void setPeptideProphetCutoff(String s) {
+        peptideProphetCutoff = Double.parseDouble(s);
     }
     
     /**
@@ -283,5 +291,13 @@ public class FilterSettings implements Serializable {
      */
     public int getCoverageCutoffAmount() {
         return coverageCutoffAmount;
+    }
+
+    public double getPeptideProphetCutoff() {
+        return peptideProphetCutoff;
+    }
+
+    public void setPeptideProphetCutoff(double d) {
+        peptideProphetCutoff = d;
     }
 }

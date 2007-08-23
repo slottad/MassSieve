@@ -70,7 +70,7 @@ class xtandemHandler extends AnalysisHandler {
             curPep.setSourceType(analysisProgram);
             curPep.setRawFile(mzFileName);
             curPep.setCharge(curCharge);
-            nMass = curMass - 1.007277;  // minus mass of hydrogen
+            nMass = curMass - MASS_HYDROGEN;  // minus mass of hydrogen
             curPep.setExpNeutralMass(nMass);
             curPep.setExpMass((nMass + (curCharge * MASS_HYDROGEN)) / curCharge);
             curPep.setTheoreticalMass(Double.parseDouble(attrs.getValue("mh"))-MASS_HYDROGEN);  // minus mass of hydrogen

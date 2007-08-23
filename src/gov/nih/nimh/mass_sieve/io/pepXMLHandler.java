@@ -23,6 +23,7 @@ public class pepXMLHandler extends AnalysisHandler {
     int curQuery;
     int curCharge;
     double curExpMass;
+    double curMZ;
     
     /** Creates a new instance of pepXMLHandler */
     public pepXMLHandler(String fn) {
@@ -64,6 +65,7 @@ public class pepXMLHandler extends AnalysisHandler {
             curQuery = Integer.parseInt(attrs.getValue("index"));
             curCharge = Integer.parseInt(attrs.getValue("assumed_charge"));
             curExpMass = Double.parseDouble(attrs.getValue("precursor_neutral_mass"));
+            curMZ = (curExpMass + (curCharge * MASS_HYDROGEN)) / curCharge;
         }
         
         if (inSpectrumQuery) {
@@ -71,13 +73,15 @@ public class pepXMLHandler extends AnalysisHandler {
                 curPep = new PeptideHit();
                 curPep.setSequence(attrs.getValue("peptide"));
                 curPep.setCharge(curCharge);
-                curPep.setExpMass(curExpMass);
+                curPep.setExpNeutralMass(curExpMass);
+                curPep.setExpMass(curMZ);
                 curPep.setScanNum(curScan);
                 curPep.setQueryNum(curQuery);
                 curPep.setSourceType(analysisProgram);
                 curPep.setSourceFile(sourceFile);
                 curPep.setRawFile(mzFileName);
                 curPep.setDiffMass(attrs.getValue("massdiff"));
+                curPep.setTheoreticalMass(attrs.getValue("calc_neutral_pep_mass"));
                 curPro = new ProteinInfo();
                 curPro.setName(attrs.getValue("protein"));
                 curPro.setDescription(attrs.getValue("protein_descr"));

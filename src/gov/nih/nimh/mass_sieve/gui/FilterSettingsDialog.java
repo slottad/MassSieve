@@ -39,10 +39,10 @@ import org.biojava.bio.proteomics.ProteaseManager;
  */
 public class FilterSettingsDialog extends JDialog {
     private ExperimentPanel    experiment;
-    private int                width = 500;
-    private int                height = 500;
+    private int                width = 550;
+    private int                height = 600;
     private int                spinWidth = 2;
-    private JTextField         pepFilterField, mascotCutoff, omssaCutoff, xtandemCutoff, sequestCutoff;
+    private JTextField         pepFilterField, mascotCutoff, omssaCutoff, xtandemCutoff, sequestCutoff, peptideProphetCutoff;
     private JCheckBox          useIonIdentBox, useIndeterminatesBox, filterPeptidesBox, filterProteinsBox, filterCoverageBox;
     private JSpinner           pepHitSpinner, peptideSpinner, coverageSpinner;
     private SpinnerNumberModel pepHitCount, peptideCount, coverageAmount;
@@ -65,6 +65,9 @@ public class FilterSettingsDialog extends JDialog {
         omssaCutoff = new JTextField("0.5", 5);
         xtandemCutoff = new JTextField("0.5", 5);
         sequestCutoff = new JTextField("0.5", 5);
+        sequestCutoff.setEnabled(false);  // until this feature is implemented
+        peptideProphetCutoff = new JTextField("0.95", 5);
+        
         useIonIdentBox = new JCheckBox("Use ION >= Ident");
         useIonIdentBox.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
@@ -141,15 +144,30 @@ public class FilterSettingsDialog extends JDialog {
         pepFilterPanel.add(new JLabel(" "));
         pepFilterPanel.add(new JLabel("( )")); pepFilterPanel.add(new JLabel("Precedence"));
         centerPanel.add(pepFilterPanel, ParagraphLayout.NEW_LINE);
+        
+        //centerPanel.add(new JLabel(), ParagraphLayout.NEW_PARAGRAPH);
+        //centerPanel.add(new JLabel("The expectation score must be less than:"));
         centerPanel.add(new JLabel("OMSSA cutoff:"), ParagraphLayout.NEW_PARAGRAPH);
+        centerPanel.add(new JLabel("<="));
         centerPanel.add(omssaCutoff);
         centerPanel.add(new JLabel("X!Tandem cutoff:"), ParagraphLayout.NEW_PARAGRAPH);
+        centerPanel.add(new JLabel("<="));
         centerPanel.add(xtandemCutoff);
-        centerPanel.add(new JLabel("Sequest cutoff:"), ParagraphLayout.NEW_PARAGRAPH);
-        centerPanel.add(sequestCutoff);
         centerPanel.add(new JLabel("Mascot cutoff:"), ParagraphLayout.NEW_PARAGRAPH);
+        centerPanel.add(new JLabel("<="));
         centerPanel.add(mascotCutoff);
         centerPanel.add(useIonIdentBox);
+        //centerPanel.add(new JLabel("Sequest cutoff:"), ParagraphLayout.NEW_PARAGRAPH);
+        //centerPanel.add(sequestCutoff);
+        
+        //centerPanel.add(new JLabel(), ParagraphLayout.NEW_PARAGRAPH);
+        //centerPanel.add(new JLabel("The probability score must be greater than:"));
+        centerPanel.add(new JLabel("Peptide Prophet cutoff:"), ParagraphLayout.NEW_PARAGRAPH);
+        centerPanel.add(new JLabel(">="));
+        centerPanel.add(peptideProphetCutoff);
+        centerPanel.add(new JLabel("<html>NB: If this score exists for a given peptide hit<p>" +
+                                         "then this cutoff takes precedence over the<p>" +
+                                         "individual expectation cutoffs."), ParagraphLayout.NEW_LINE);
         centerPanel.add(new JLabel("Peptide Hits:"), ParagraphLayout.NEW_PARAGRAPH);
         centerPanel.add(useIndeterminatesBox);
         centerPanel.add(new JLabel("Peptides:"), ParagraphLayout.NEW_PARAGRAPH);
@@ -254,6 +272,7 @@ public class FilterSettingsDialog extends JDialog {
         filterSettings.setXtandemCutoff(xtandemCutoff.getText());
         filterSettings.setMascotCutoff(mascotCutoff.getText());
         filterSettings.setSequestCutoff(sequestCutoff.getText());
+        filterSettings.setPeptideProphetCutoff(peptideProphetCutoff.getText());
         filterSettings.setUseIonIdent(useIonIdent);
         filterSettings.setFilterText(pepFilterField.getText());
         filterSettings.setUseIndeterminates(useIndeterminates);
@@ -275,6 +294,7 @@ public class FilterSettingsDialog extends JDialog {
         this.setXtandemCutoff(filterSettings.getXtandemCutoff());
         this.setMascotCutoff(filterSettings.getMascotCutoff());
         this.setSequestCutoff(filterSettings.getSequestCutoff());
+        this.setPeptideProphetCutoff(filterSettings.getPeptideProphetCutoff());
         this.setUseIonIdent(filterSettings.getUseIonIdent());
         this.setPepFilterField(filterSettings.getFilterText());
         this.setUseIndeterminates(filterSettings.getUseIndeterminates());
@@ -303,7 +323,11 @@ public class FilterSettingsDialog extends JDialog {
     public void setSequestCutoff(Double d) {
         sequestCutoff.setText(d.toString());
     }
-
+    
+    public void setPeptideProphetCutoff(Double d) {
+        peptideProphetCutoff.setText(d.toString());
+    }
+    
     public void setUseIonIdent(boolean b) {
         if (b) {
             useIonIdent = true;
