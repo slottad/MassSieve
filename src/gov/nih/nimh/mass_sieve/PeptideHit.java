@@ -25,7 +25,7 @@ public class PeptideHit implements Serializable, Comparable<PeptideHit> {
     private double expect;
     private double ionScore;
     private double ident;
-    private double xcorr;
+    //private double xcorr;
     private double pepProphet;
     private int Z;
     private HashSet<ProteinHit> proteinHits;
@@ -66,7 +66,7 @@ public class PeptideHit implements Serializable, Comparable<PeptideHit> {
         ph.expect = expect;
         ph.ionScore = ionScore;
         ph.ident = ident;
-        ph.xcorr = xcorr;
+        //ph.xcorr = xcorr;
         ph.pepProphet = pepProphet;
         ph.Z = Z;
         ph.indeterminate = indeterminate;
@@ -355,20 +355,24 @@ public class PeptideHit implements Serializable, Comparable<PeptideHit> {
         rawFile = s;
     }
 
-    public double getXcorr() {
-        return xcorr;
-    }
-
-    public void setXcorr(double xcorr) {
-        this.xcorr = xcorr;
-    }
+//    public double getXcorr() {
+//        return xcorr;
+//    }
+//
+//    public void setXcorr(double xcorr) {
+//        this.xcorr = xcorr;
+//    }
 
     public double getPepProphet() {
         return pepProphet;
     }
 
-    public void setPepProphet(double pepProphet) {
-        this.pepProphet = pepProphet;
+    public void setPepProphet(String s) {
+        pepProphet = Double.parseDouble(s);
+    }
+
+    public void setPepProphet(double d) {
+        pepProphet = d;
     }
 
     public boolean isPepXML() {

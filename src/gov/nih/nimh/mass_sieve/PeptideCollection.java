@@ -118,26 +118,36 @@ public class PeptideCollection implements Serializable, Comparable<PeptideCollec
         }
     }
     
-    public PeptideCollection getCutoffCollection(double omssa, double mascot, double xtandem) {
-        return getCutoffCollection(omssa, mascot, xtandem, false);
-    }
+//    public PeptideCollection getCutoffCollection(double omssa, double mascot, double xtandem) {
+//        return getCutoffCollection(omssa, mascot, xtandem, false);
+//    }
     
-    public PeptideCollection getCutoffCollection(double omssa, double mascot, double xtandem, boolean useIonIdent) {
+    public PeptideCollection getCutoffCollection(FilterSettings fs) {
+        boolean useIonIdent = fs.getUseIonIdent();
         PeptideCollection pc = new PeptideCollection();
-        double cutoff = 0.05;
         
         for (PeptideHit p:peptideHits) {
-            switch (p.getSourceType()) {
-                case MASCOT:  cutoff = mascot;  break;
-                case OMSSA:   cutoff = omssa;   break;
-                case XTANDEM: cutoff = xtandem; break;
-            }
-            if (p.getSourceType() == AnalysisProgramType.MASCOT && useIonIdent) {
-                if (p.getIonScore() >= p.getIdent()) {
+            if (p.isPepXML()) {
+                if (p.getPepProphet() >= fs.getPeptideProphetCutoff())
                     pc.addPeptideHit(p);
+            } else {
+                switch (p.getSourceType()) {
+                    case MASCOT:
+                        if (fs.getUseIonIdent()) {
+                            if (p.getIonScore() >= p.getIdent())
+                                pc.addPeptideHit(p);
+                        } else if (p.getExpect() <= fs.getMascotCutoff())
+                            pc.addPeptideHit(p);
+                        break;
+                    case OMSSA:
+                        if (p.getExpect() <= fs.getOmssaCutoff())
+                            pc.addPeptideHit(p);
+                        break;
+                    case XTANDEM:
+                        if (p.getExpect() <= fs.getXtandemCutoff())
+                            pc.addPeptideHit(p);
+                        break;
                 }
-            } else if (p.getExpect() <= cutoff) {
-                pc.addPeptideHit(p);
             }
         }
         

@@ -40,8 +40,8 @@ public class PeptideHitListPanel extends ListPanel {
     }
     
     public void addProteinPeptideHitList(ArrayList<PeptideHit> list) {
-        String[] columnTitles = {"Peptide", "Modified Sequence", "Analysis", "Scan", "Query", "Indet", "Expect", "ION", "Ident", "m/z", "Exp. Mass", '\u0394' + "Mass", "Charge", "Experiment", "Source File", "Raw File"};
-        String[] columnFields = {"sequence", "modSequence", "sourceType", "scanNum", "queryNum", "indeterminate", "expect", "ionScore", "ident", "expMass", "expNeutralMass", "diffMass", "Z", "experiment", "sourceFile", "rawFile"};
+        String[] columnTitles = {"Peptide", "Modified Sequence", "Analysis", "Scan", "Query", "Indet", "Expect", "Pep Proph", "ION", "Ident", "m/z", "Exp. Mass", '\u0394' + "Mass", "Charge", "Experiment", "Source File", "Raw File"};
+        String[] columnFields = {"sequence", "modSequence", "sourceType", "scanNum", "queryNum", "indeterminate", "expect", "pepProphet", "ionScore", "ident", "expMass", "expNeutralMass", "diffMass", "Z", "experiment", "sourceFile", "rawFile"};
         pTableFormat = GlazedLists.tableFormat(columnFields, columnTitles);
         this.addList(list);
     }

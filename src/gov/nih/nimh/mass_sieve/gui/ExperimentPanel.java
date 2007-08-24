@@ -67,7 +67,7 @@ public class ExperimentPanel extends JPanel {
     private ArrayList<FileInformation> fileInfos;
     private PeptideCollection pepCollection, pepCollectionOriginal;
     private FilterSettings filterSettings;
-    private double omssaCutoffOrig, mascotCutoffOrig, xtandemCutoffOrig;
+    private double omssaCutoffOrig, mascotCutoffOrig, xtandemCutoffOrig, peptideProphetCutoffOrig;
     private DefaultTreeModel treeModelOverview;
     private ButtonGroup buttonGroupTreeSource;
     private FilterSettingsDialog prefDialog;
@@ -110,6 +110,7 @@ public class ExperimentPanel extends JPanel {
         omssaCutoffOrig = filterSettings.getOmssaCutoff();
         mascotCutoffOrig = filterSettings.getMascotCutoff();
         xtandemCutoffOrig = filterSettings.getXtandemCutoff();
+        peptideProphetCutoffOrig = filterSettings.getPeptideProphetCutoff();
         cleanDisplay();
     }
     
@@ -171,7 +172,7 @@ public class ExperimentPanel extends JPanel {
             System.out.println("Could not save the dock model.");
         }
     }
-        
+    
     private void initComponents() {
         setLayout(new BorderLayout());
         
@@ -302,7 +303,7 @@ public class ExperimentPanel extends JPanel {
         } else {
             pepFiltered = pepCollectionOriginal.getNonIndeterminents();
         }
-        pepFiltered = pepFiltered.getCutoffCollection(filterSettings.getOmssaCutoff(), filterSettings.getMascotCutoff(), filterSettings.getXtandemCutoff(), filterSettings.getUseIonIdent());
+        pepFiltered = pepFiltered.getCutoffCollection(filterSettings);
         pepFiltered = FilterBySearchProgram(pepFiltered);
         if (filterSettings.getFilterPeptides()) {
             pepFiltered = pepFiltered.getPeptidesByHits(filterSettings.getPepHitCutoffCount());
@@ -332,16 +333,20 @@ public class ExperimentPanel extends JPanel {
                 p.setExperiment(exp_name);
                 p.setSourceFile(filename);
                 boolean usePepHit = false;
-                switch (p.getSourceType()) {
-                    case MASCOT:
-                        if (p.getExpect() < filterSettings.getMascotCutoff()) usePepHit = true;
-                        break;
-                    case OMSSA:
-                        if (p.getExpect() < filterSettings.getOmssaCutoff()) usePepHit = true;
-                        break;
-                    case XTANDEM:
-                        if (p.getExpect() < filterSettings.getXtandemCutoff()) usePepHit = true;
-                        break;
+                if (p.isPepXML()) {
+                    if (p.getPepProphet() >= filterSettings.getPeptideProphetCutoff()) usePepHit = true;
+                } else {
+                    switch (p.getSourceType()) {
+                        case MASCOT:
+                            if (p.getExpect() <= filterSettings.getMascotCutoff()) usePepHit = true;
+                            break;
+                        case OMSSA:
+                            if (p.getExpect() <= filterSettings.getOmssaCutoff()) usePepHit = true;
+                            break;
+                        case XTANDEM:
+                            if (p.getExpect() <= filterSettings.getXtandemCutoff()) usePepHit = true;
+                            break;
+                    }
                 }
                 if (usePepHit) {
                     pepCollectionOriginal.addPeptideHit(p);
@@ -369,13 +374,13 @@ public class ExperimentPanel extends JPanel {
     }
     
     public void reloadFiles() {
-        if ((filterSettings.getOmssaCutoff() > omssaCutoffOrig) ||
-                (filterSettings.getMascotCutoff() > mascotCutoffOrig) ||
-                (filterSettings.getXtandemCutoff() > xtandemCutoffOrig)) {
+        if ((filterSettings.getOmssaCutoff() > omssaCutoffOrig) || (filterSettings.getMascotCutoff() > mascotCutoffOrig) ||
+                (filterSettings.getXtandemCutoff() > xtandemCutoffOrig) || (filterSettings.getPeptideProphetCutoff() < peptideProphetCutoffOrig)) {
             cleanDisplay();
             if (filterSettings.getOmssaCutoff() > omssaCutoffOrig) omssaCutoffOrig = filterSettings.getOmssaCutoff();
             if (filterSettings.getMascotCutoff() > mascotCutoffOrig) mascotCutoffOrig = filterSettings.getMascotCutoff();
             if (filterSettings.getXtandemCutoff() > xtandemCutoffOrig) xtandemCutoffOrig = filterSettings.getXtandemCutoff();
+            if (filterSettings.getPeptideProphetCutoff() < peptideProphetCutoffOrig) peptideProphetCutoffOrig = filterSettings.getPeptideProphetCutoff();
             new Thread(new Runnable() {
                 public void run() {
                     setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));

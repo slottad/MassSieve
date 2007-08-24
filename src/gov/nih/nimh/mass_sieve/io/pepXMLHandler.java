@@ -71,6 +71,7 @@ public class pepXMLHandler extends AnalysisHandler {
         if (inSpectrumQuery) {
             if (sName == "search_hit") {
                 curPep = new PeptideHit();
+                curPep.setPepXML(true);
                 curPep.setSequence(attrs.getValue("peptide"));
                 curPep.setCharge(curCharge);
                 curPep.setExpNeutralMass(curExpMass);
@@ -107,10 +108,12 @@ public class pepXMLHandler extends AnalysisHandler {
                 String name = attrs.getValue("name");
                 String value = attrs.getValue("value");
                 if (name.compareToIgnoreCase("expect") == 0) curPep.setExpect(value); 
+                if (name.compareToIgnoreCase("xcorr") == 0) curPep.setExpect(value); 
                 if (name.compareToIgnoreCase("ionscore") == 0) curPep.setIonScore(value); 
-                if (name.compareToIgnoreCase("identity") == 0) curPep.setIdent(value);
-                    
-                
+                if (name.compareToIgnoreCase("identityscore") == 0) curPep.setIdent(value);
+            }
+            if (sName == "peptideprophet_result") {
+                curPep.setPepProphet(attrs.getValue("probability"));
             }
         }
         
