@@ -6,10 +6,6 @@
 
 package gov.nih.nimh.mass_sieve.gui;
 
-import com.javadocking.DockingManager;
-import com.javadocking.component.DefaultSwComponentFactory;
-import com.javadocking.dock.Dock;
-import com.javadocking.model.FloatDockModel;
 import gov.nih.nimh.mass_sieve.*;
 import gov.nih.nimh.mass_sieve.io.FileInformation;
 import java.awt.BorderLayout;
@@ -28,11 +24,11 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Properties;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
-import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.ProgressMonitorInputStream;
 import org.biojava.bio.BioException;
@@ -178,7 +174,7 @@ public class MassSieveFrame extends javax.swing.JFrame {
         jFileChooserLoad.setDialogTitle("Open Files");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("MassSieve v0.99");
+        setTitle("MassSieve v0.99.1");
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosing(java.awt.event.WindowEvent evt) {
@@ -766,10 +762,18 @@ public class MassSieveFrame extends javax.swing.JFrame {
     private void jMenuAboutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuAboutActionPerformed
         jOptionPaneAbout.showMessageDialog(MassSieveFrame.this, this.getTitle() +
                 "\nLNT/NIMH/NIH\nCreated by Douglas J. Slotta\n" +
+                "Mass Spectrometry proficiency by Melinda McFarland\n" +
                 "\n" + checkAllocatedMem() +
                 "\n" + checkAvailMem() +
-                "\n" + checkMaxMem());
+                "\n" + checkMaxMem() +
+                "\n\n" + getSystemInfo());
     }//GEN-LAST:event_jMenuAboutActionPerformed
+    
+    private String getSystemInfo() {
+        Properties p = System.getProperties();
+        return "VM: " + p.getProperty("java.vendor") + " Java " + p.getProperty("java.version") + 
+               "\nOS: " + p.getProperty("os.name") + " " + p.getProperty("os.version") + " running on " + p.getProperty("os.arch");
+    }
     
     private String checkAllocatedMem() {
         long val = (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory())/1024;
