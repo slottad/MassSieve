@@ -22,6 +22,8 @@ public class ProteinHit implements Serializable {
     
     /** Creates a new instance of ProteinHit */
     public ProteinHit() {
+        start = -1;
+        end = -1;
     }
     
     public ProteinHit(String name, int start, int end) {
@@ -29,7 +31,7 @@ public class ProteinHit implements Serializable {
         this.start = start;
         this.end = end;
     }
-        
+    
     public int compareTo(ProteinHit p) {
         int res = name.compareToIgnoreCase(p.getName());
         if (res != 0) return res;
@@ -46,6 +48,14 @@ public class ProteinHit implements Serializable {
             }
         }
         return false;
+    }
+    
+    public void updateLocation(String pepSeq, String proSeq) { 
+        int loc = proSeq.indexOf(pepSeq);
+        if (loc >= 0) {
+            start = loc + 1;
+            end = loc + pepSeq.length();
+        }
     }
     
     public int hashCode() {

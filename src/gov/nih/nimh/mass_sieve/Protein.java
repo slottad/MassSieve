@@ -109,6 +109,7 @@ public class Protein implements Serializable, Comparable<Protein> {
             for (PeptideHit p:pHits) {
                 for (ProteinHit pro:p.getProteinHits()) {
                     if (pro.getName().equals(name)) {
+                        if (pro.getStart() < 0) pro.updateLocation(p.getSequence(), seqObj.seqString());
                         //if (p.getProteinName().equals(name)) {
                         //scanNumbers.add(p.getScanNum());
                         // Compute coverage
@@ -210,8 +211,10 @@ public class Protein implements Serializable, Comparable<Protein> {
                     for (ProteinHit pro:p.getProteinHits()) {
                         if (pro.getName().equals(name)) {
                             // Compute coverage
-                            for (int i=pro.getStart(); i<=pro.getEnd(); i++) {
-                                coverage.add(i);
+                            if (pro.getStart() >= 0) {
+                                for (int i=pro.getStart(); i<=pro.getEnd(); i++) {
+                                    coverage.add(i);
+                                }
                             }
                         }
                     }
@@ -418,22 +421,22 @@ public class Protein implements Serializable, Comparable<Protein> {
     
 //    public DefaultMutableTreeNode getTree(ExperimentPanel ePanel) {
 //        DefaultMutableTreeNode node = new DefaultMutableTreeNode(this);
-//        
+//
 //        DefaultMutableTreeNode child;
-//        
+//
 //        PeptideListPanel pPanel = new PeptideListPanel(ePanel);
 //        pPanel.addPeptideList(allPeptides, experimentSet);
 //        pPanel.setName("Peptides (" + allPeptides.size() + ")");
 //        child = new DefaultMutableTreeNode(pPanel);
-//        
+//
 //        for (Peptide pep:allPeptides) {
 //            child.add(pep.getTree());
 //        }
-//        
+//
 //        node.add(child);
-//        
+//
 //        ProteinListPanel proPanel;
-//        
+//
 //        if (!equivalent.isEmpty()) {
 //            proPanel = new ProteinListPanel(ePanel);
 //            proPanel.addProteinList(equivalent, experimentSet);

@@ -762,7 +762,7 @@ public class MassSieveFrame extends javax.swing.JFrame {
     private void jMenuAboutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuAboutActionPerformed
         jOptionPaneAbout.showMessageDialog(MassSieveFrame.this, this.getTitle() +
                 "\nLNT/NIMH/NIH\nCreated by Douglas J. Slotta\n" +
-                "Mass Spectrometry proficiency by Melinda McFarland\n" +
+                "Mass Spec. proficiency by Melinda A. McFarland\n" +
                 "\n" + checkAllocatedMem() +
                 "\n" + checkAvailMem() +
                 "\n" + checkMaxMem() +
