@@ -130,7 +130,13 @@ public class MassSieveFrame extends javax.swing.JFrame {
         } else {
             jMenuSaveExp.setEnabled(false);
         }
-        jMenuClose.setText("Close '" + jTabbedPaneMain.getSelectedComponent().getName() + "'" );
+        if (jTabbedPaneMain.getSelectedComponent() != null) {
+            jMenuClose.setText("Close '" + jTabbedPaneMain.getSelectedComponent().getName() + "'" );
+        } else {
+            jMenuSaveExp.setEnabled(false);
+            jMenuSaveExpSet.setEnabled(false);
+            jMenuClose.setEnabled(false);
+        }
     }
     
     /** This method is called from within the constructor to
