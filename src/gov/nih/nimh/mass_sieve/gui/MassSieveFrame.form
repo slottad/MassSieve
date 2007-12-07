@@ -88,6 +88,14 @@
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jMenuOpenSeqDBActionPerformed"/>
               </Events>
             </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="jMenuOpenGenbankDB">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Update from Genbank"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jMenuOpenGenbankDBActionPerformed"/>
+              </Events>
+            </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="jMenuExportSeqDB">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Export Fasta File..."/>

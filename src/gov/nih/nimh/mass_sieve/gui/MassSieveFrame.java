@@ -34,6 +34,8 @@ import javax.swing.ProgressMonitorInputStream;
 import org.biojava.bio.BioException;
 import org.biojavax.Namespace;
 import org.biojavax.RichObjectFactory;
+import org.biojavax.bio.db.ncbi.GenbankRichSequenceDB;
+import org.biojavax.bio.db.ncbi.GenpeptRichSequenceDB;
 import org.biojavax.bio.seq.RichSequence;
 import org.biojavax.bio.seq.RichSequenceIterator;
 
@@ -162,6 +164,7 @@ public class MassSieveFrame extends javax.swing.JFrame {
         jMenuSaveExpSet = new javax.swing.JMenuItem();
         jSeparator3 = new javax.swing.JSeparator();
         jMenuOpenSeqDB = new javax.swing.JMenuItem();
+        jMenuOpenGenbankDB = new javax.swing.JMenuItem();
         jMenuExportSeqDB = new javax.swing.JMenuItem();
         jSeparator4 = new javax.swing.JSeparator();
         jMenuQuit = new javax.swing.JMenuItem();
@@ -267,6 +270,15 @@ public class MassSieveFrame extends javax.swing.JFrame {
 
         jMenuFile.add(jMenuOpenSeqDB);
 
+        jMenuOpenGenbankDB.setText("Update from Genbank");
+        jMenuOpenGenbankDB.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuOpenGenbankDBActionPerformed(evt);
+            }
+        });
+
+        jMenuFile.add(jMenuOpenGenbankDB);
+
         jMenuExportSeqDB.setText("Export Fasta File...");
         jMenuExportSeqDB.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -366,6 +378,22 @@ public class MassSieveFrame extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void jMenuOpenGenbankDBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuOpenGenbankDBActionPerformed
+        GenpeptRichSequenceDB genbank = new GenpeptRichSequenceDB();
+        for (String pName: proteinDB.keySet()) {
+            try {
+                RichSequence seq = genbank.getRichSequence(pName);
+                ProteinInfo pInfo = proteinDB.get(pName);
+                pInfo.updateFromRichSequence(seq);
+                System.out.println("Updated protein " + pName);
+            } catch (BioException ex) {
+                System.out.println("Unable to find protein " + pName);
+            }
+            break;
+        }
+        
+    }//GEN-LAST:event_jMenuOpenGenbankDBActionPerformed
     
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
         if (currentExperiment != null) {
@@ -855,6 +883,7 @@ public class MassSieveFrame extends javax.swing.JFrame {
     private javax.swing.JMenu jMenuHelp;
     private javax.swing.JMenuItem jMenuNewExperiment;
     private javax.swing.JMenuItem jMenuOpenExp;
+    private javax.swing.JMenuItem jMenuOpenGenbankDB;
     private javax.swing.JMenuItem jMenuOpenSeqDB;
     private javax.swing.JMenuItem jMenuOptions;
     private javax.swing.JMenuItem jMenuQuit;
