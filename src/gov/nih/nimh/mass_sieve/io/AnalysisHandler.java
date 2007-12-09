@@ -13,7 +13,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import org.biojavax.bio.seq.RichSequence;
 import org.xml.sax.helpers.DefaultHandler;
 
 abstract public class AnalysisHandler extends DefaultHandler {
@@ -53,7 +52,7 @@ abstract public class AnalysisHandler extends DefaultHandler {
     public void characters(char chars[], int start, int length) {
         if (collectData){
             String s = new String(chars, start, length);
-            if (s.trim() != "") data = data + s.trim();
+            if (!s.trim().equals("")) data = data + s.trim();
         }
     }
     

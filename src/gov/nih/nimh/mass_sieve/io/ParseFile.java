@@ -142,16 +142,16 @@ public class ParseFile {
 
 class CheckTypeHandler extends DefaultHandler {
     public void startElement(String namespaceURI, String sName, String qName, Attributes attrs) throws TypeFoundException {
-        if (sName == "MSSearch" || sName == "MSResponse") {
+        if (sName.equals("MSSearch") || sName.equals("MSResponse")) {
             throw new TypeFoundException(AnalysisProgramType.OMSSA);
         }
-        if (sName == "bioml") {
+        if (sName.equals("bioml")) {
             throw new TypeFoundException(AnalysisProgramType.XTANDEM);
         }
-        if (sName == "msms_pipeline_analysis") {
+        if (sName.equals("msms_pipeline_analysis")) {
             throw new TypeFoundException(AnalysisProgramType.PEPXML);
         }
-        if (sName == "mascot_search_results") {   
+        if (sName.equals("mascot_search_results")) {   
             throw new TypeFoundException(AnalysisProgramType.MASCOT);
         }
     }

@@ -12,8 +12,6 @@ package gov.nih.nimh.mass_sieve.gui;
 import gov.nih.nimh.mass_sieve.*;
 import java.awt.BorderLayout;
 import java.awt.event.ItemEvent;
-import javax.swing.Box;
-import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;

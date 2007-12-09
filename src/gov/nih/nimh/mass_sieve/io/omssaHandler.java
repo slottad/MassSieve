@@ -12,8 +12,6 @@ import gov.nih.nimh.mass_sieve.*;
 import java.util.ArrayList;
 import org.xml.sax.*;
 import java.util.HashMap;
-import org.biojava.bio.symbol.SymbolList;
-import org.biojavax.bio.seq.RichSequence;
 
 public class omssaHandler extends AnalysisHandler {
     
@@ -52,33 +50,33 @@ public class omssaHandler extends AnalysisHandler {
     
     public void startElement(String namespaceURI, String sName, String qName, Attributes attrs) throws SAXException {
         
-        if (sName == "MSHitSet") {
+        if (sName.equals("MSHitSet")) {
             collectData = true;
             inMSHitSet = true;
         }
-        if (sName == "MSSpectrum") {
+        if (sName.equals("MSSpectrum")) {
             collectData = true;
             inMSSpectrum = true;
         }
         
-        if (sName == "MSSearchSettings_db") collectData = true;
-        if (sName == "MSSearchSettings_scale") collectData = true;
-        if (sName == "MSResponse_scale") collectData = true;
+        if (sName.equals("MSSearchSettings_db")) collectData = true;
+        if (sName.equals("MSSearchSettings_scale")) collectData = true;
+        if (sName.equals("MSResponse_scale")) collectData = true;
         
-        if (sName == "MSHits") {
+        if (sName.equals("MSHits")) {
             curPep = new PeptideHit();
             curPep.setSourceType(analysisProgram);
         }
         
         if (inMSHitSet) {
-            if (sName == "MSHits_mzhits") collectData = false;
-            if (sName == "MSPepHit") {
+            if (sName.equals("MSHits_mzhits")) collectData = false;
+            if (sName.equals("MSPepHit")) {
                 curPro = new ProteinInfo();
                 curProHit = new ProteinHit();
             }
         }
         
-        if (sName == "MSResponse_bioseqs") {
+        if (sName.equals("MSResponse_bioseqs")) {
             collectData = true;
             inBioseqs = true;
         }
@@ -88,38 +86,38 @@ public class omssaHandler extends AnalysisHandler {
     
     public void endElement(String namespaceURI, String sName, String qName) {
         
-        if (sName == "MSSearchSettings_db") {
+        if (sName.equals("MSSearchSettings_db")) {
             searchDB = data;
             collectData = false;
             data = "";
         }
         
-        if (sName == "MSResponse_scale") {
+        if (sName.equals("MSResponse_scale")) {
             scaleFactor = Double.parseDouble(data);
             collectData = false;
             data = "";
         }
-        if (sName == "MSSearchSettings_scale") {
+        if (sName.equals("MSSearchSettings_scale")) {
             scaleFactor = Double.parseDouble(data);
             collectData = false;
             data = "";
         }
         
-        if (sName == "MSHitSet") {
+        if (sName.equals("MSHitSet")) {
             collectData = false;
             inMSHitSet = false;
         }
-        if (sName == "MSSpectrum") {
+        if (sName.equals("MSSpectrum")) {
             collectData = false;
             inMSSpectrum = false;
         }
         
-        if (sName == "MSResponse_bioseqs") {
+        if (sName.equals("MSResponse_bioseqs")) {
             collectData = false;
             inBioseqs = false;
         }
         
-        if (sName == "MSHits") {
+        if (sName.equals("MSHits")) {
             curPep.setQueryNum(pepQueryNum);
             curPep.setScanNum(QueryToScan.get(pepQueryNum));
             curPep.setRawFile(QueryToRawFile.get(pepQueryNum));
@@ -129,7 +127,7 @@ public class omssaHandler extends AnalysisHandler {
             pepHitCount += 1;
             curPep = null;
         }
-        if (sName == "MSPepHit") {
+        if (sName.equals("MSPepHit")) {
             //curPro.fixIDandName();
             curPro.setName(getAcc_Or_ID());
             curProAcc = null;
@@ -143,28 +141,28 @@ public class omssaHandler extends AnalysisHandler {
             curProHit = null;
         }
         if (inMSHitSet) {
-            if (sName == "MSHits_mzhits") collectData = true;
-            if (sName == "MSHitSet_number") pepQueryNum = Integer.parseInt(data);
-            if (sName == "MSHits_charge") curPep.setCharge(data);
-            if (sName == "MSHits_mass") curPep.setExpNeutralMass(Integer.parseInt(data));
-            if (sName == "MSHits_theomass") curPep.setTheoreticalMass(Integer.parseInt(data));
-            if (sName == "MSHits_evalue") curPep.setExpect(data);
-            if (sName == "MSHits_pepstring") curPep.setSequence(data);
-            if (sName == "MSPepHit_start") curProHit.setStart(Integer.parseInt(data)+1);
-            if (sName == "MSPepHit_stop") curProHit.setEnd(Integer.parseInt(data)+1);
-            if (sName == "MSPepHit_gi") curProID = "gi|" + data;
-            if (sName == "MSPepHit_accession") curProAcc = data;
-            if (sName == "MSPepHit_oid") curProOID = data;
-            if (sName == "MSPepHit_defline") curPro.setDescription(data);
-            if (sName == "MSPepHit_protlength") curPro.setLength(Integer.parseInt(data));
+            if (sName.equals("MSHits_mzhits")) collectData = true;
+            if (sName.equals("MSHitSet_number")) pepQueryNum = Integer.parseInt(data);
+            if (sName.equals("MSHits_charge")) curPep.setCharge(data);
+            if (sName.equals("MSHits_mass")) curPep.setExpNeutralMass(Integer.parseInt(data));
+            if (sName.equals("MSHits_theomass")) curPep.setTheoreticalMass(Integer.parseInt(data));
+            if (sName.equals("MSHits_evalue")) curPep.setExpect(data);
+            if (sName.equals("MSHits_pepstring")) curPep.setSequence(data);
+            if (sName.equals("MSPepHit_start")) curProHit.setStart(Integer.parseInt(data)+1);
+            if (sName.equals("MSPepHit_stop")) curProHit.setEnd(Integer.parseInt(data)+1);
+            if (sName.equals("MSPepHit_gi")) curProID = "gi|" + data;
+            if (sName.equals("MSPepHit_accession")) curProAcc = data;
+            if (sName.equals("MSPepHit_oid")) curProOID = data;
+            if (sName.equals("MSPepHit_defline")) curPro.setDescription(data);
+            if (sName.equals("MSPepHit_protlength")) curPro.setLength(Integer.parseInt(data));
             data = "";
         }
         if (inMSSpectrum) {
-            if (sName == "MSSpectrum_number") currentQuery = Integer.parseInt(data);
-            if (sName == "MSSpectrum_precursormz") {
+            if (sName.equals("MSSpectrum_number")) currentQuery = Integer.parseInt(data);
+            if (sName.equals("MSSpectrum_precursormz")) {
                 QueryToMass.put(currentQuery,Double.parseDouble(data));
             }
-            if (sName == "MSSpectrum_ids_E") {
+            if (sName.equals("MSSpectrum_ids_E")) {
                 QueryToScan.put(currentQuery,ScanFilenameToScanNumber(data));
                 String rawFile = ScanFilenameToRawFile(data);
                 QueryToRawFile.put(currentQuery,rawFile);
@@ -174,8 +172,8 @@ public class omssaHandler extends AnalysisHandler {
         }
         
         if (inBioseqs) {
-            if (sName == "MSBioseq_oid") curProOID = data;
-            if (sName == "NCBIstdaa") {
+            if (sName.equals("MSBioseq_oid")) curProOID = data;
+            if (sName.equals("NCBIstdaa")) {
                 String proName = OIDtoName.get(curProOID);
                 curPro = proteinDB.get(proName);
                 curPro.setSequence(NCBIstdaaDecode(data));

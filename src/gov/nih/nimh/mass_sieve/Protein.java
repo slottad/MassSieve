@@ -9,10 +9,7 @@
 package gov.nih.nimh.mass_sieve;
 
 import ca.odell.glazedlists.EventList;
-import gov.nih.nimh.mass_sieve.gui.ExperimentPanel;
 import gov.nih.nimh.mass_sieve.gui.MassSieveFrame;
-import gov.nih.nimh.mass_sieve.gui.PeptideListPanel;
-import gov.nih.nimh.mass_sieve.gui.ProteinListPanel;
 import gov.nih.nimh.mass_sieve.gui.SequencePanel;
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -22,7 +19,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import javax.swing.JPanel;
-import javax.swing.tree.DefaultMutableTreeNode;
 import org.biojava.bio.BioException;
 import org.biojava.bio.proteomics.IsoelectricPointCalc;
 import org.biojava.bio.proteomics.MassCalc;
@@ -230,7 +226,7 @@ public class Protein implements Serializable, Comparable<Protein> {
         for (Peptide pep:allPeptides) {
             ArrayList<PeptideHit> pHits = pep.getPeptideHits();
             for (PeptideHit p:pHits) {
-                if (p.getExperiment() == exp) {
+                if (p.getExperiment().equals(exp)) {
                     for (ProteinHit pro:p.getProteinHits()) {
                         if (pro.getName().equals(name)) {
                             //if (p.getProteinName().equals(name)) {
@@ -494,7 +490,7 @@ public class Protein implements Serializable, Comparable<Protein> {
     }
     
     public void addAssociatedProteins(String p) {
-        if (p != name) {
+        if (!p.equals(name)) {
             associatedProteins.add(p);
         }
     }

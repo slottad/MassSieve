@@ -39,22 +39,22 @@ public class mascotXMLHandler extends AnalysisHandler {
     }
     
     public void startElement(String namespaceURI, String sName, String qName, Attributes attrs) throws SAXException {
-        if (sName == "hits") {
+        if (sName.equals("hits")) {
             inHits = true;
         }
-        if (sName == "unassigned") {
+        if (sName.equals("unassigned")) {
             inUnassigned = true;
         }
-        if (sName == "queries") {
+        if (sName.equals("queries")) {
             inQueries = true;
         }
         if (inHits) {
-            if (sName == "protein") {
+            if (sName.equals("protein")) {
                 curPro = new ProteinInfo();
                 curPro.setName(attrs.getValue("accession"));
                 collectData = true;
             }
-            if (sName == "peptide") {
+            if (sName.equals("peptide")) {
                 curPep = new PeptideHit();
                 curPep.setQueryNum(Integer.parseInt(attrs.getValue("query")));
                 //curPep.setProteinName(curPro.getName());
@@ -63,7 +63,7 @@ public class mascotXMLHandler extends AnalysisHandler {
             }
         }
         if (inQueries) {
-            if (sName == "query") {
+            if (sName.equals("query")) {
                 currentQuery = attrs.getValue("number");
                 collectData = true;
             }
@@ -71,13 +71,13 @@ public class mascotXMLHandler extends AnalysisHandler {
     }
     
     public void endElement(String namespaceURI, String sName, String qName) {
-        if (sName == "hits") {
+        if (sName.equals("hits")) {
             inHits = false;
         }
-        if (sName == "unassigned") {
+        if (sName.equals("unassigned")) {
             inUnassigned = false;
         }
-        if (sName == "queries") {
+        if (sName.equals("queries")) {
             inQueries = false;
             for (PeptideHit p: hold_hits) {
                 p.setScanNum(QueryToScan.get(p.getQueryNum()));
@@ -88,29 +88,25 @@ public class mascotXMLHandler extends AnalysisHandler {
         if (inHits) {
             if (curPro != null) {
                 if (curPep != null) {
-                    if (sName == "pep_exp_z") curPep.setCharge(data);
-                    //if (sName == "pep_start") curPep.setStart(data);
-                    //if (sName == "pep_end") curPep.setEnd(data);
-                    if (sName == "pep_score") curPep.setIonScore(data);
-                    if (sName == "pep_expect") curPep.setExpect(data);
-                    if (sName == "pep_ident") curPep.setIdent(data);
-                    if (sName == "pep_seq") curPep.setSequence(data);
-                    if (sName == "pep_exp_mz") curPep.setExpMass(data);
-                    if (sName == "pep_exp_mr") curPep.setExpNeutralMass(data);
-                    if (sName == "pep_calc_mr") curPep.setTheoreticalMass(data);
-                    if (sName == "pep_delta") curPep.setDiffMass(data);
+                    if (sName.equals("pep_exp_z")) curPep.setCharge(data);
+                    if (sName.equals("pep_score")) curPep.setIonScore(data);
+                    if (sName.equals("pep_expect")) curPep.setExpect(data);
+                    if (sName.equals("pep_ident")) curPep.setIdent(data);
+                    if (sName.equals("pep_seq")) curPep.setSequence(data);
+                    if (sName.equals("pep_exp_mz")) curPep.setExpMass(data);
+                    if (sName.equals("pep_exp_mr")) curPep.setExpNeutralMass(data);
+                    if (sName.equals("pep_calc_mr")) curPep.setTheoreticalMass(data);
+                    if (sName.equals("pep_delta")) curPep.setDiffMass(data);
                     
-                    if (sName == "peptide") {
-                        //addPeptideHit(curPep);
+                    if (sName.equals("peptide")) {
                         hold_hits.add(curPep);
                         curPep = null;
                     }
                 } else {
-                    if (sName == "prot_desc") curPro.setDescription(data);
-                    //if (sName == "prot_mass") curPro.setMass(Double.parseDouble(data));
-                    if (sName == "prot_score") prot_score = data;
-                    if (sName == "prot_cover") prot_cover = data;
-                    if (sName == "protein") {
+                    if (sName.equals("prot_desc")) curPro.setDescription(data);
+                    if (sName.equals("prot_score")) prot_score = data;
+                    if (sName.equals("prot_cover")) prot_cover = data;
+                    if (sName.equals("protein")) {
                         //addProtein(curPro);
                         collectData = false;
                         curPro = null;
@@ -120,7 +116,7 @@ public class mascotXMLHandler extends AnalysisHandler {
             }
         }
         if (inQueries) {
-            if (sName == "StringTitle") {
+            if (sName.equals("StringTitle")) {
                 QueryToScan.put(currentQuery,ScanFilenameToScanNumber(data));
             }
             data = "";

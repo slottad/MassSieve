@@ -78,7 +78,7 @@ public class Peptide implements Serializable, Comparable<Peptide> {
             System.exit(1);
         }
         peptideHits.add(p);
-        uniqueScanNumbers.add(p.getRawFile() + p.getScanNum());
+        uniqueScanNumbers.add(p.getRawFile() + ":" + p.getScanNum());
         switch (p.getSourceType()) {
             case MASCOT:  mascot.add(p);  break;
             case OMSSA:   omssa.add(p);   break;
@@ -303,7 +303,8 @@ public class Peptide implements Serializable, Comparable<Peptide> {
                 + getNumProteins() + ","
                 + getTheoreticalMass() + ","
                 + getPeptideType() + ","
-                + getSourceTypes(true);
+                + getSourceTypes(true) + ","
+                + getScanList(true);
     }
     
     /**
@@ -423,6 +424,29 @@ public class Peptide implements Serializable, Comparable<Peptide> {
             fileList = buf;
         }
         return fileList;
+    }
+    
+    /**
+     * Returns the set of file:scan tuples in a single string suitable for display.
+     * @return A list of file:scan tuples in a single string.
+     */
+    public String getScanList(boolean useQuotes) {
+        StringBuilder buf = null;
+        ArrayList<String> fList = new ArrayList<String>(uniqueScanNumbers);
+        Collections.sort(fList);
+        for (String p : fList) {
+            if (buf == null) {
+                buf = new StringBuilder(p);
+            } else {
+                buf.append(", ");
+                buf.append(p);
+            }
+        }
+         if (useQuotes) {
+            buf.insert(0, '"');
+            buf.append('"');
+        }
+        return buf.toString();
     }
     
     /**

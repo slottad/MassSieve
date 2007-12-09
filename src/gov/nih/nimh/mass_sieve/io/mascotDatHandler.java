@@ -25,8 +25,6 @@ import java.util.HashSet;
 import java.util.Vector;
 import javax.swing.ProgressMonitor;
 import javax.swing.ProgressMonitorInputStream;
-import org.biojava.bio.symbol.SymbolList;
-import org.biojavax.bio.seq.RichSequence;
 
 /**
  *

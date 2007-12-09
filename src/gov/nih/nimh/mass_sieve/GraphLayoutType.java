@@ -29,4 +29,5 @@ public enum GraphLayoutType {
     /**
      * Use the radial tree algorithm
      */
-    RADIAL_TREE }
+    RADIAL_TREE
+}

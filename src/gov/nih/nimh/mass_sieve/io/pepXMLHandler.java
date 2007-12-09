@@ -34,7 +34,7 @@ public class pepXMLHandler extends AnalysisHandler {
     
     public void startElement(String namespaceURI, String sName, String qName, Attributes attrs) throws SAXException {
         
-        if (sName == "search_summary") {
+        if (sName.equals("search_summary")) {
             mzFileName = stripPathAndExtension(attrs.getValue("base_name"));
             String aProg = attrs.getValue("search_engine");
             if (aProg.compareToIgnoreCase("SEQUEST") == 0) {
@@ -55,11 +55,11 @@ public class pepXMLHandler extends AnalysisHandler {
             }
         }
         
-        if (sName == "search_database") {
+        if (sName.equals("search_database")) {
             searchDB = stripPathAndExtension(attrs.getValue("local_path"));
         }
         
-        if (sName == "spectrum_query") {
+        if (sName.equals("spectrum_query")) {
             inSpectrumQuery = true;
             curScan = Integer.parseInt(attrs.getValue("start_scan"));
             curQuery = Integer.parseInt(attrs.getValue("index"));
@@ -69,7 +69,7 @@ public class pepXMLHandler extends AnalysisHandler {
         }
         
         if (inSpectrumQuery) {
-            if (sName == "search_hit") {
+            if (sName.equals("search_hit")) {
                 curPep = new PeptideHit();
                 curPep.setPepXML(true);
                 curPep.setSequence(attrs.getValue("peptide"));
@@ -93,7 +93,7 @@ public class pepXMLHandler extends AnalysisHandler {
                 curPro = null;
                 curProHit = null;
             }
-            if (sName == "alternative_protein") {
+            if (sName.equals("alternative_protein")) {
                 curPro = new ProteinInfo();
                 curPro.setName(attrs.getValue("protein"));
                 curPro.setDescription(attrs.getValue("protein_descr"));
@@ -104,7 +104,7 @@ public class pepXMLHandler extends AnalysisHandler {
                 curPro = null;
                 curProHit = null;
             }
-            if (sName == "search_score") {
+            if (sName.equals("search_score")) {
                 String name = attrs.getValue("name");
                 String value = attrs.getValue("value");
                 if (name.compareToIgnoreCase("expect") == 0) curPep.setExpect(value); 
@@ -112,7 +112,7 @@ public class pepXMLHandler extends AnalysisHandler {
                 if (name.compareToIgnoreCase("ionscore") == 0) curPep.setIonScore(value); 
                 if (name.compareToIgnoreCase("identityscore") == 0) curPep.setIdent(value);
             }
-            if (sName == "peptideprophet_result") {
+            if (sName.equals("peptideprophet_result")) {
                 curPep.setPepProphet(attrs.getValue("probability"));
             }
         }
@@ -120,10 +120,10 @@ public class pepXMLHandler extends AnalysisHandler {
     }
     
     public void endElement(String namespaceURI, String sName, String qName) {
-        if (sName == "spectrum_query") {
+        if (sName.equals("spectrum_query")) {
             inSpectrumQuery = false;
         }
-        if (inSpectrumQuery && sName == "search_hit") {
+        if (inSpectrumQuery && sName.equals("search_hit")) {
             addPeptideHit(curPep);
             curPep = null;
         }

@@ -11,7 +11,6 @@ package gov.nih.nimh.mass_sieve.gui;
 
 import ca.odell.glazedlists.EventList;
 import ca.odell.glazedlists.GlazedLists;
-import ca.odell.glazedlists.SeparatorList;
 import ca.odell.glazedlists.gui.AdvancedTableFormat;
 import ca.odell.glazedlists.gui.WritableTableFormat;
 import gov.nih.nimh.mass_sieve.*;

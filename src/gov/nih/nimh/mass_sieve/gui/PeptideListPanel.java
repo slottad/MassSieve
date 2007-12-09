@@ -9,10 +9,6 @@
 
 package gov.nih.nimh.mass_sieve.gui;
 
-import ca.odell.glazedlists.GlazedLists;
-import ca.odell.glazedlists.SortedList;
-import ca.odell.glazedlists.swing.EventSelectionModel;
-import ca.odell.glazedlists.swing.EventTableModel;
 import gov.nih.nimh.mass_sieve.Peptide;
 import java.util.ArrayList;
 import java.util.HashSet;

@@ -28,14 +28,13 @@ class xtandemHandler extends AnalysisHandler {
     
     public void startElement(String namespaceURI, String sName, String qName, Attributes attrs) throws SAXException {
         String val;
-        int start, stop;
         double nMass;
         
-        if (sName == "bioml") {
+        if (sName.equals("bioml")) {
             mzFileName = stripPathAndExtension(attrs.getValue("label"));
         }
         
-        if (sName == "group") {
+        if (sName.equals("group")) {
             if (attrs.getValue("type").equals("model")) {
                 curCharge = Integer.parseInt(attrs.getValue("z"));
                 curMass = Double.parseDouble(attrs.getValue("mh"));
@@ -43,7 +42,7 @@ class xtandemHandler extends AnalysisHandler {
             }
         }
         
-        if (sName == "protein") {
+        if (sName.equals("protein")) {
             curPro = new ProteinInfo();
             curProHit = new ProteinHit();
             val = stripDescription(attrs.getValue("label"));
@@ -54,14 +53,14 @@ class xtandemHandler extends AnalysisHandler {
             curProHit.setName(val);
         }
         
-        if (sName == "note" && attrs.getValue("label").equals("description")) {
+        if (sName.equals("note") && attrs.getValue("label").equals("description")) {
             collectData = true;
         }
-        if (sName == "peptide") {
+        if (sName.equals("peptide")) {
             collectData = true;
         }
         
-        if (sName == "domain") {
+        if (sName.equals("domain")) {
             
             curPep = new PeptideHit();
             curPep.setQueryNum(curID);
@@ -83,23 +82,23 @@ class xtandemHandler extends AnalysisHandler {
     }
     
     public void endElement(String namespaceURI, String sName, String qName) {
-        if (sName == "protein") {
+        if (sName.equals("protein")) {
             addProtein(curPro);
             curPro = null;
             curProHit = null;
         }
-        if (sName == "note" && collectData) {
+        if (sName.equals("note") && collectData) {
             curPro.setDescription(data);
             collectData = false;
             data = "";
         }
-        if (sName == "peptide") {
+        if (sName.equals("peptide")) {
             curPro.setSequence(data.replaceAll("\\s", ""));
             collectData = false;
             data = "";
         }
 
-        if (sName == "domain") {
+        if (sName.equals("domain")) {
             if (unique_peptide_hits.containsKey(curPep)) {
                 PeptideHit p = unique_peptide_hits.get(curPep);
                 p.addProteinHit(curProHit);
@@ -109,7 +108,7 @@ class xtandemHandler extends AnalysisHandler {
             }
             curPep = null;
         }
-        if (sName == "bioml") {
+        if (sName.equals("bioml")) {
             //peptide_hits.addAll(unique_peptide_hits.values());
             for (PeptideHit p:unique_peptide_hits.values()) {
                 addPeptideHit(p);
