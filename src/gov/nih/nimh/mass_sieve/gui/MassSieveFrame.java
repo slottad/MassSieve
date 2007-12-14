@@ -25,6 +25,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -115,6 +117,7 @@ public class MassSieveFrame extends javax.swing.JFrame {
         batchLoadDialog = new BatchLoadDialog(this);
         expSet = new HashMap<String, ExperimentPanel>();
         updateStatusMessage("Please create or load an experiment");
+        Logger.getLogger("prefuse").setLevel(Level.WARNING);
     }
     public void updateStatusMessage(String message) {
         statusBar.setMessage(message);
