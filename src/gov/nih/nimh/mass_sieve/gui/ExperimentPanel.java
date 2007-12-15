@@ -44,10 +44,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import javax.swing.BoxLayout;
-import javax.swing.ButtonGroup;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
@@ -69,11 +67,9 @@ public class ExperimentPanel extends JPanel {
     private FilterSettings filterSettings;
     private double omssaCutoffOrig, mascotCutoffOrig, xtandemCutoffOrig, peptideProphetCutoffOrig;
     private DefaultTreeModel treeModelOverview;
-    private ButtonGroup buttonGroupTreeSource;
     private FilterSettingsDialog prefDialog;
     private SummaryDialog summaryDialog;
     private JFileChooser jFileChooserLoad;
-    private JOptionPane jOptionPaneAbout;
     private JScrollPane jScrollPaneLeft;
     private JSplitPane jSplitPaneMain;
     private JScrollPane graphPanel;
@@ -185,9 +181,7 @@ public class ExperimentPanel extends JPanel {
         DockingManager.setComponentFactory(new MyComponentFactory());
         DockingManager.setDockModel(dockModel);
         
-        buttonGroupTreeSource = new ButtonGroup();
         jFileChooserLoad = new JFileChooser();
-        jOptionPaneAbout = new JOptionPane();
         jSplitPaneMain = new JSplitPane();
         jScrollPaneLeft = new JScrollPane();
         jTreeMain = new JTree();
@@ -356,7 +350,7 @@ public class ExperimentPanel extends JPanel {
             HashMap<String, ProteinInfo> pDB = pf.getProteinDB();
             for (String pName:pDB.keySet()) {
                 if (acceptedProteins.contains(pName)) {
-                    msFrame.addProtein(pDB.get(pName));
+                    MassSieveFrame.addProtein(pDB.get(pName));
                 }
             }
             FileInformation fInfo = pf.getFileInformation();
@@ -373,7 +367,7 @@ public class ExperimentPanel extends JPanel {
         recomputeCutoff();
     }
     
-    public void reloadFiles() {
+    public synchronized void reloadFiles() {
         if ((filterSettings.getOmssaCutoff() > omssaCutoffOrig) || (filterSettings.getMascotCutoff() > mascotCutoffOrig) ||
                 (filterSettings.getXtandemCutoff() > xtandemCutoffOrig) || (filterSettings.getPeptideProphetCutoff() < peptideProphetCutoffOrig)) {
             cleanDisplay();
@@ -381,11 +375,14 @@ public class ExperimentPanel extends JPanel {
             if (filterSettings.getMascotCutoff() > mascotCutoffOrig) mascotCutoffOrig = filterSettings.getMascotCutoff();
             if (filterSettings.getXtandemCutoff() > xtandemCutoffOrig) xtandemCutoffOrig = filterSettings.getXtandemCutoff();
             if (filterSettings.getPeptideProphetCutoff() < peptideProphetCutoffOrig) peptideProphetCutoffOrig = filterSettings.getPeptideProphetCutoff();
+            System.err.println("Must reload files due to more permisive filter settings");
             new Thread(new Runnable() {
                 public void run() {
                     setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
                     File f[] = new File[allFiles.size()];
-                    addFiles(allFiles.toArray(f));
+                    allFiles.toArray(f);
+                    allFiles.clear();
+                    addFiles(f);
                     
                     setCursor(null);
                 }
