@@ -382,6 +382,7 @@ public class ExperimentPanel extends JPanel {
                     File f[] = new File[allFiles.size()];
                     allFiles.toArray(f);
                     allFiles.clear();
+                    fileInfos.clear();
                     addFiles(f);
                     
                     setCursor(null);
