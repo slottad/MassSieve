@@ -92,6 +92,30 @@ public class ProteinListPanel extends ListPanel {
         }        
     }
     
+    public void tableToTabSimple(File file) {
+        try {
+            FileWriter fw = new FileWriter(file);
+            //	Output column headers if any.
+            fw.write("Proteins\tPeptides\tScans\n");
+            
+            for (int row=0 ; row < jTable.getRowCount(); row++) {
+                Object obj = tableModel.getElementAt(row);
+                if ((obj instanceof Protein)) {
+                    Protein pro = (Protein)obj;
+                    fw.write(pro.getName());
+                    for (Peptide pep : pro.getAllPeptides()) {
+                        fw.write("\t" + pep.getSequence() + "\t" + pep.getScanList(false) + "\n");
+                    }        
+                }
+            }
+            fw.close();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+        return;
+        
+    }
+
     protected JPopupMenu createPopupMenu() {
         final JPopupMenu menu = super.createPopupMenu();
         // Create and add a menu item
@@ -108,6 +132,19 @@ public class ProteinListPanel extends ListPanel {
             }
         });
         menu.add(exportPepItem);
+        JMenuItem exportSimpleItem = new JMenuItem("Export Simple Protein-Peptide format");
+        exportSimpleItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                JFileChooser fc = new JFileChooser();
+                fc.setDialogTitle("Export to...");
+                int returnVal = fc.showSaveDialog(null);
+                if (returnVal == JFileChooser.APPROVE_OPTION) {
+                    File f = fc.getSelectedFile();
+                    tableToTabSimple(f);
+                }
+            }
+        });
+        menu.add(exportSimpleItem);
         return menu;
     }
     

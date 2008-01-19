@@ -414,68 +414,7 @@ public class Protein implements Serializable, Comparable<Protein> {
             }
         }
     }
-    
-//    public DefaultMutableTreeNode getTree(ExperimentPanel ePanel) {
-//        DefaultMutableTreeNode node = new DefaultMutableTreeNode(this);
-//
-//        DefaultMutableTreeNode child;
-//
-//        PeptideListPanel pPanel = new PeptideListPanel(ePanel);
-//        pPanel.addPeptideList(allPeptides, experimentSet);
-//        pPanel.setName("Peptides (" + allPeptides.size() + ")");
-//        child = new DefaultMutableTreeNode(pPanel);
-//
-//        for (Peptide pep:allPeptides) {
-//            child.add(pep.getTree());
-//        }
-//
-//        node.add(child);
-//
-//        ProteinListPanel proPanel;
-//
-//        if (!equivalent.isEmpty()) {
-//            proPanel = new ProteinListPanel(ePanel);
-//            proPanel.addProteinList(equivalent, experimentSet);
-//            proPanel.setName("Equivalent Proteins (" + equivalent.size() + ")");
-//            child = new DefaultMutableTreeNode(proPanel);
-//            node.add(child);
-//            for (Protein p:equivalent) {
-//                child.add(new DefaultMutableTreeNode(p));
-//            }
-//        }
-//        if (!subset.isEmpty()) {
-//            proPanel = new ProteinListPanel(ePanel);
-//            proPanel.addProteinList(subset, experimentSet);
-//            proPanel.setName("Subset Proteins (" + subset.size() + ")");
-//            child = new DefaultMutableTreeNode(proPanel);
-//            node.add(child);
-//            for (Protein p:subset) {
-//                child.add(new DefaultMutableTreeNode(p));
-//            }
-//        }
-//        if (!superset.isEmpty()) {
-//            proPanel = new ProteinListPanel(ePanel);
-//            proPanel.addProteinList(superset, experimentSet);
-//            proPanel.setName("Superset Proteins (" + superset.size() + ")");
-//            child = new DefaultMutableTreeNode(proPanel);
-//            node.add(child);
-//            for (Protein p:superset) {
-//                child.add(new DefaultMutableTreeNode(p));
-//            }
-//        }
-//        if (!differentiable.isEmpty()) {
-//            proPanel = new ProteinListPanel(ePanel);
-//            proPanel.addProteinList(differentiable, experimentSet);
-//            proPanel.setName("Differentiable Proteins (" + differentiable.size() + ")");
-//            child = new DefaultMutableTreeNode(proPanel);
-//            node.add(child);
-//            for (Protein p:differentiable) {
-//                child.add(new DefaultMutableTreeNode(p));
-//            }
-//        }
-//        return node;
-//    }
-    
+        
     public HashSet<Protein> getAssociatedProteinSet() {
         HashSet<Protein> proSet = new HashSet<Protein>();
         proSet.addAll(equivalent);
