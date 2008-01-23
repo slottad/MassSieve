@@ -271,7 +271,7 @@ public class Protein implements Serializable, Comparable<Protein> {
                 for (PeptideHit p:pHits) {
                     if (p.containsProtein(name)) {
                         //if (p.getProteinName().equals(name)) {
-                        String combName = p.getRawFile() + p.getScanNum();
+                        String combName = p.getScanTuple();
                         scanNumbers.add(combName);
                     }
                 }
@@ -288,7 +288,7 @@ public class Protein implements Serializable, Comparable<Protein> {
             for (PeptideHit p:pHits) {
                 if ((p.containsProtein(name)) && exp.equals(p.getExperiment())) {
                     //if ((p.getProteinName().equals(name)) && exp.equals(p.getExperiment())) {
-                    String combName = p.getRawFile() + p.getScanNum();
+                    String combName = p.getScanTuple();
                     scanNumbers.add(combName);
                 }
             }

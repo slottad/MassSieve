@@ -355,6 +355,9 @@ public class PeptideHit implements Serializable, Comparable<PeptideHit> {
         rawFile = s;
     }
 
+    public String getScanTuple() {
+        return this.getRawFile() + ":" + this.getScanNum();
+    }
 //    public double getXcorr() {
 //        return xcorr;
 //    }

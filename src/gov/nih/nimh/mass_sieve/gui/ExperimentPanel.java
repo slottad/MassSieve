@@ -292,12 +292,11 @@ public class ExperimentPanel extends JPanel {
     
     public void recomputeCutoff() {
         PeptideCollection pepFiltered;
-        if (filterSettings.getUseIndeterminates()) {
-            pepFiltered = pepCollectionOriginal;
-        } else {
-            pepFiltered = pepCollectionOriginal.getNonIndeterminents();
+        pepFiltered = pepCollectionOriginal.getCutoffCollection(filterSettings);
+        pepFiltered.computeIndeterminates();
+        if (!filterSettings.getUseIndeterminates()) {
+            pepFiltered = pepFiltered.getNonIndeterminents();
         }
-        pepFiltered = pepFiltered.getCutoffCollection(filterSettings);
         pepFiltered = FilterBySearchProgram(pepFiltered);
         if (filterSettings.getFilterPeptides()) {
             pepFiltered = pepFiltered.getPeptidesByHits(filterSettings.getPepHitCutoffCount());
