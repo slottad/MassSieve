@@ -43,11 +43,12 @@ public class FilterSettingsDialog extends JDialog {
     private int                height = 600;
     private int                spinWidth = 2;
     private JTextField         pepFilterField, mascotCutoff, omssaCutoff, xtandemCutoff, sequestCutoff, peptideProphetCutoff;
-    private JCheckBox          useIonIdentBox, useIndeterminatesBox, filterPeptidesBox, filterProteinsBox, filterCoverageBox;
+    private JCheckBox          useIonIdentBox, useIndeterminatesBox, usePepProphetBox, filterPeptidesBox, filterProteinsBox, filterCoverageBox;
     private JSpinner           pepHitSpinner, peptideSpinner, coverageSpinner;
     private SpinnerNumberModel pepHitCount, peptideCount, coverageAmount;
     private JButton            okButton, cancelButton;
-    private boolean            useIonIdent, useIndeterminates, filterPeptides, filterProteins, filterCoverage;
+    private boolean            useIonIdent, useIndeterminates, usePepProphet, filterPeptides, filterProteins, filterCoverage;
+    private JLabel             usePepProphetLabel;
     private FilterSettings     filterSettings;
     
     /** Creates a new instance of PreferencesDialog */
@@ -64,8 +65,7 @@ public class FilterSettingsDialog extends JDialog {
         mascotCutoff = new JTextField("0.5", 5);
         omssaCutoff = new JTextField("0.5", 5);
         xtandemCutoff = new JTextField("0.5", 5);
-        sequestCutoff = new JTextField("0.5", 5);
-        sequestCutoff.setEnabled(false);  // until this feature is implemented
+        sequestCutoff = new JTextField("0.0", 5);
         peptideProphetCutoff = new JTextField("0.95", 5);
         
         useIonIdentBox = new JCheckBox("Use ION >= Ident");
@@ -75,6 +75,13 @@ public class FilterSettingsDialog extends JDialog {
             }
         });
         
+        usePepProphetBox = new JCheckBox("Prefer peptide prophet score");
+        usePepProphetBox.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                usePepProphetBoxStateChanged(evt);
+            }
+        });
+ 
         useIndeterminatesBox = new JCheckBox("Discard indeterminate peptide hits.");
         useIndeterminatesBox.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
@@ -157,17 +164,21 @@ public class FilterSettingsDialog extends JDialog {
         centerPanel.add(new JLabel("<="));
         centerPanel.add(mascotCutoff);
         centerPanel.add(useIonIdentBox);
-        //centerPanel.add(new JLabel("Sequest cutoff:"), ParagraphLayout.NEW_PARAGRAPH);
-        //centerPanel.add(sequestCutoff);
+        centerPanel.add(new JLabel("Sequest cutoff:"), ParagraphLayout.NEW_PARAGRAPH);
+        centerPanel.add(new JLabel("<="));
+        centerPanel.add(sequestCutoff);
         
         //centerPanel.add(new JLabel(), ParagraphLayout.NEW_PARAGRAPH);
         //centerPanel.add(new JLabel("The probability score must be greater than:"));
         centerPanel.add(new JLabel("Peptide Prophet cutoff:"), ParagraphLayout.NEW_PARAGRAPH);
         centerPanel.add(new JLabel(">="));
         centerPanel.add(peptideProphetCutoff);
-        centerPanel.add(new JLabel("<html>NB: If this score exists for a given peptide hit<p>" +
+        centerPanel.add(usePepProphetBox);
+        usePepProphetLabel = new JLabel("<html>NB: If this score exists for a given peptide hit<p>" +
                                          "then this cutoff takes precedence over the<p>" +
-                                         "individual expectation cutoffs."), ParagraphLayout.NEW_LINE);
+                                         "individual expectation cutoffs.");
+        centerPanel.add(usePepProphetLabel, ParagraphLayout.NEW_LINE);
+        usePepProphetLabel.setVisible(false);
         centerPanel.add(new JLabel("Peptide Hits:"), ParagraphLayout.NEW_PARAGRAPH);
         centerPanel.add(useIndeterminatesBox);
         centerPanel.add(new JLabel("Peptides:"), ParagraphLayout.NEW_PARAGRAPH);
@@ -193,6 +204,7 @@ public class FilterSettingsDialog extends JDialog {
         buttonPanel.add(okButton);
         add(buttonPanel,BorderLayout.SOUTH);
         mascotCutoff.setEnabled(false);
+        peptideProphetCutoff.setEnabled(false);
         pepHitSpinner.setEnabled(false);
         peptideSpinner.setEnabled(false);
         coverageSpinner.setEnabled(false);
@@ -205,24 +217,7 @@ public class FilterSettingsDialog extends JDialog {
             jtf.setColumns(spinWidth);
         }
     }
-    
-    private JComboBox constructProteaseCombo() {
-        JComboBox pCombo = new JComboBox( new DefaultComboBoxModel() );
-        Object selected = pCombo.getSelectedItem();
-        ((DefaultComboBoxModel)pCombo.getModel()).removeAllElements();
-        int idx = -1;
-        int i = 0;
-        for(Iterator it = new TreeSet( ProteaseManager.getNames() ).iterator(); it.hasNext(); ){
-            String protease = (String)it.next();
-            if( protease.equals(selected))
-                idx = i;
-            i++;
-            pCombo.addItem(protease);
-        }
-        pCombo.setSelectedItem("Trypsin");
-        return pCombo;
-    }
-    
+       
     private void useIonIdentBoxStateChanged(java.awt.event.ItemEvent evt) {
         if (evt.getStateChange() == ItemEvent.SELECTED) {
             useIonIdent = true;
@@ -230,6 +225,17 @@ public class FilterSettingsDialog extends JDialog {
         } else {
             useIonIdent = false;
             mascotCutoff.setEnabled(true);
+        }
+    }
+    private void usePepProphetBoxStateChanged(java.awt.event.ItemEvent evt) {
+        if (evt.getStateChange() == ItemEvent.SELECTED) {
+            usePepProphet = true;
+            peptideProphetCutoff.setEnabled(true);
+            usePepProphetLabel.setVisible(true);
+        } else {
+            usePepProphet = false;
+            peptideProphetCutoff.setEnabled(false);
+            usePepProphetLabel.setVisible(false);
         }
     }
     private void useIndeterminatesBoxStateChanged(java.awt.event.ItemEvent evt) {
@@ -274,6 +280,7 @@ public class FilterSettingsDialog extends JDialog {
         filterSettings.setSequestCutoff(sequestCutoff.getText());
         filterSettings.setPeptideProphetCutoff(peptideProphetCutoff.getText());
         filterSettings.setUseIonIdent(useIonIdent);
+        filterSettings.setUsePepProphet(usePepProphet);
         filterSettings.setFilterText(pepFilterField.getText());
         filterSettings.setUseIndeterminates(useIndeterminates);
         filterSettings.setFilterPeptides(filterPeptides);
@@ -296,6 +303,7 @@ public class FilterSettingsDialog extends JDialog {
         this.setSequestCutoff(filterSettings.getSequestCutoff());
         this.setPeptideProphetCutoff(filterSettings.getPeptideProphetCutoff());
         this.setUseIonIdent(filterSettings.getUseIonIdent());
+        this.setUsePepProphet(filterSettings.getUsePepProphet());
         this.setPepFilterField(filterSettings.getFilterText());
         this.setUseIndeterminates(filterSettings.getUseIndeterminates());
         this.setFilterPeptides(filterSettings.getFilterPeptides());
@@ -340,6 +348,18 @@ public class FilterSettingsDialog extends JDialog {
         }
     }
     
+    public void setUsePepProphet(boolean b) {
+        if (b) {
+            usePepProphet = true;
+            peptideProphetCutoff.setEnabled(true);
+            usePepProphetBox.setSelected(true);
+        } else {
+            usePepProphet = false;
+            peptideProphetCutoff.setEnabled(false);
+            usePepProphetBox.setSelected(false);
+        }
+    }
+
     public void setUseIndeterminates(boolean b) {
         if (b) {
             useIndeterminates = true;

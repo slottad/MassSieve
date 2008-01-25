@@ -19,18 +19,19 @@ import java.io.Serializable;
 public class FilterSettings implements Serializable {
     private double omssaCutoff, mascotCutoff, xtandemCutoff, sequestCutoff, peptideProphetCutoff;
     private String filterText;
-    private boolean useIonIdent, useIndeterminates, filterPeptides, filterProteins, filterCoverage;
+    private boolean useIonIdent, useIndeterminates, usePepProphet, filterPeptides, filterProteins, filterCoverage;
     private int pHitCutoffCount, peptideCutoffCount, coverageCutoffAmount;
     /** Creates a new instance of FilterSettings */
     public FilterSettings() {
         omssaCutoff = 0.05;
         mascotCutoff = 0.05;
         xtandemCutoff = 0.05;
-        sequestCutoff = 0.05;
+        sequestCutoff = 0.0;
         peptideProphetCutoff = 0.95;
         useIonIdent = true;
         filterText = "o+m+x+s";
         useIndeterminates = true;
+        usePepProphet = false;
         filterPeptides = false;
         filterProteins = false;
         pHitCutoffCount = 1;
@@ -49,6 +50,7 @@ public class FilterSettings implements Serializable {
         this.setUseIonIdent(fromFilter.getUseIonIdent());
         this.setFilterText(fromFilter.getFilterText());
         this.setUseIndeterminates(fromFilter.getUseIndeterminates());
+        this.setUsePepProphet(fromFilter.getUsePepProphet());
         this.setFilterPeptides(fromFilter.getFilterPeptides());
         this.setFilterProteins(fromFilter.getFilterProteins());
         this.setPepHitCutoffCount(fromFilter.getPepHitCutoffCount());
@@ -299,5 +301,13 @@ public class FilterSettings implements Serializable {
 
     public void setPeptideProphetCutoff(double d) {
         peptideProphetCutoff = d;
+    }
+
+    public boolean getUsePepProphet() {
+        return usePepProphet;
+    }
+
+    public void setUsePepProphet(boolean b) {
+        usePepProphet = b;
     }
 }

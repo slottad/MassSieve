@@ -26,22 +26,22 @@ public class PeptideHitListPanel extends ListPanel {
     }
     
     public void addPeptideHitList(HashSet<PeptideHit> list) {
-        String[] columnTitles = {"Modified Sequence", "Analysis", "Scan", "Query", "Indet", "Expect", "ION", "Ident", "m/z", "Exp. Mass", '\u0394' + "Mass", "Charge", "Protein", "Start", "End", "Experiment", "Source File", "Raw File"};
-        String[] columnFields = {"modSequence", "sourceType", "scanNum", "queryNum", "indeterminate", "expect", "ionScore", "ident", "expMass", "expNeutralMass", "diffMass", "Z", "proteinName", "start", "end", "experiment", "sourceFile", "rawFile"};
+        String[] columnTitles = {"Modified Sequence", "Analysis", "Scan", "Query", "Indet", "Expect", "Pep Proph", "ION", "Ident", "Xcorr", "m/z", "Exp. Mass", '\u0394' + "Mass", "Charge", "Protein", "Start", "End", "Experiment", "Source File", "Raw File"};
+        String[] columnFields = {"modSequence", "sourceType", "scanNum", "queryNum", "indeterminate", "expect", "pepProphet", "ionScore", "ident", "xcorr", "expMass", "expNeutralMass", "diffMass", "Z", "proteinName", "start", "end", "experiment", "sourceFile", "rawFile"};
         pTableFormat = GlazedLists.tableFormat(columnFields, columnTitles);
         this.addList(list);
     }
     
     public void addPeptideHitList(ArrayList<PeptideHit> list) {
-        String[] columnTitles = {"Modified Sequence", "Analysis", "Scan", "Query", "Indet", "Expect", "ION", "Ident", "m/z", "Exp. Mass", '\u0394' + "Mass", "Charge", "Experiment", "Source File", "Raw File"};
-        String[] columnFields = {"modSequence", "sourceType", "scanNum", "queryNum", "indeterminate", "expect", "ionScore", "ident", "expMass", "expNeutralMass", "diffMass", "Z", "experiment", "sourceFile", "rawFile"};
+        String[] columnTitles = {"Modified Sequence", "Analysis", "Scan", "Query", "Indet", "Expect", "Pep Proph", "ION", "Ident", "Xcorr", "m/z", "Exp. Mass", '\u0394' + "Mass", "Charge", "Experiment", "Source File", "Raw File"};
+        String[] columnFields = {"modSequence", "sourceType", "scanNum", "queryNum", "indeterminate", "expect", "pepProphet", "ionScore", "ident", "xcorr", "expMass", "expNeutralMass", "diffMass", "Z", "experiment", "sourceFile", "rawFile"};
         pTableFormat = GlazedLists.tableFormat(columnFields, columnTitles);
         this.addList(list);
     }
     
     public void addProteinPeptideHitList(ArrayList<PeptideHit> list) {
-        String[] columnTitles = {"Peptide", "Modified Sequence", "Analysis", "Scan", "Query", "Indet", "Expect", "Pep Proph", "ION", "Ident", "m/z", "Exp. Mass", '\u0394' + "Mass", "Charge", "Experiment", "Source File", "Raw File"};
-        String[] columnFields = {"sequence", "modSequence", "sourceType", "scanNum", "queryNum", "indeterminate", "expect", "pepProphet", "ionScore", "ident", "expMass", "expNeutralMass", "diffMass", "Z", "experiment", "sourceFile", "rawFile"};
+        String[] columnTitles = {"Peptide", "Modified Sequence", "Analysis", "Scan", "Query", "Indet", "Expect", "Pep Proph", "ION", "Ident", "Xcorr", "m/z", "Exp. Mass", '\u0394' + "Mass", "Charge", "Experiment", "Source File", "Raw File"};
+        String[] columnFields = {"sequence", "modSequence", "sourceType", "scanNum", "queryNum", "indeterminate", "expect", "pepProphet", "ionScore", "ident", "xcorr", "expMass", "expNeutralMass", "diffMass", "Z", "experiment", "sourceFile", "rawFile"};
         pTableFormat = GlazedLists.tableFormat(columnFields, columnTitles);
         this.addList(list);
     }

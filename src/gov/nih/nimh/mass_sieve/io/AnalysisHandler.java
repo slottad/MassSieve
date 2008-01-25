@@ -58,28 +58,33 @@ abstract public class AnalysisHandler extends DefaultHandler {
     
     public void addPeptideHit(PeptideHit p) {
         peptide_hits.add(p);
+        if (p.getSourceType() == AnalysisProgramType.SEQUEST) {
+            p.normalizeXcorr();
+        }
+        double evalue = p.getExpect();
         int scan = p.getScanNum();
         if (scanExpectFilter.containsKey(scan)) {
-            if (scanExpectFilter.get(scan) > p.getExpect()) {
-                scanExpectFilter.put(p.getScanNum(),p.getExpect());
-                scanExpectIndeterminate.put(p.getScanNum(),false);
-            } else if (scanExpectFilter.get(scan) < p.getExpect()) {
-                // do nothing
-            } else {  // Must be indeterminate
-                scanExpectIndeterminate.put(p.getScanNum(),true);
+            if (scanExpectFilter.get(scan) > evalue) {
+                scanExpectFilter.put(p.getScanNum(), evalue);
+                scanExpectIndeterminate.put(p.getScanNum(), false);
+            } else if (scanExpectFilter.get(scan) < evalue) {
+            // do nothing
+            } else {  // Must be indeterminate do we still need this here?
+                scanExpectIndeterminate.put(p.getScanNum(), true);
             }
         } else {
-            scanExpectFilter.put(p.getScanNum(),p.getExpect());
-            scanExpectIndeterminate.put(p.getScanNum(),false);
+            scanExpectFilter.put(p.getScanNum(), evalue);
+            scanExpectIndeterminate.put(p.getScanNum(), false);
         }
     }
-    
+
     public ArrayList<PeptideHit> getPeptideHits() {
         if (scanExpectFilter.size() > 0) {
             ArrayList<PeptideHit> filtered_hits = new ArrayList<PeptideHit>();
             for (PeptideHit p:peptide_hits) {
                 int scan = p.getScanNum();
-                if (p.getExpect() <= scanExpectFilter.get(scan)) {
+                double evalue = p.getExpect();
+                if (evalue <= scanExpectFilter.get(scan)) {
                     p.setIndeterminate(scanExpectIndeterminate.get(scan));
                     filtered_hits.add(p);
                 }

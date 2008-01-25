@@ -25,7 +25,7 @@ public class PeptideHit implements Serializable, Comparable<PeptideHit> {
     private double expect;
     private double ionScore;
     private double ident;
-    //private double xcorr;
+    private double xcorr;
     private double pepProphet;
     private int Z;
     private HashSet<ProteinHit> proteinHits;
@@ -66,7 +66,7 @@ public class PeptideHit implements Serializable, Comparable<PeptideHit> {
         ph.expect = expect;
         ph.ionScore = ionScore;
         ph.ident = ident;
-        //ph.xcorr = xcorr;
+        ph.xcorr = xcorr;
         ph.pepProphet = pepProphet;
         ph.Z = Z;
         ph.indeterminate = indeterminate;
@@ -358,14 +358,31 @@ public class PeptideHit implements Serializable, Comparable<PeptideHit> {
     public String getScanTuple() {
         return this.getRawFile() + ":" + this.getScanNum();
     }
-//    public double getXcorr() {
-//        return xcorr;
-//    }
-//
-//    public void setXcorr(double xcorr) {
-//        this.xcorr = xcorr;
-//    }
+    
+    public void normalizeXcorr() {
+        double cutoff;
+        
+        // Should make these parameters
+        switch (this.getCharge()) {
+            case 1: cutoff = 1.8; break;
+            case 2: cutoff = 2.5; break;
+            case 3: cutoff = 3.5; break;
+            default: cutoff = 3.5; break;
+        }
+        expect = (xcorr - cutoff) / cutoff;
+    }
+    
+    public double getXcorr() {
+        return xcorr;
+    }
 
+    public void setXcorr(double xcorr) {
+        this.xcorr = xcorr;
+    }
+
+    public void setXcorr(String xcorr) {
+        this.xcorr = Double.parseDouble(xcorr);
+    }
     public double getPepProphet() {
         return pepProphet;
     }

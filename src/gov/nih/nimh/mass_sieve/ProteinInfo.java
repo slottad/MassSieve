@@ -69,7 +69,9 @@ public class ProteinInfo implements Serializable {
     }
     
     public void setDescription(String description) {
-        this.description = description;
+        if (description != null) {
+            this.description = description;
+        }
     }
     
     public String getSequence() {

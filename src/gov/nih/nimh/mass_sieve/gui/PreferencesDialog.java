@@ -40,14 +40,13 @@ public class PreferencesDialog extends JDialog {
     private JCheckBox useDigestBox;
     private JCheckBox useMultiColumnSortBox;
     private JComboBox proteaseCombo;
-    private JComboBox digest;
     private ButtonGroup layoutGroup;
     private JRadioButton ballonButton;
     private JRadioButton forceButton;
     private JRadioButton nodeLinkButton;
     private JRadioButton radialButton;
     private JButton okButton, cancelButton;
-    private boolean useIonIdent, useDigest, useMultiColumnSort;
+    private boolean useDigest, useMultiColumnSort;
     private JLabel mcWarning;
     private MassSieveFrame msFrame;
     
@@ -126,12 +125,12 @@ public class PreferencesDialog extends JDialog {
         JComboBox pCombo = new JComboBox( new DefaultComboBoxModel() );
         Object selected = pCombo.getSelectedItem();
         ((DefaultComboBoxModel)pCombo.getModel()).removeAllElements();
-        int idx = -1;
+        //int idx = -1;
         int i = 0;
         for(Iterator it = new TreeSet( ProteaseManager.getNames() ).iterator(); it.hasNext(); ){
             String protease = (String)it.next();
-            if( protease.equals(selected))
-                idx = i;
+            //if ( protease.equals(selected))
+            //    idx = i;
             i++;
             pCombo.addItem(protease);
         }

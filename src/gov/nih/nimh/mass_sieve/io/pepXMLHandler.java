@@ -108,7 +108,7 @@ public class pepXMLHandler extends AnalysisHandler {
                 String name = attrs.getValue("name");
                 String value = attrs.getValue("value");
                 if (name.compareToIgnoreCase("expect") == 0) curPep.setExpect(value); 
-                if (name.compareToIgnoreCase("xcorr") == 0) curPep.setExpect(value); 
+                if (name.compareToIgnoreCase("xcorr") == 0) curPep.setXcorr(value); 
                 if (name.compareToIgnoreCase("ionscore") == 0) curPep.setIonScore(value); 
                 if (name.compareToIgnoreCase("identityscore") == 0) curPep.setIdent(value);
             }

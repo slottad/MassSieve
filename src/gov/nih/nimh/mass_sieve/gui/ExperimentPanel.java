@@ -65,7 +65,7 @@ public class ExperimentPanel extends JPanel {
     private ArrayList<FileInformation> fileInfos;
     private PeptideCollection pepCollection, pepCollectionOriginal;
     private FilterSettings filterSettings;
-    private double omssaCutoffOrig, mascotCutoffOrig, xtandemCutoffOrig, peptideProphetCutoffOrig;
+    private double omssaCutoffOrig, mascotCutoffOrig, xtandemCutoffOrig, sequestCutoffOrig, peptideProphetCutoffOrig;
     private DefaultTreeModel treeModelOverview;
     private FilterSettingsDialog prefDialog;
     private SummaryDialog summaryDialog;
@@ -106,6 +106,7 @@ public class ExperimentPanel extends JPanel {
         omssaCutoffOrig = filterSettings.getOmssaCutoff();
         mascotCutoffOrig = filterSettings.getMascotCutoff();
         xtandemCutoffOrig = filterSettings.getXtandemCutoff();
+        sequestCutoffOrig = filterSettings.getSequestCutoff();
         peptideProphetCutoffOrig = filterSettings.getPeptideProphetCutoff();
         cleanDisplay();
     }
@@ -326,7 +327,7 @@ public class ExperimentPanel extends JPanel {
                 p.setExperiment(exp_name);
                 p.setSourceFile(filename);
                 boolean usePepHit = false;
-                if (p.isPepXML()) {
+                if (filterSettings.getUsePepProphet() && p.isPepXML()) {
                     if (p.getPepProphet() >= filterSettings.getPeptideProphetCutoff()) usePepHit = true;
                 } else {
                     switch (p.getSourceType()) {
@@ -338,6 +339,9 @@ public class ExperimentPanel extends JPanel {
                             break;
                         case XTANDEM:
                             if (p.getExpect() <= filterSettings.getXtandemCutoff()) usePepHit = true;
+                            break;
+                        case SEQUEST:
+                            if (p.getExpect() <= filterSettings.getSequestCutoff()) usePepHit = true;
                             break;
                     }
                 }
@@ -368,11 +372,13 @@ public class ExperimentPanel extends JPanel {
     
     public synchronized void reloadFiles() {
         if ((filterSettings.getOmssaCutoff() > omssaCutoffOrig) || (filterSettings.getMascotCutoff() > mascotCutoffOrig) ||
-                (filterSettings.getXtandemCutoff() > xtandemCutoffOrig) || (filterSettings.getPeptideProphetCutoff() < peptideProphetCutoffOrig)) {
+                (filterSettings.getXtandemCutoff() > xtandemCutoffOrig) || (filterSettings.getSequestCutoff() > sequestCutoffOrig) ||
+                (filterSettings.getPeptideProphetCutoff() < peptideProphetCutoffOrig)) {
             cleanDisplay();
             if (filterSettings.getOmssaCutoff() > omssaCutoffOrig) omssaCutoffOrig = filterSettings.getOmssaCutoff();
             if (filterSettings.getMascotCutoff() > mascotCutoffOrig) mascotCutoffOrig = filterSettings.getMascotCutoff();
             if (filterSettings.getXtandemCutoff() > xtandemCutoffOrig) xtandemCutoffOrig = filterSettings.getXtandemCutoff();
+            if (filterSettings.getSequestCutoff() > sequestCutoffOrig) sequestCutoffOrig = filterSettings.getSequestCutoff();
             if (filterSettings.getPeptideProphetCutoff() < peptideProphetCutoffOrig) peptideProphetCutoffOrig = filterSettings.getPeptideProphetCutoff();
             System.err.println("Must reload files due to more permisive filter settings");
             new Thread(new Runnable() {

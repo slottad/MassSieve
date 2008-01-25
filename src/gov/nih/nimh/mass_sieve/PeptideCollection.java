@@ -122,11 +122,10 @@ public class PeptideCollection implements Serializable, Comparable<PeptideCollec
 //        return getCutoffCollection(omssa, mascot, xtandem, false);
 //    }
     public PeptideCollection getCutoffCollection(FilterSettings fs) {
-        boolean useIonIdent = fs.getUseIonIdent();
         PeptideCollection pc = new PeptideCollection();
 
         for (PeptideHit p : peptideHits) {
-            if (p.isPepXML()) {
+            if (fs.getUsePepProphet() && p.isPepXML()) {
                 if (p.getPepProphet() >= fs.getPeptideProphetCutoff()) {
                     pc.addPeptideHit(p);
                 }
@@ -148,6 +147,11 @@ public class PeptideCollection implements Serializable, Comparable<PeptideCollec
                         break;
                     case XTANDEM:
                         if (p.getExpect() <= fs.getXtandemCutoff()) {
+                            pc.addPeptideHit(p);
+                        }
+                        break;
+                    case SEQUEST:
+                        if (p.getExpect() <= fs.getSequestCutoff()) {
                             pc.addPeptideHit(p);
                         }
                         break;
