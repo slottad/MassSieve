@@ -294,9 +294,12 @@ public class PeptideHit implements Serializable, Comparable<PeptideHit> {
     }
     
     public void setDiffMass(String m) {
-        diffMass = Double.parseDouble(m);
-    }
-    
+        try {
+            diffMass = Double.parseDouble(m);
+        } catch (NumberFormatException e) {
+            // do nothing
+        }
+    }    
     public void setDiffMass() {
         diffMass = (new BigDecimal(expNeutralMass - theoreticalMass)).setScale(2,BigDecimal.ROUND_HALF_EVEN).doubleValue();
     }

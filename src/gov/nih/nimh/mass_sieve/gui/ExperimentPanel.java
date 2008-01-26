@@ -70,12 +70,12 @@ public class ExperimentPanel extends JPanel {
     private FilterSettingsDialog prefDialog;
     private SummaryDialog summaryDialog;
     private JFileChooser jFileChooserLoad;
-    private JScrollPane jScrollPaneLeft;
-    private JSplitPane jSplitPaneMain;
-    private JScrollPane graphPanel;
+    //private JScrollPane jScrollPaneLeft;
+    //private JSplitPane jSplitPaneMain;
+    private JScrollPane graphPanel, treePanel;
     private JPanel pepHitPanel, pepPanel, proPanel, detailPanel;
     private FloatDockModel dockModel;
-    private DefaultDockable pepHitDockable, pepDockable, proDockable, graphDockable, detailDockable;
+    private DefaultDockable pepHitDockable, pepDockable, proDockable, graphDockable, detailDockable, treeDockable;
     private JTree jTreeMain;
     private MassSieveFrame msFrame;
     private final static String DOCK_NAME = "MassSieve";
@@ -132,6 +132,7 @@ public class ExperimentPanel extends JPanel {
                 dockablesMap.put(proDockable.getID(), proDockable);
                 dockablesMap.put(graphDockable.getID(), graphDockable);
                 dockablesMap.put(detailDockable.getID(), detailDockable);
+                dockablesMap.put(treeDockable.getID(), treeDockable);
                 
                 // Create the map with the owner windows, that the decoder needs.
                 Map ownersMap = new HashMap();
@@ -143,7 +144,9 @@ public class ExperimentPanel extends JPanel {
                 // Decode the file.
                 dockModel = (FloatDockModel)dockModelDecoder.decode(DOCK_FILE, dockablesMap, ownersMap, visualizersMap);
                 rootDock = (SplitDock)dockModel.getRootDock(ROOT_DOCK);
-                jSplitPaneMain.setRightComponent(rootDock);
+                add(rootDock, BorderLayout.CENTER, 0);
+                this.validate();
+                //jSplitPaneMain.setRightComponent(rootDock);
             } catch (FileNotFoundException fileNotFoundException){
                 System.out.println("Could not find the file [" + DOCK_FILE + "] with the saved dock model.");
                 System.out.println("Continuing with the default dock model.");
@@ -183,20 +186,25 @@ public class ExperimentPanel extends JPanel {
         DockingManager.setDockModel(dockModel);
         
         jFileChooserLoad = new JFileChooser();
-        jSplitPaneMain = new JSplitPane();
-        jScrollPaneLeft = new JScrollPane();
+        //jSplitPaneMain = new JSplitPane();
+        //jScrollPaneLeft = new JScrollPane();
         jTreeMain = new JTree();
         pepHitPanel = new JPanel(new BorderLayout());
         pepPanel = new JPanel(new BorderLayout());
         proPanel = new JPanel(new BorderLayout());
         detailPanel = new JPanel(new BorderLayout());
         graphPanel = new JScrollPane(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        treePanel = new JScrollPane();
         pepHitDockable = new DefaultDockable("pepHits", pepHitPanel, "Peptide Hits", null, DockingMode.ALL - DockingMode.FLOAT);
         pepDockable = new DefaultDockable("pep", pepPanel, "Peptides", null, DockingMode.ALL - DockingMode.FLOAT);
         proDockable = new DefaultDockable("pro", proPanel, "Proteins", null, DockingMode.ALL - DockingMode.FLOAT);
         graphDockable = new DefaultDockable("graph", graphPanel, "Cluster Graph", null, DockingMode.ALL - DockingMode.FLOAT);
         detailDockable = new DefaultDockable("detail", detailPanel, "Details", null, DockingMode.ALL - DockingMode.FLOAT);
+        treeDockable = new DefaultDockable("tree", treePanel, "Overview", null, DockingMode.ALL - DockingMode.FLOAT);
+        //treeDockable = new DefaultDockable("tree", treePanel, "Overview", null, DockingMode.LEFT);
         rootDock = new SplitDock();
+        TabDock tabDockLeft = new TabDock();
+        SplitDock splitDockRight = new SplitDock();
         TabDock tabDockTop = new TabDock();
         TabDock tabDockBottom = new TabDock();
         
@@ -205,32 +213,38 @@ public class ExperimentPanel extends JPanel {
         tabDockTop.addDockable(pepHitDockable, new Position(2));
         tabDockBottom.addDockable(graphDockable, new Position(0));
         tabDockBottom.addDockable(detailDockable, new Position(1));
-        rootDock.addChildDock(tabDockTop, new Position(Position.TOP));
-        rootDock.addChildDock(tabDockBottom, new Position(Position.BOTTOM));
+        tabDockLeft.addDockable(treeDockable, new Position(0));
+        splitDockRight.addChildDock(tabDockTop, new Position(Position.TOP));
+        splitDockRight.addChildDock(tabDockBottom, new Position(Position.BOTTOM));
+        rootDock.addChildDock(tabDockLeft, new Position(Position.LEFT));
+        rootDock.addChildDock(splitDockRight, new Position(Position.RIGHT));
         tabDockTop.setSelectedDockable(proDockable);
         tabDockBottom.setSelectedDockable(graphDockable);
-        rootDock.setDividerLocation(400);
-        
+        splitDockRight.setDividerLocation(400);
+        rootDock.setDividerLocation(175);
+
         // Add the root docks to the dock model.
         dockModel.addRootDock(ROOT_DOCK, rootDock, msFrame);
         
         jFileChooserLoad.setDialogTitle("Open Files");
-        jSplitPaneMain.setBorder(null);
-        jSplitPaneMain.setDividerLocation(175);
-        jSplitPaneMain.setDividerSize(5);
-        jSplitPaneMain.setMinimumSize(new java.awt.Dimension(0, 0));
+        //jSplitPaneMain.setBorder(null);
+        //jSplitPaneMain.setDividerLocation(175);
+        //jSplitPaneMain.setDividerSize(5);
+        //jSplitPaneMain.setMinimumSize(new java.awt.Dimension(0, 0));
         jTreeMain.addTreeSelectionListener(new javax.swing.event.TreeSelectionListener() {
             public void valueChanged(javax.swing.event.TreeSelectionEvent evt) {
                 jTreeMainValueChanged(evt);
             }
         });
+
+        treePanel.setViewportView(jTreeMain);
+        //jScrollPaneLeft.setViewportView(jTreeMain);
         
-        jScrollPaneLeft.setViewportView(jTreeMain);
+        //jSplitPaneMain.setLeftComponent(jScrollPaneLeft);
+        //jSplitPaneMain.setRightComponent(rootDock);
         
-        jSplitPaneMain.setLeftComponent(jScrollPaneLeft);
-        jSplitPaneMain.setRightComponent(rootDock);
-        
-        add(jSplitPaneMain, BorderLayout.CENTER);
+        //add(jSplitPaneMain, BorderLayout.CENTER);
+        add(rootDock, BorderLayout.CENTER, 0);
     }
     
     public void showPreferences() {
