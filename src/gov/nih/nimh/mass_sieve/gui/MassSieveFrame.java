@@ -182,6 +182,7 @@ public class MassSieveFrame extends javax.swing.JFrame {
         jMenuOptions = new javax.swing.JMenuItem();
         jMenuHelp = new javax.swing.JMenu();
         jMenuGarbageCollect = new javax.swing.JMenuItem();
+        jMenuResetLayout = new javax.swing.JMenuItem();
         jMenuAbout = new javax.swing.JMenuItem();
 
         jFileChooserLoad.setDialogTitle("Open Files");
@@ -346,6 +347,14 @@ public class MassSieveFrame extends javax.swing.JFrame {
             }
         });
         jMenuHelp.add(jMenuGarbageCollect);
+
+        jMenuResetLayout.setText("Reset layout");
+        jMenuResetLayout.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuResetLayoutActionPerformed(evt);
+            }
+        });
+        jMenuHelp.add(jMenuResetLayout);
 
         jMenuAbout.setText("About");
         jMenuAbout.addActionListener(new java.awt.event.ActionListener() {
@@ -785,6 +794,14 @@ public class MassSieveFrame extends javax.swing.JFrame {
                 "\n" + checkMaxMem() +
                 "\n\n" + getSystemInfo());
     }//GEN-LAST:event_jMenuAboutActionPerformed
+
+    private void jMenuResetLayoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuResetLayoutActionPerformed
+        Component current = jTabbedPaneMain.getSelectedComponent();
+        if (current instanceof ExperimentPanel) {
+            currentExperiment = (ExperimentPanel)current;
+            currentExperiment.resetDockModel();
+        }
+    }//GEN-LAST:event_jMenuResetLayoutActionPerformed
     
     private String getSystemInfo() {
         Properties p = System.getProperties();
@@ -871,6 +888,7 @@ public class MassSieveFrame extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuOpenSeqDB;
     private javax.swing.JMenuItem jMenuOptions;
     private javax.swing.JMenuItem jMenuQuit;
+    private javax.swing.JMenuItem jMenuResetLayout;
     private javax.swing.JMenuItem jMenuSaveExp;
     private javax.swing.JMenuItem jMenuSaveExpSet;
     private javax.swing.JMenuItem jMenuShowSummary;
