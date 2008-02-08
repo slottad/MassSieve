@@ -12,6 +12,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import org.xml.sax.helpers.DefaultHandler;
 
 abstract public class AnalysisHandler extends DefaultHandler {
@@ -104,8 +106,16 @@ abstract public class AnalysisHandler extends DefaultHandler {
                 start = sb.lastIndexOf(" ") + 1;
                 val = Integer.parseInt(sb.substring(start));
             }
-        } finally {
-            //sb.toString().
+        } catch(Exception Ex) {
+            Pattern patternObj = Pattern.compile("[sS][cC][aA][nN]\\D*(\\d+)");
+            Matcher matcher = patternObj.matcher(fn);
+            if (matcher.find()) {
+                String num = matcher.group(1);
+                val = Integer.parseInt(num);
+            } else {
+                val = -1;  // Might still work if filename is unique
+                           // informs user of error condition otherwise
+            }
         }
 
         return val;

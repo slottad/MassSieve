@@ -26,7 +26,10 @@ import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import javax.swing.JFileChooser;
 import javax.swing.JMenuItem;
@@ -69,6 +72,17 @@ public class ListPanel {
         sortList = new SortedList(evList, null);
         tableModel = new EventTableModel(sortList, pTableFormat);
         selectionModel = new EventSelectionModel(sortList);
+    }
+    
+    public void addProteinList(HashMap<String, ExperimentPanel> expSet) {
+        HashSet<String> uniqueProteins = new HashSet<String>();
+        for (ExperimentPanel panel: expSet.values()) {
+            uniqueProteins.addAll(panel.getProteins().keySet());
+        }
+        ArrayList<String> list = new ArrayList<String>(uniqueProteins);
+        Collections.sort(list);
+        pTableFormat = new DiffTableFormat(expSet);
+        this.addList(list);
     }
     
     public JScrollPane createTable() {

@@ -589,7 +589,7 @@ public class MassSieveFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_jMenuCompareParsimonyActionPerformed
     
     private void jMenuCompareDiffActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuCompareDiffActionPerformed
-        ProteinListPanel cPanel = new ProteinListPanel();
+        ListPanel cPanel = new ListPanel();
         cPanel.addProteinList(expSet);
         JScrollPane compare = cPanel.createTable();
         compare.setName("Differences Comparison");
@@ -598,7 +598,7 @@ public class MassSieveFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_jMenuCompareDiffActionPerformed
     
     private void jMenuNewExperimentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuNewExperimentActionPerformed
-        javax.swing.JOptionPane optPane = new javax.swing.JOptionPane();
+        //javax.swing.JOptionPane optPane = new javax.swing.JOptionPane();
         String s = JOptionPane.showInputDialog(this, "Experiment Name");
         if (s != null && s.length() > 0) {
             createExperiment(s);
