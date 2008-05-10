@@ -99,8 +99,7 @@ public class ProteinListPanel extends ListPanel {
         } catch (IOException ex) {
             ex.printStackTrace();
         }
-        return;
-        
+        return;        
     }
 
     protected JPopupMenu createPopupMenu() {

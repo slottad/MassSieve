@@ -163,7 +163,7 @@ public class omssaHandler extends AnalysisHandler {
                 QueryToMass.put(currentQuery,Double.parseDouble(data));
             }
             if (sName.equals("MSSpectrum_ids_E")) {
-                QueryToScan.put(currentQuery,ScanFilenameToScanNumber(data));
+                QueryToScan.put(currentQuery,ScanFilenameToScanNumber(data, currentQuery));
                 String rawFile = ScanFilenameToRawFile(data);
                 QueryToRawFile.put(currentQuery,rawFile);
                 rawFiles.add(rawFile);

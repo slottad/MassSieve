@@ -117,7 +117,7 @@ public class mascotXMLHandler extends AnalysisHandler {
         }
         if (inQueries) {
             if (sName.equals("StringTitle")) {
-                QueryToScan.put(currentQuery,ScanFilenameToScanNumber(data));
+                //QueryToScan.put(currentQuery, ScanFilenameToScanNumber(data, currentQuery));
             }
             data = "";
         }

@@ -94,7 +94,10 @@ abstract public class AnalysisHandler extends DefaultHandler {
         }
     }
 
-    protected int ScanFilenameToScanNumber(String fn) {
+    protected int ScanFilenameToScanNumber(String fn, int defaultVal) {
+        if (fn.toLowerCase().startsWith("locus")) {
+            return defaultVal;
+        }
         StringBuffer sb = new StringBuffer(fn);
         int val, start, stop;
         start = sb.indexOf(".") + 1;
@@ -113,8 +116,7 @@ abstract public class AnalysisHandler extends DefaultHandler {
                 String num = matcher.group(1);
                 val = Integer.parseInt(num);
             } else {
-                val = -1;  // Might still work if filename is unique
-                           // informs user of error condition otherwise
+                val = defaultVal;
             }
         }
 
@@ -122,6 +124,9 @@ abstract public class AnalysisHandler extends DefaultHandler {
     }
 
     protected String ScanFilenameToRawFile(String fn) {
+        if (fn.toLowerCase().startsWith("locus")) {
+            return fn;
+        }
         StringBuffer sb = new StringBuffer(fn);
         String val;
         int start, stop;

@@ -6,7 +6,6 @@
  * To change this template, choose Tools | Template Manager
  * and open the template in the editor.
  */
-
 package gov.nih.nimh.mass_sieve.gui;
 
 import ca.odell.glazedlists.GlazedLists;
@@ -49,16 +48,16 @@ import javax.swing.table.TableCellRenderer;
  * @author slotta
  */
 public class ProteinGroupListPanel extends ProteinListPanel {
-    
+
     /** Creates a new instance of ProteinGroupListPanel */
     public ProteinGroupListPanel() {
         super();
     }
-    
+
     public ProteinGroupListPanel(ExperimentPanel ePanel) {
         super(ePanel);
     }
-    
+
     public void addProteinList(ArrayList<Protein> list, HashSet<String> exp, boolean useClusters) {
         experiments = exp;
         evList.addAll(list);
@@ -77,14 +76,15 @@ public class ProteinGroupListPanel extends ProteinListPanel {
         jSepTable.setSeparatorEditor(new ProteinSeparatorTableCell(sepList));
         selectionModel = new EventSelectionModel(sepList);
     }
-    
+
     protected JPopupMenu createPopupMenu() {
         final JPopupMenu menu = super.createPopupMenu();
-        
+
         if (!useClusters) {
             // Create and add a menu item
             JMenuItem exportPrefItem = new JMenuItem("Export Prefered Proteins");
             exportPrefItem.addActionListener(new java.awt.event.ActionListener() {
+
                 public void actionPerformed(java.awt.event.ActionEvent evt) {
                     JFileChooser fc = new JFileChooser();
                     fc.setDialogTitle("Export to...");
@@ -96,9 +96,10 @@ public class ProteinGroupListPanel extends ProteinListPanel {
                 }
             });
             menu.add(exportPrefItem);
-            
+
             JMenuItem exportPrefPepItem = new JMenuItem("Export Prefered Proteins with Peptides");
             exportPrefPepItem.addActionListener(new java.awt.event.ActionListener() {
+
                 public void actionPerformed(java.awt.event.ActionEvent evt) {
                     JFileChooser fc = new JFileChooser();
                     fc.setDialogTitle("Export to...");
@@ -110,25 +111,39 @@ public class ProteinGroupListPanel extends ProteinListPanel {
                 }
             });
             menu.add(exportPrefPepItem);
+
+            JMenuItem exportSimplePrefPepItem = new JMenuItem("Export Prefered Simple Protein-Peptide format");
+            exportSimplePrefPepItem.addActionListener(new java.awt.event.ActionListener() {
+
+                public void actionPerformed(java.awt.event.ActionEvent evt) {
+                    JFileChooser fc = new JFileChooser();
+                    fc.setDialogTitle("Export to...");
+                    int returnVal = fc.showSaveDialog(null);
+                    if (returnVal == JFileChooser.APPROVE_OPTION) {
+                        File f = fc.getSelectedFile();
+                        preferedToTabSimple(f);
+                    }
+                }
+            });
+            menu.add(exportSimplePrefPepItem);
         }
         return menu;
     }
-    
-    
+
     public void tableToCSV(File file, boolean addPeptides) {
         try {
             FileWriter fw = new FileWriter(file);
             //	Output column headers if any.
             printColumnHeader(fw);
             StringBuffer pepString = new StringBuffer();
-            for (int row=0 ; row < jTable.getRowCount(); row++) {
+            for (int row = 0; row < jTable.getRowCount(); row++) {
                 Object obj = tableModel.getElementAt(row);
                 if (obj instanceof SeparatorList.Separator) {
                     if (pepString.length() > 0) {
                         fw.write(pepString.toString());
                         pepString = new StringBuffer();
                     }
-                    SeparatorList.Separator<Protein> separator = (SeparatorList.Separator<Protein>)obj;
+                    SeparatorList.Separator<Protein> separator = (SeparatorList.Separator<Protein>) obj;
                     if (useClusters) {
                         fw.write("\nCluster " + separator.first().getCluster() + " (" + separator.size() + " proteins)\n");
                     } else {
@@ -136,9 +151,9 @@ public class ProteinGroupListPanel extends ProteinListPanel {
                     }
                 } else {
                     printRow(fw, row);
-                    
+
                     if ((obj instanceof Protein) && addPeptides) {
-                        Protein pro = (Protein)obj;
+                        Protein pro = (Protein) obj;
                         writePeptides(fw, pro);
                     }
                 }
@@ -149,17 +164,17 @@ public class ProteinGroupListPanel extends ProteinListPanel {
         }
         return;
     }
-    
+
     public void preferedToCSV(File file, boolean addPeptides) {
         try {
             FileWriter fw = new FileWriter(file);
             //	Output column headers if any.
             printColumnHeader(fw);
-            for (int row=0 ; row < jTable.getRowCount(); row++) {
+            for (int row = 0; row < jTable.getRowCount(); row++) {
                 Object obj = tableModel.getElementAt(row);
-                
+
                 if ((obj instanceof Protein)) {
-                    Protein pro = (Protein)obj;
+                    Protein pro = (Protein) obj;
                     if (pro.isMostEquivalent()) {
                         printRow(fw, row);
                         if (addPeptides) {
@@ -174,73 +189,97 @@ public class ProteinGroupListPanel extends ProteinListPanel {
         }
         return;
     }
-    
+
+    public void preferedToTabSimple(File file) {
+        try {
+            FileWriter fw = new FileWriter(file);
+            //	Output column headers if any.
+            fw.write("Proteins\tPeptides\tScans\n");
+
+            for (int row = 0; row < jTable.getRowCount(); row++) {
+                Object obj = tableModel.getElementAt(row);
+                if ((obj instanceof Protein)) {
+                    Protein pro = (Protein) obj;
+                    if (pro.isMostEquivalent()) {
+                        fw.write(pro.getName());
+                        for (Peptide pep : pro.getAllPeptides()) {
+                            fw.write("\t" + pep.getSequence() + "\t" + pep.getScanList(false) + "\n");
+                        }
+                    }
+                }
+            }
+            fw.close();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+        return;
+    }
     public static final Icon EXPANDED_ICON = Icons.triangle(9, SwingConstants.EAST, Color.DARK_GRAY);
     public static final Icon COLLAPSED_ICON = Icons.triangle(9, SwingConstants.SOUTH, Color.DARK_GRAY);
     public static final Border EMPTY_TWO_PIXEL_BORDER = BorderFactory.createEmptyBorder(2, 2, 2, 2);
+
     /**
      * Render the issues separator.
      */
     public class ProteinSeparatorTableCell extends AbstractCellEditor implements TableCellRenderer, TableCellEditor, ActionListener {
-        
+
         private final MessageFormat clusterNameFormat = new MessageFormat("Cluster {0} ({1} proteins)");
         private final MessageFormat equivalentNameFormat = new MessageFormat("Putative Protein {0} ({1} candidate proteins)");
-        
         /** the separator list to lock */
         private final SeparatorList separatorList;
-        
         private final JPanel panel = new JPanel(new BorderLayout());
         private final JButton expandButton;
         private final JLabel nameLabel = new JLabel();
-        
         private SeparatorList.Separator<Protein> separator;
-        
+
         public ProteinSeparatorTableCell(SeparatorList separatorList) {
             this.separatorList = separatorList;
-            
+
             this.expandButton = new JButton(EXPANDED_ICON);
             this.expandButton.setOpaque(false);
             this.expandButton.setBorder(EMPTY_TWO_PIXEL_BORDER);
             this.expandButton.setIcon(EXPANDED_ICON);
             this.expandButton.setContentAreaFilled(false);
-            
+
             this.nameLabel.setFont(nameLabel.getFont().deriveFont(10.0f));
             this.nameLabel.setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 5));
-            
+
             this.expandButton.addActionListener(this);
-            
+
             this.panel.setBackground(Color.CYAN);
             this.panel.add(expandButton, BorderLayout.WEST);
             this.panel.add(nameLabel, BorderLayout.CENTER);
         }
-        
+
         public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
             configure(value);
             return panel;
         }
-        
+
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
             configure(value);
             return panel;
         }
-        
+
         public Object getCellEditorValue() {
             return this.separator;
         }
-        
+
         private void configure(Object value) {
-            this.separator = (SeparatorList.Separator<Protein>)value;
+            this.separator = (SeparatorList.Separator<Protein>) value;
             Protein pro = separator.first();
-            if(pro == null) return; // handle 'late' rendering calls after this separator is invalid
+            if (pro == null) {
+                return;
+            } // handle 'late' rendering calls after this separator is invalid
             expandButton.setIcon(separator.getLimit() == 0 ? EXPANDED_ICON : COLLAPSED_ICON);
             if (useClusters) {
-                nameLabel.setText(clusterNameFormat.format(new Object[] {pro.getCluster(), new Integer(separator.size())}));
+                nameLabel.setText(clusterNameFormat.format(new Object[]{pro.getCluster(), new Integer(separator.size())}));
             } else {
                 //nameLabel.setText(equivalentNameFormat.format(new Object[] {pro.getEquivalentGroup(), new Integer(separator.size())}));
-                nameLabel.setText(equivalentNameFormat.format(new Object[] {pro.getMostEquivalent(), new Integer(separator.size())}));
+                nameLabel.setText(equivalentNameFormat.format(new Object[]{pro.getMostEquivalent(), new Integer(separator.size())}));
             }
         }
-        
+
         public void actionPerformed(ActionEvent e) {
             separatorList.getReadWriteLock().writeLock().lock();
             boolean collapsed;

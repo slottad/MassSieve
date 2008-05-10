@@ -139,7 +139,7 @@ public class mascotDatHandler extends AnalysisHandler {
         //be.proteomics.mascotdatfile.util.mascot.ProteinHit pro = (be.proteomics.mascotdatfile.util.mascot.ProteinHit)obj;
         PeptideHit p = new PeptideHit();
         p.setQueryNum(i);
-        p.setScanNum(ScanFilenameToScanNumber(q.getTitle()));
+        p.setScanNum(ScanFilenameToScanNumber(q.getTitle(), i));
         String rawFile = ScanFilenameToRawFile(q.getTitle());
         p.setRawFile(rawFile);
         rawFiles.add(rawFile);
