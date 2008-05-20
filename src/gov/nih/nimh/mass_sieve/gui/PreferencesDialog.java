@@ -123,7 +123,7 @@ public class PreferencesDialog extends JDialog {
     
     private JComboBox constructProteaseCombo() {
         JComboBox pCombo = new JComboBox( new DefaultComboBoxModel() );
-        Object selected = pCombo.getSelectedItem();
+        //Object selected = pCombo.getSelectedItem();
         ((DefaultComboBoxModel)pCombo.getModel()).removeAllElements();
         //int idx = -1;
         int i = 0;

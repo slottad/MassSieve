@@ -57,12 +57,12 @@ public class PeptideHitPanel extends JPanel {
         add(tableScrollPane, BorderLayout.CENTER);
     }
     
-    private void showProteinsStateChanged(java.awt.event.ItemEvent evt) {
-        if (evt.getStateChange() == ItemEvent.SELECTED) {
-            //tableScrollPane.setViewportView(pep.getJTableProteins(expPanel));
-            tableScrollPane.setViewportView(pep.getJTable(expPanel));
-        } else {
-            tableScrollPane.setViewportView(pep.getJTable(expPanel));
-        }
-    }
+//    private void showProteinsStateChanged(java.awt.event.ItemEvent evt) {
+//        if (evt.getStateChange() == ItemEvent.SELECTED) {
+//            //tableScrollPane.setViewportView(pep.getJTableProteins(expPanel));
+//            tableScrollPane.setViewportView(pep.getJTable(expPanel));
+//        } else {
+//            tableScrollPane.setViewportView(pep.getJTable(expPanel));
+//        }
+//    }
 }

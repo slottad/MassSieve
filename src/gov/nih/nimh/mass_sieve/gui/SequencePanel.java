@@ -105,7 +105,7 @@ public class SequencePanel extends JPanel {
                 digest.addDigestFeatures();
                 seqPanel.setSequence(view);
                 digestRenderer.sortPeptidesIntoLanes();
-            } catch(Exception ex){
+            } catch(org.biojava.bio.BioException ex){
                 JOptionPane.showMessageDialog(this,"There was an error digesting the protein","Demo", JOptionPane.ERROR_MESSAGE);
             }
         }

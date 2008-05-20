@@ -5,7 +5,6 @@
  *
  * @author Douglas Slotta
  */
-
 package gov.nih.nimh.mass_sieve;
 
 import ca.odell.glazedlists.EventList;
@@ -32,7 +31,7 @@ import org.biojava.utils.ChangeVetoException;
 import org.biojavax.bio.seq.RichSequence;
 
 public class Protein implements Serializable, Comparable<Protein> {
-    
+
     private String name;
     //private String id;
     private String description;
@@ -60,7 +59,7 @@ public class Protein implements Serializable, Comparable<Protein> {
     private ParsimonyType pType;
     private int equivalentGroup;
     private boolean mostEquivalent;
-    
+
     /** Creates a new instance of Protein */
     public Protein() {
         name = null;
@@ -84,28 +83,35 @@ public class Protein implements Serializable, Comparable<Protein> {
         seqObj = null;
         mostEquivalent = false;
     }
-    
+
     public int compareTo(Protein p) {
         return name.compareToIgnoreCase(p.getName());
     }
-    
-    public boolean equals(Object aProtein) {
-        Protein p = (Protein)aProtein;
-        return name.equalsIgnoreCase(p.getName());
+
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (obj instanceof Protein) {
+            Protein p = (Protein) obj;
+            return name.equalsIgnoreCase(p.getName());
+        }
+        return false;
     }
-    
+
     public int hashCode() {
         return name.hashCode();
     }
-    
+
     public void addPeptideHitFeatures() {
         //HashSet<Integer> coverage = new HashSet<Integer>();
-        for (Peptide pep:allPeptides) {
+        for (Peptide pep : allPeptides) {
             ArrayList<PeptideHit> pHits = pep.getPeptideHits();
-            for (PeptideHit p:pHits) {
-                for (ProteinHit pro:p.getProteinHits()) {
+            for (PeptideHit p : pHits) {
+                for (ProteinHit pro : p.getProteinHits()) {
                     if (pro.getName().equals(name)) {
-                        if (pro.getStart() < 0) pro.updateLocation(p.getSequence(), seqObj.seqString());
+                        if (pro.getStart() < 0) {
+                            pro.updateLocation(p.getSequence(), seqObj.seqString());
                         //if (p.getProteinName().equals(name)) {
                         //scanNumbers.add(p.getScanNum());
                         // Compute coverage
@@ -113,11 +119,12 @@ public class Protein implements Serializable, Comparable<Protein> {
                         //for (int i=p.getStart(); i<=p.getEnd(); i++) {
                         //    coverage.add(i);
                         //}
+                        }
                         Feature.Template templ = new Feature.Template();
-                        
+
                         //fill in the template
                         templ.annotation = org.biojava.bio.Annotation.EMPTY_ANNOTATION;
-                        templ.location = new RangeLocation(pro.getStart(),pro.getEnd());
+                        templ.location = new RangeLocation(pro.getStart(), pro.getEnd());
                         //templ.location = new RangeLocation(p.getStart(),p.getEnd());
                         templ.source = p.getSourceFile();
                         templ.type = "peptide hit";
@@ -132,9 +139,9 @@ public class Protein implements Serializable, Comparable<Protein> {
                 }
             }
         }
-        //coverageNum = coverage.size();
+    //coverageNum = coverage.size();
     }
-    
+
     public double getMass() {
         if (mass < 0) {
             mass = MassSieveFrame.getProtein(this.name).getMass();
@@ -142,7 +149,7 @@ public class Protein implements Serializable, Comparable<Protein> {
                 MassCalc mc = new MassCalc(SymbolPropertyTable.AVG_MASS, false);
                 try {
                     mass = mc.getMass(seqObj);
-                    mass = (new BigDecimal(mass)).setScale(2,BigDecimal.ROUND_HALF_EVEN).doubleValue();
+                    mass = (new BigDecimal(mass)).setScale(2, BigDecimal.ROUND_HALF_EVEN).doubleValue();
                     MassSieveFrame.getProtein(this.name).setMass(mass);
                 } catch (IllegalSymbolException ex) {
                     //ex.printStackTrace();
@@ -158,7 +165,7 @@ public class Protein implements Serializable, Comparable<Protein> {
         }
         return mass;
     }
-    
+
     public double getIsoelectricPoint() {
         if (pI < 0 && getSeqObj() != null) {
             IsoelectricPointCalc ic = new IsoelectricPointCalc();
@@ -171,14 +178,14 @@ public class Protein implements Serializable, Comparable<Protein> {
             } catch (BioException ex) {
                 ex.printStackTrace();
             }
-            pI = (new BigDecimal(pI)).setScale(2,BigDecimal.ROUND_HALF_EVEN).doubleValue();
+            pI = (new BigDecimal(pI)).setScale(2, BigDecimal.ROUND_HALF_EVEN).doubleValue();
         }
         if (pI < 0) {
             return 0.0;
         }
         return pI;
     }
-    
+
     public int getLength() {
         //if (getSeqObj() == null) {
         //    return 0;
@@ -188,27 +195,27 @@ public class Protein implements Serializable, Comparable<Protein> {
         }
         return length;
     }
-    
+
     public void setLength(int n) {
         length = n;
         return;
     }
-    
+
     public void setLength(String s) {
         this.setLength(Integer.parseInt(s));
     }
-    
+
     public int getCoverageNum() {
         if (coverageNum <= 0) {
             HashSet<Integer> coverage = new HashSet<Integer>();
-            for (Peptide pep:allPeptides) {
+            for (Peptide pep : allPeptides) {
                 ArrayList<PeptideHit> pHits = pep.getPeptideHits();
-                for (PeptideHit p:pHits) {
-                    for (ProteinHit pro:p.getProteinHits()) {
+                for (PeptideHit p : pHits) {
+                    for (ProteinHit pro : p.getProteinHits()) {
                         if (pro.getName().equals(name)) {
                             // Compute coverage
                             if (pro.getStart() >= 0) {
-                                for (int i=pro.getStart(); i<=pro.getEnd(); i++) {
+                                for (int i = pro.getStart(); i <= pro.getEnd(); i++) {
                                     coverage.add(i);
                                 }
                             }
@@ -220,18 +227,18 @@ public class Protein implements Serializable, Comparable<Protein> {
         }
         return coverageNum;
     }
-    
+
     public int getCoverageNum(String exp) {
         HashSet<Integer> coverage = new HashSet<Integer>();
-        for (Peptide pep:allPeptides) {
+        for (Peptide pep : allPeptides) {
             ArrayList<PeptideHit> pHits = pep.getPeptideHits();
-            for (PeptideHit p:pHits) {
+            for (PeptideHit p : pHits) {
                 if (p.getExperiment().equals(exp)) {
-                    for (ProteinHit pro:p.getProteinHits()) {
+                    for (ProteinHit pro : p.getProteinHits()) {
                         if (pro.getName().equals(name)) {
                             //if (p.getProteinName().equals(name)) {
                             // Compute coverage
-                            for (int i=pro.getStart(); i<=pro.getEnd(); i++) {
+                            for (int i = pro.getStart(); i <= pro.getEnd(); i++) {
                                 //for (int i=p.getStart(); i<=p.getEnd(); i++) {
                                 coverage.add(i);
                             }
@@ -242,33 +249,33 @@ public class Protein implements Serializable, Comparable<Protein> {
         }
         return coverage.size();
     }
-    
+
     public double getCoveragePercent() {
         int len = getLength();
         int cNum = getCoverageNum();
         if (len == 0 || cNum == 0) {
             return 0.0;
         }
-        double pcov = new BigDecimal((double)coverageNum/len*100.0).setScale(1,BigDecimal.ROUND_HALF_EVEN).doubleValue();
+        double pcov = new BigDecimal((double) coverageNum / len * 100.0).setScale(1, BigDecimal.ROUND_HALF_EVEN).doubleValue();
         return pcov;
     }
-    
+
     public double getCoveragePercent(String exp) {
         int len = getLength();
         int cNum = getCoverageNum(exp);
         if (len == 0 || cNum == 0) {
             return 0.0;
         }
-        double pcov = new BigDecimal((double)cNum/len*100.0).setScale(1,BigDecimal.ROUND_HALF_EVEN).doubleValue();
+        double pcov = new BigDecimal((double) cNum / len * 100.0).setScale(1, BigDecimal.ROUND_HALF_EVEN).doubleValue();
         return pcov;
     }
-    
+
     public int getNumPeptideHits() {
         if (numPeptideHits == 0) {
             HashSet<String> scanNumbers = new HashSet<String>();
-            for (Peptide pep:allPeptides) {
+            for (Peptide pep : allPeptides) {
                 ArrayList<PeptideHit> pHits = pep.getPeptideHits();
-                for (PeptideHit p:pHits) {
+                for (PeptideHit p : pHits) {
                     if (p.containsProtein(name)) {
                         //if (p.getProteinName().equals(name)) {
                         String combName = p.getScanTuple();
@@ -280,12 +287,12 @@ public class Protein implements Serializable, Comparable<Protein> {
         }
         return numPeptideHits;
     }
-    
+
     public int getNumPeptideHits(String exp) {
         HashSet<String> scanNumbers = new HashSet<String>();
-        for (Peptide pep:allPeptides) {
+        for (Peptide pep : allPeptides) {
             ArrayList<PeptideHit> pHits = pep.getPeptideHits();
-            for (PeptideHit p:pHits) {
+            for (PeptideHit p : pHits) {
                 if ((p.containsProtein(name)) && exp.equals(p.getExperiment())) {
                     //if ((p.getProteinName().equals(name)) && exp.equals(p.getExperiment())) {
                     String combName = p.getScanTuple();
@@ -295,19 +302,18 @@ public class Protein implements Serializable, Comparable<Protein> {
         }
         return scanNumbers.size();
     }
-    
-    
+
     public int getNumUniquePeptides() {
         return peptideSet.size();
     }
-    
+
     public int getNumUniquePeptides(String exp) {
         //int count = 0;
         HashSet<String> countPeps = new HashSet<String>();
-        for (Peptide pep:allPeptides) {
+        for (Peptide pep : allPeptides) {
             //if (pep.getExperimentSet().contains(exp)) { count++; }
             ArrayList<PeptideHit> pHits = pep.getPeptideHits();
-            for (PeptideHit p:pHits) {
+            for (PeptideHit p : pHits) {
                 if ((p.containsProtein(name)) && exp.equals(p.getExperiment())) {
                     //if ((p.getProteinName().equals(name)) && exp.equals(p.getExperiment())) {
                     countPeps.add(pep.getSequence());
@@ -318,12 +324,12 @@ public class Protein implements Serializable, Comparable<Protein> {
         //return count;
         return countPeps.size();
     }
-    
+
     public ArrayList<PeptideHit> getPeptideHitList() {
         ArrayList<PeptideHit> allPepHits = new ArrayList<PeptideHit>();
-        for (Peptide pep:allPeptides) {
+        for (Peptide pep : allPeptides) {
             ArrayList<PeptideHit> pHits = pep.getPeptideHits();
-            for (PeptideHit p:pHits) {
+            for (PeptideHit p : pHits) {
                 if (p.containsProtein(name)) {
                     //if (p.getProteinName().equals(name)) {
                     allPepHits.add(p);
@@ -332,17 +338,17 @@ public class Protein implements Serializable, Comparable<Protein> {
         }
         return allPepHits;
     }
-    
+
     public JPanel getSequenceDisplay(String peptideDigest, int size) {
         SequencePanel sp = new SequencePanel(this, true, peptideDigest, size);
         return sp;
     }
-    
+
     public JPanel getSequenceDisplay(int size) {
         SequencePanel sp = new SequencePanel(this, false, "", size);
         return sp;
     }
-    
+
     public void print() {
         System.out.print("Name: " + name);
         //System.out.print(" Id: " + id);
@@ -350,58 +356,64 @@ public class Protein implements Serializable, Comparable<Protein> {
         System.out.println(" Desc: " + description);
         System.out.println("  " + peptideSet.toString());
     }
-    
+
     public void setName(String a) {
         name = a;
     }
     //public void setID(String a) {
     //    id = a;
     //}
+
     public void setDescription(String d) {
         description = d;
     }
-    
+
     public void addPeptide(String p) {
         peptideSet.add(p);
     }
-    
+
     public String getName() {
         return name;
     }
     //public String getID() {
     //    return id;
     //}
+
     public void setMass(double m) {
         mass = m;
     }
+
     public String getDescription() {
         if (description == null) {
             description = MassSieveFrame.getProtein(this.name).getDescription();
-            //return "";
+        //return "";
         }
         return description;
     }
+
     public HashSet<String> getPeptides() {
         return peptideSet;
     }
+
     public int getCluster() {
         return cluster;
     }
+
     public void setCluster(int c) {
         cluster = c;
     }
-    
+
     public String toString() {
         return name;
     }
-    
+
     public ViewSequence getSeqObj() {
         //if (seqObj == null) {
         setSeqObj(MassSieveFrame.getProtein(this.name).getRichSequence());
         //}
         return seqObj;
     }
-    
+
     public void setSeqObj(RichSequence seq) {
         if (seq != null) {
             if (seq.length() > 0) {
@@ -414,7 +426,7 @@ public class Protein implements Serializable, Comparable<Protein> {
             }
         }
     }
-        
+
     public HashSet<Protein> getAssociatedProteinSet() {
         HashSet<Protein> proSet = new HashSet<Protein>();
         proSet.addAll(equivalent);
@@ -423,39 +435,53 @@ public class Protein implements Serializable, Comparable<Protein> {
         proSet.addAll(subset);
         return proSet;
     }
-    
+
     public HashSet<String> getAssociatedProteins() {
         return associatedProteins;
     }
-    
+
     public void addAssociatedProteins(String p) {
         if (!p.equals(name)) {
             associatedProteins.add(p);
         }
     }
-    
+
     public void addAssociatedProteins(HashSet<String> p) {
         associatedProteins.addAll(p);
         if (associatedProteins.contains(name)) {
             associatedProteins.remove(name);
         }
     }
-    
+
     public void updateParsimony(HashMap<String, Protein> minProteins) {
         Iterator<String> i = associatedProteins.iterator();
         while (i.hasNext()) {
             String pName = i.next();
             Protein p = minProteins.get(pName);
             switch (compareParsimony(p)) {
-                case EQUIVALENT:     {equivalent.add(p); break; }
-                case DIFFERENTIABLE: {differentiable.add(p); break; }
-                case SUBSET:         {subset.add(p); break; }
-                case SUPERSET:       {superset.add(p); break; }
-                case ERROR:          {System.err.println(name + " and " + p + " are not parsimonious!?");}
+                case EQUIVALENT: {
+                    equivalent.add(p);
+                    break;
+                }
+                case DIFFERENTIABLE: {
+                    differentiable.add(p);
+                    break;
+                }
+                case SUBSET: {
+                    subset.add(p);
+                    break;
+                }
+                case SUPERSET: {
+                    superset.add(p);
+                    break;
+                }
+                case ERROR: {
+                    System.err.println(name + " and " + p + " are not parsimonious!?");
+                }
             }
         }
     }
-    
+
     public ParsimonyType compareParsimony(Protein p) {
         HashSet<String> peps = p.getPeptides();
         if (peps.size() == peptideSet.size()) {
@@ -479,7 +505,7 @@ public class Protein implements Serializable, Comparable<Protein> {
         }
         return ParsimonyType.ERROR;
     }
-    
+
     public void updatePeptides(HashMap<String, Peptide> minPeptides) {
         Iterator<String> i = peptideSet.iterator();
         allPeptides = new ArrayList<Peptide>();
@@ -497,24 +523,24 @@ public class Protein implements Serializable, Comparable<Protein> {
             }
         }
         Collections.sort(allPeptides);
-        //Collections.sort(distinct);
-        //Collections.sort(shared);
+    //Collections.sort(distinct);
+    //Collections.sort(shared);
     }
-    
+
     private boolean isSubsumable() {
         if (!distinct.isEmpty() ||
                 (differentiable.size() <= 1) ||
                 !superset.isEmpty()) {
             return false;
         }
-        for (int i=0; i<(differentiable.size()-1); i++) {
-            for (int j=i+1; j<differentiable.size(); j++) {
+        for (int i = 0; i < (differentiable.size() - 1); i++) {
+            for (int j = i + 1; j < differentiable.size(); j++) {
                 Protein p = differentiable.get(i);
                 Protein q = differentiable.get(j);
                 if (p.compareParsimony(q) == ParsimonyType.DIFFERENTIABLE) {
                     // Might be, check to see if they cover the peptide set
                     HashSet<String> peps = new HashSet<String>();
-                    for (Protein pro:differentiable) {
+                    for (Protein pro : differentiable) {
                         peps.addAll(pro.getPeptides());
                     }
                     if (peps.containsAll(peptideSet)) {
@@ -527,7 +553,7 @@ public class Protein implements Serializable, Comparable<Protein> {
         }
         return false;
     }
-    
+
     public void computeParsimonyType() {
         if (distinct.size() >= 1) {
             if (shared.isEmpty()) {
@@ -550,7 +576,7 @@ public class Protein implements Serializable, Comparable<Protein> {
             mostEquivalent = false;
             return;
         }
-        if (subset.size() >=1) {
+        if (subset.size() >= 1) {
             pType = ParsimonyType.SUPERSET;
             mostEquivalent = this.checkMostEquivalent();
             return;
@@ -558,7 +584,7 @@ public class Protein implements Serializable, Comparable<Protein> {
         pType = ParsimonyType.EQUIVALENT;
         mostEquivalent = this.checkMostEquivalent();
     }
-    
+
     private boolean checkMostEquivalent() {
         if (equivalent.isEmpty()) {
             return true;
@@ -569,19 +595,19 @@ public class Protein implements Serializable, Comparable<Protein> {
         }
         return false;
     }
-    
+
     public ParsimonyType getParsimonyType() {
         return pType;
     }
-    
+
     public String getEquivalentList() {
         if (equivalentList == null) {
             String buf = null;
             ArrayList<Protein> equivList = new ArrayList<Protein>(equivalent);
             Collections.sort(equivList);
-            for (Protein p:equivList) {
+            for (Protein p : equivList) {
                 if (buf == null) {
-                    buf = new String(p.getName());
+                    buf = p.getName();
                 } else {
                     buf += ", " + p.getName();
                 }
@@ -590,42 +616,43 @@ public class Protein implements Serializable, Comparable<Protein> {
         }
         return equivalentList;
     }
-    
+
     public ArrayList<Protein> getEquivalent() {
         return equivalent;
     }
-    
+
     public ArrayList<Protein> getSubset() {
         return subset;
     }
-    
+
     public ArrayList<Protein> getSuperset() {
         return superset;
     }
-    
+
     public ArrayList<Protein> getDifferentiable() {
         return differentiable;
     }
-    
+
     public int getEquivalentGroup() {
         return equivalentGroup;
     }
-    
+
     public void setEquivalentGroup(int eg) {
         equivalentGroup = eg;
     }
-    
+
     public ArrayList<Peptide> getAllPeptides() {
         return allPeptides;
     }
+
     public String getExperimentList() {
         if (experimentList == null) {
             String buf = null;
             ArrayList<String> expList = new ArrayList<String>(experimentSet);
             Collections.sort(expList);
-            for (String p:expList) {
+            for (String p : expList) {
                 if (buf == null) {
-                    buf = new String(p);
+                    buf = p;
                 } else {
                     buf += ", " + p;
                 }
@@ -634,15 +661,15 @@ public class Protein implements Serializable, Comparable<Protein> {
         }
         return experimentList;
     }
-    
+
     public String getFileList() {
         if (fileList == null) {
             String buf = null;
             ArrayList<String> fList = new ArrayList<String>(fileSet);
             Collections.sort(fList);
-            for (String p:fList) {
+            for (String p : fList) {
                 if (buf == null) {
-                    buf = new String(p);
+                    buf = p;
                 } else {
                     buf += ", " + p;
                 }
@@ -651,27 +678,27 @@ public class Protein implements Serializable, Comparable<Protein> {
         }
         return fileList;
     }
-    
+
     public boolean isMostEquivalent() {
         return mostEquivalent;
     }
-    
+
     public void setMostEquivalent(boolean isMost, EventList list) {
         mostEquivalent = isMost;
         int loc = list.indexOf(this);
-        list.set(loc,this);
+        list.set(loc, this);
         if (isMost) {
-            for (Protein p:equivalent) {
+            for (Protein p : equivalent) {
                 p.setMostEquivalent(false, list);
             }
         }
     }
-    
+
     public String getMostEquivalent() {
         if (mostEquivalent) {
             return this.getName();
         }
-        for (Protein p:equivalent) {
+        for (Protein p : equivalent) {
             if (p.isMostEquivalent()) {
                 return p.getName();
             }

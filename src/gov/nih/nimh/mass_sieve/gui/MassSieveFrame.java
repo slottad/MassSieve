@@ -61,7 +61,7 @@ public class MassSieveFrame extends javax.swing.JFrame {
     private JTabbedPane jTabbedPaneMain;
     private StatusBar statusBar;
     
-    private class StatusBar extends JLabel {
+    private static class StatusBar extends JLabel {
         
         /** Creates a new instance of StatusBar */
         public StatusBar() {
@@ -813,21 +813,21 @@ public class MassSieveFrame extends javax.swing.JFrame {
     private String checkAllocatedMem() {
         long val = (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory())/1024;
         val /= 1024;
-        String res = new String("Memory used: " + val + "MB");
+        String res = "Memory used: " + val + "MB";
         return res;
     }
     
     private String checkAvailMem() {
         long val = (Runtime.getRuntime().totalMemory())/1024;
         val /= 1024;
-        String res = new String("Current memory available: " + val + "MB");
+        String res = "Current memory available: " + val + "MB";
         return res;
     }
     
     private String checkMaxMem() {
         long val = (Runtime.getRuntime().maxMemory())/1024;
         val /= 1024;
-        String res = new String("Max memory Availiable: " + val + "MB");
+        String res = "Max memory Availiable: " + val + "MB";
         return res;
     }
     

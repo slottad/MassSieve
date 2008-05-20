@@ -62,21 +62,21 @@ public SetParser(ParserSharedInputState state) {
 				{
 					match(UNION);
 					x=cexpr();
-					result = result.Union(x);
+					result = result.union(x);
 					break;
 				}
 				case DIFF:
 				{
 					match(DIFF);
 					x=cexpr();
-					result = result.Difference(x);
+					result = result.difference(x);
 					break;
 				}
 				case INTERSECT:
 				{
 					match(INTERSECT);
 					x=cexpr();
-					result = result.Intersection(x);
+					result = result.intersection(x);
 					break;
 				}
 				default:
@@ -115,7 +115,7 @@ public SetParser(ParserSharedInputState state) {
 				{
 					match(COMPLEMENT);
 					x=atom();
-					result = pepCollect.Difference(x);
+					result = pepCollect.difference(x);
 					break;
 				}
 				default:

@@ -84,7 +84,7 @@ public class ExperimentPanel extends JPanel {
     private SplitDock rootDock;
 
     //private String lowerFrameTitle, upperFrameTitle;
-    private class MyComponentFactory extends DefaultSwComponentFactory {
+    private static class MyComponentFactory extends DefaultSwComponentFactory {
 
         public JSplitPane createJSplitPane() {
             JSplitPane splitPane = super.createJSplitPane();
@@ -220,7 +220,7 @@ public class ExperimentPanel extends JPanel {
         // Give the dock model to the docking manager.
         DockingManager.setComponentFactory(new MyComponentFactory());
         DockingManager.setDockModel(dockModel);
-        
+
         rootDock = new SplitDock();
         TabDock tabDockLeft = new TabDock();
         SplitDock splitDockRight = new SplitDock();
@@ -244,7 +244,7 @@ public class ExperimentPanel extends JPanel {
 
         // Add the root docks to the dock model.
         dockModel.addRootDock(ROOT_DOCK, rootDock, msFrame);
-        
+
         add(rootDock, BorderLayout.CENTER, 0);
     }
 
@@ -549,6 +549,7 @@ public class ExperimentPanel extends JPanel {
 
     public void updateGraphPanel(PeptideCollection pc, String highlight) {
         final Display display = pc.getGraphDisplay(msFrame.getGraphLayout(), this, highlight);
+        //graphPanel.getViewport().removeAll();
         graphPanel.setViewportView(display);
         graphPanel.validate();
         new Thread(new Runnable() {
@@ -686,7 +687,7 @@ public class ExperimentPanel extends JPanel {
         jTreeMain.setSelectionRow(0);
         System.err.println("PepCollectionOrig: " + pepCollectionOriginal.getPeptideHits().size());
         System.err.println("PepCollection: " + pepCollection.getPeptideHits().size());
-        System.gc();
+    //System.gc();
     }
 
     public HashMap<String, Protein> getProteins() {

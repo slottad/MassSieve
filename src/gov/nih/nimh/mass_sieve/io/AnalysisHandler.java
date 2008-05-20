@@ -94,7 +94,7 @@ abstract public class AnalysisHandler extends DefaultHandler {
         }
     }
 
-    protected int ScanFilenameToScanNumber(String fn, int defaultVal) {
+    protected int scanFilenameToScanNumber(String fn, int defaultVal) {
         if (fn.toLowerCase().startsWith("locus")) {
             return defaultVal;
         }
@@ -123,7 +123,7 @@ abstract public class AnalysisHandler extends DefaultHandler {
         return val;
     }
 
-    protected String ScanFilenameToRawFile(String fn) {
+    protected String scanFilenameToRawFile(String fn) {
         if (fn.toLowerCase().startsWith("locus")) {
             return fn;
         }

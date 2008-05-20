@@ -477,7 +477,7 @@ public class PeptideCollection implements Serializable, Comparable<PeptideCollec
     }
 
     public Display getGraphDisplay(GraphLayoutType glType, final ExperimentPanel expPanel, String highlightName) {
-        final Display display = new Display();
+        Display display = new Display();
         int X = expPanel.getDetailWidth();
         int Y = expPanel.getDetailHeight();
         display.setSize(X, Y); // set display size
@@ -622,14 +622,14 @@ public class PeptideCollection implements Serializable, Comparable<PeptideCollec
         final JPopupMenu menu = new JPopupMenu();
 
         // Create and add a menu item
-        JMenuItem printItem = new JMenuItem("Print This");
-        printItem.addActionListener(new java.awt.event.ActionListener() {
+        //JMenuItem printItem = new JMenuItem("Print This");
+        //printItem.addActionListener(new java.awt.event.ActionListener() {
 
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                PrintUtilities.printComponent(display);
-            }
-        });
-        menu.add(printItem);
+        //    public void actionPerformed(java.awt.event.ActionEvent evt) {
+        //        PrintUtilities.printComponent(display);
+        //    }
+        //});
+        //menu.add(printItem);
 
         // Set the component to show the popup menu
         display.addMouseListener(new MouseAdapter() {
@@ -803,7 +803,7 @@ public class PeptideCollection implements Serializable, Comparable<PeptideCollec
         return new_pc;
     }
 
-    public PeptideCollection Union(PeptideCollection pc) {
+    public PeptideCollection union(PeptideCollection pc) {
         PeptideCollection new_pc = new PeptideCollection();
         new_pc.minPeptides.putAll(pc.minPeptides);
         for (String key : minPeptides.keySet()) {
@@ -814,7 +814,7 @@ public class PeptideCollection implements Serializable, Comparable<PeptideCollec
         return new_pc;
     }
 
-    public PeptideCollection Intersection(PeptideCollection pc) {
+    public PeptideCollection intersection(PeptideCollection pc) {
         PeptideCollection new_pc = new PeptideCollection();
         for (String key : minPeptides.keySet()) {
             if (pc.minPeptides.containsKey(key)) {
@@ -824,7 +824,7 @@ public class PeptideCollection implements Serializable, Comparable<PeptideCollec
         return new_pc;
     }
 
-    public PeptideCollection Difference(PeptideCollection pc) {
+    public PeptideCollection difference(PeptideCollection pc) {
         PeptideCollection new_pc = new PeptideCollection();
         for (String key : minPeptides.keySet()) {
             if (!pc.minPeptides.containsKey(key)) {

@@ -395,7 +395,7 @@ public class Peptide implements Serializable, Comparable<Peptide> {
             Collections.sort(expList);
             for (String p:expList) {
                 if (buf == null) {
-                    buf = new String(p);
+                    buf = p;
                 } else {
                     buf += ", " + p;
                 }
@@ -416,7 +416,7 @@ public class Peptide implements Serializable, Comparable<Peptide> {
             Collections.sort(fList);
             for (String p:fList) {
                 if (buf == null) {
-                    buf = new String(p);
+                    buf = p;
                 } else {
                     buf += ", " + p;
                 }

@@ -273,10 +273,10 @@ public class ProteinGroupListPanel extends ProteinListPanel {
             } // handle 'late' rendering calls after this separator is invalid
             expandButton.setIcon(separator.getLimit() == 0 ? EXPANDED_ICON : COLLAPSED_ICON);
             if (useClusters) {
-                nameLabel.setText(clusterNameFormat.format(new Object[]{pro.getCluster(), new Integer(separator.size())}));
+                nameLabel.setText(clusterNameFormat.format(new Object[]{pro.getCluster(), Integer.valueOf(separator.size())}));
             } else {
                 //nameLabel.setText(equivalentNameFormat.format(new Object[] {pro.getEquivalentGroup(), new Integer(separator.size())}));
-                nameLabel.setText(equivalentNameFormat.format(new Object[]{pro.getMostEquivalent(), new Integer(separator.size())}));
+                nameLabel.setText(equivalentNameFormat.format(new Object[]{pro.getMostEquivalent(), Integer.valueOf(separator.size())}));
             }
         }
 

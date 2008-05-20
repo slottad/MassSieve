@@ -5,7 +5,6 @@
  *
  * @author Douglas Slotta
  */
-
 package gov.nih.nimh.mass_sieve.io;
 
 import gov.nih.nimh.mass_sieve.PeptideHit;
@@ -21,20 +20,20 @@ import org.xml.sax.*;
 import org.xml.sax.helpers.*;
 
 public class ParseFile {
-    
+
     private AnalysisProgramType filetype;
     private String filename;
     private File file;
     private XMLReader xmlReader;
     private AnalysisHandler handler;
     private Component parent;
-    
+
     //public ParseFile(String f, Component p) {
     public ParseFile(File f, Component p) {
         filename = f.getPath();
         file = f;
         parent = p;
-        
+
         if (filename.endsWith(".dat")) {
             System.err.println("Parsing " + filename + " as a Mascot dat file");
             mascotDatHandler mdh = new mascotDatHandler(filename, parent);
@@ -46,20 +45,20 @@ public class ParseFile {
             sh.sequestSqtParse();
             handler = sh;
         } else {  // Maybe it is an XML file?
-            
+
             CheckXMLFiletype();
-            
+
             switch (filetype) {
                 case MASCOT:
-                    System.err.println("Parsing " + filename + " as a Mascot XML file");
-                    handler = new mascotXMLHandler(filename);
-                    XMLParse();
+                    System.err.println(filename + " is a Mascot XML file, this is not supported");
+                    //handler = new mascotXMLHandler(filename);
+                    //XMLParse();
                     break;
                 case OMSSA:
                     System.err.println("Parsing " + filename + " as an OMSSA file");
                     handler = new omssaHandler(filename);
                     XMLParse();
-                    ((omssaHandler)handler).scaleMasses();
+                    ((omssaHandler) handler).scaleMasses();
                     break;
                 case XTANDEM:
                     System.err.println("Parsing " + filename + " as a X!Tandem file");
@@ -77,30 +76,28 @@ public class ParseFile {
             }
         }
     }
-    
+
     public ArrayList<PeptideHit> getPeptideHits() {
         return handler.getPeptideHits();
     }
-    
+
     public HashMap<String, ProteinInfo> getProteinDB() {
         return handler.getProteinDB();
     }
-    
+
     public FileInformation getFileInformation() {
         return handler.getFileInformation();
     }
-    
-    protected int ScanFilenameToScanNumber(String fn) {
+
+    protected int scanFilenameToScanNumber(String fn) {
         StringBuffer sb = new StringBuffer(fn);
-        int val, start, stop;
-        start = sb.indexOf(".")+1;
-        stop = sb.substring(start).indexOf(".")+start;
-        val = Integer.parseInt(sb.substring(start,stop));
+        int val,  start,  stop;
+        start = sb.indexOf(".") + 1;
+        stop = sb.substring(start).indexOf(".") + start;
+        val = Integer.parseInt(sb.substring(start, stop));
         return val;
     }
-    
-    
-    
+
     void XMLParse() {
         try {
             // Parse the input
@@ -111,17 +108,17 @@ public class ParseFile {
             pin.getProgressMonitor().setMillisToPopup(0);
             BufferedInputStream bin = new BufferedInputStream(pin);
             xmlReader.parse(new InputSource(bin));
-            //xmlReader.parse(filename);
+        //xmlReader.parse(filename);
         } catch (SAXException t) {
             filetype = AnalysisProgramType.UNKNOWN;
         } catch (Throwable t) {
             t.printStackTrace();
         }
     }
-    
-    void CheckXMLFiletype(){
+
+    void CheckXMLFiletype() {
         CheckTypeHandler check_handler = new CheckTypeHandler();
-        
+
         // Use the default (non-validating) parser
         try {
             // Parse the input
@@ -130,17 +127,17 @@ public class ParseFile {
             xmlReader.parse(new InputSource(new FileInputStream(file)));
         } catch (TypeFoundException t) {
             filetype = t.getFileType();
-            //System.err.println(filename + " must be a " + filetype.toString() + " file");
+        //System.err.println(filename + " must be a " + filetype.toString() + " file");
         } catch (SAXException t) {
             filetype = AnalysisProgramType.UNKNOWN;
         } catch (Throwable t) {
             t.printStackTrace();
         }
     }
-    
 }
 
 class CheckTypeHandler extends DefaultHandler {
+
     public void startElement(String namespaceURI, String sName, String qName, Attributes attrs) throws TypeFoundException {
         if (sName.equals("MSSearch") || sName.equals("MSResponse")) {
             throw new TypeFoundException(AnalysisProgramType.OMSSA);
@@ -151,20 +148,24 @@ class CheckTypeHandler extends DefaultHandler {
         if (sName.equals("msms_pipeline_analysis")) {
             throw new TypeFoundException(AnalysisProgramType.PEPXML);
         }
-        if (sName.equals("mascot_search_results")) {   
+        if (sName.equals("mascot_search_results")) {
             throw new TypeFoundException(AnalysisProgramType.MASCOT);
         }
     }
+
     public void endDocument() throws TypeFoundException {
         throw new TypeFoundException(AnalysisProgramType.UNKNOWN);
     }
 }
 
 class TypeFoundException extends SAXException {
+
     public AnalysisProgramType type;
+
     TypeFoundException(AnalysisProgramType ftype) {
         type = ftype;
     }
+
     public AnalysisProgramType getFileType() {
         return type;
     }
