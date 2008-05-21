@@ -82,6 +82,7 @@ public class ExperimentPanel extends JPanel {
     private final static String DOCK_FILE = "MassSieve.dck";
     private final static String ROOT_DOCK = "msRootDock";
     private SplitDock rootDock;
+    private Display currentDisplay;
 
     //private String lowerFrameTitle, upperFrameTitle;
     private static class MyComponentFactory extends DefaultSwComponentFactory {
@@ -548,10 +549,15 @@ public class ExperimentPanel extends JPanel {
     }
 
     public void updateGraphPanel(PeptideCollection pc, String highlight) {
+        if (currentDisplay != null) {
+            //currentDisplay.getVisualization().reset();
+            currentDisplay.reset();
+        }
         final Display display = pc.getGraphDisplay(msFrame.getGraphLayout(), this, highlight);
         //graphPanel.getViewport().removeAll();
         graphPanel.setViewportView(display);
         graphPanel.validate();
+        currentDisplay = display;
         new Thread(new Runnable() {
 
             public void run() {

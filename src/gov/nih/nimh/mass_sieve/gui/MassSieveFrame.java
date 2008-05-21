@@ -120,7 +120,14 @@ public class MassSieveFrame extends javax.swing.JFrame {
         jMenuOpenGenbankDB.setEnabled(false);  // until fully implemented
     }
     public void updateStatusMessage(String message) {
-        statusBar.setMessage(message);
+        long alloc = (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory())/1024;
+        alloc /= 1024;
+    
+        long max = (Runtime.getRuntime().maxMemory())/1024;
+        max /= 1024;
+        String mem = "Memory Availiable: " + alloc + " of " + max + "MB         ";
+        
+        statusBar.setMessage(mem + message);
     }
     
     private void jTabbedPaneMainStateChanged(javax.swing.event.ChangeEvent evt) {
@@ -188,7 +195,7 @@ public class MassSieveFrame extends javax.swing.JFrame {
         jFileChooserLoad.setDialogTitle("Open Files");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("MassSieve v1.00");
+        setTitle("MassSieve v1.01");
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosing(java.awt.event.WindowEvent evt) {
