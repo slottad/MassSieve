@@ -100,7 +100,9 @@ public class ProteinTableFormat implements WritableTableFormat, AdvancedTableFor
     }
     
     public Object setColumnValue(Object baseObject, Object editedValue, int column) {
-        if (parsimonyView && (column == 1)) {
+        if (parsimonyView && (column == 1) &&
+                (baseObject instanceof Protein) &&
+                (editedValue instanceof Boolean) ) {
             Protein pro = (Protein)baseObject;
             Boolean val = (Boolean)editedValue;
             if (val) {
