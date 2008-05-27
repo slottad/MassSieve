@@ -82,7 +82,7 @@ public class mascotDatHandler extends AnalysisHandler {
             progressMonitor.setProgress(3);
             progressMonitor.close();
             getMetaInfo();
-            for (int i=0; i<AllQueries.size(); i++) {
+            for (int i=0; i<=AllQueries.size(); i++) {
                 int numHits = q2pm.getNumberOfPeptideHits(i);
                 pepHitCount += numHits;
                 if (numHits > 0) {
