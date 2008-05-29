@@ -399,7 +399,7 @@ public class PeptideHit implements Serializable, Comparable<PeptideHit> {
                 cutoff = 3.5;
                 break;
         }
-        expect = (xcorr - cutoff) / cutoff;
+        expect = -((xcorr - cutoff) / cutoff);
     }
 
     public double getXcorr() {
