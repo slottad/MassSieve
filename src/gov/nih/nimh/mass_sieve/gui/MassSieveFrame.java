@@ -118,7 +118,6 @@ public class MassSieveFrame extends javax.swing.JFrame {
         updateStatusMessage("Please create or load an experiment");
         Logger.getLogger("prefuse").setLevel(Level.WARNING);
         jMenuOpenGenbankDB.setEnabled(false);  // until fully implemented
-
     }
 
     public void updateStatusMessage(String message) {
@@ -127,7 +126,7 @@ public class MassSieveFrame extends javax.swing.JFrame {
 
         long max = (Runtime.getRuntime().maxMemory()) / 1024;
         max /= 1024;
-        String mem = "Memory Availiable: " + alloc + " of " + max + "MB         ";
+        String mem = "Memory Usage: " + alloc + " of " + max + "MB         ";
 
         statusBar.setMessage(mem + message);
     }
@@ -197,7 +196,7 @@ public class MassSieveFrame extends javax.swing.JFrame {
         jFileChooserLoad.setDialogTitle("Open Files");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("MassSieve v1.05");
+        setTitle("MassSieve v1.06");
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosing(java.awt.event.WindowEvent evt) {
