@@ -16,9 +16,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.tree.DefaultMutableTreeNode;
 
 /**
  * Holds all the information pertaining to a given peptide. Including all of its peptide hits
