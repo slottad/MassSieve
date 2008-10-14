@@ -30,6 +30,7 @@ public class Peptide implements Serializable, Comparable<Peptide> {
     private ArrayList<PeptideHit> mascot;
     private ArrayList<PeptideHit> xtandem;
     private ArrayList<PeptideHit> sequest;
+    private ArrayList<PeptideHit> pepxml;
     private HashSet<String> proteinSet;
     private HashSet<String> experimentSet;
     private String experimentList;
@@ -40,7 +41,6 @@ public class Peptide implements Serializable, Comparable<Peptide> {
     private ParsimonyType pType;
     private PeptideIndeterminacyType indeterminateType;
     private double theoreticalMass;
-    transient private PeptideHitPanel infoPanel;
     
     /**
      * Creates a new instance of Peptide from a peptide hit.
@@ -54,12 +54,12 @@ public class Peptide implements Serializable, Comparable<Peptide> {
         mascot = new ArrayList<PeptideHit>();
         xtandem = new ArrayList<PeptideHit>();
         sequest = new ArrayList<PeptideHit>();
+        pepxml = new ArrayList<PeptideHit>();
         proteinSet = new HashSet<String>();
         experimentSet = new HashSet<String>();
         fileSet = new HashSet<String>();
         pType = ParsimonyType.DISTINCT;
         theoreticalMass = -1;
-        infoPanel = null;
         indeterminateType = null; //PeptideIndeterminacyType.NONE;
         this.addPeptideHit(p);
     }
@@ -82,6 +82,7 @@ public class Peptide implements Serializable, Comparable<Peptide> {
             case OMSSA:   omssa.add(p);   break;
             case XTANDEM: xtandem.add(p); break;
             case SEQUEST: sequest.add(p); break;
+            case PEPXML: pepxml.add(p); break;
             case UNKNOWN:
                 System.err.println("Unable to determine source of peptide");
                 System.exit(1);
@@ -229,6 +230,10 @@ public class Peptide implements Serializable, Comparable<Peptide> {
             if (sb.length() > 0) sb.append(",");
             sb.append("XTANDEM");
         }
+        if (containsPepXML()) {
+            if (sb.length() > 0) sb.append(",");
+            sb.append("PEPXML");
+        }
         if (useQuotes) {
             sb.insert(0,'"');
             sb.append('"');
@@ -272,6 +277,15 @@ public class Peptide implements Serializable, Comparable<Peptide> {
         return false;
     }
     
+    /**
+     * Retrns True if any of the PeptideHits contained by this Peptide were found in generic PepXML, false otherwise.
+     * @return True if found by a generic algorithm, false otherwise.
+     */
+    public boolean containsPepXML() {
+        if ( pepxml.size() > 0 ) return true;
+        return false;
+    }
+
     /**
      * A string-ified version of this peptide for display purposes.
      * @return The string version of this peptide

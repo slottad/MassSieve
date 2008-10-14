@@ -22,6 +22,7 @@ import com.javadocking.model.FloatDockModel;
 import com.javadocking.model.codec.DockModelPropertiesDecoder;
 import com.javadocking.model.codec.DockModelPropertiesEncoder;
 import gov.nih.nimh.mass_sieve.*;
+import gov.nih.nimh.mass_sieve.io.AnalysisProgramType;
 import gov.nih.nimh.mass_sieve.io.FileInformation;
 import gov.nih.nimh.mass_sieve.io.ParseFile;
 import gov.nih.nimh.mass_sieve.io.SetLexer;
@@ -343,7 +344,7 @@ public class ExperimentPanel extends JPanel {
                 p.setExperiment(exp_name);
                 p.setSourceFile(filename);
                 boolean usePepHit = false;
-                if (filterSettings.getUsePepProphet() && p.isPepXML()) {
+                if (p.isPepXML() && (filterSettings.getUsePepProphet() || p.getSourceType() == AnalysisProgramType.PEPXML)) {
                     if (p.getPepProphet() >= filterSettings.getPeptideProphetCutoff()) {
                         usePepHit = true;
                     }

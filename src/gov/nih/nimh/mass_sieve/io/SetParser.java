@@ -159,6 +159,11 @@ public SetParser(ParserSharedInputState state) {
 				result = pepCollect.getOmssa();
 				break;
 				}
+				case 'p':
+				case 'P': {
+				result = pepCollect.getPepXML();
+				break;
+				}
 				case 'x':
 				case 'X': {
 				result = pepCollect.getXTandem();

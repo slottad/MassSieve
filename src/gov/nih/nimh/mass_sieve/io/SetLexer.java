@@ -1,7 +1,6 @@
 // $ANTLR 2.7.7 (20070412): "SetParser.g" -> "SetLexer.java"$
 
 package gov.nih.nimh.mass_sieve.io;
-import gov.nih.nimh.mass_sieve.*;
 
 import java.io.InputStream;
 import antlr.TokenStreamException;
@@ -84,8 +83,8 @@ tryAgain:
 					theRetToken=_returnToken;
 					break;
 				}
-				case 'M':  case 'O':  case 'S':  case 'X':
-				case 'm':  case 'o':  case 's':  case 'x':
+				case 'M':  case 'O':  case 'P':  case 'S':  case 'X':
+				case 'm':  case 'o':  case 'p':  case 's':  case 'x':
 				{
 					mSET(true);
 					theRetToken=_returnToken;
@@ -229,6 +228,16 @@ tryAgain:
 			match('O');
 			break;
 		}
+		case 'p':
+		{
+			match('p');
+			break;
+		}
+		case 'P':
+		{
+			match('p');
+			break;
+		}
 		case 'x':
 		{
 			match('x');
@@ -265,7 +274,6 @@ tryAgain:
 	public final void mWS(boolean _createToken) throws RecognitionException, CharStreamException, TokenStreamException {
 		int _ttype; Token _token=null; int _begin=text.length();
 		_ttype = WS;
-		int _saveIndex;
 		
 		{
 		switch ( LA(1)) {

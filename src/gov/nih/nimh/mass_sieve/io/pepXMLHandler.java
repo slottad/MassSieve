@@ -53,6 +53,7 @@ public class pepXMLHandler extends AnalysisHandler {
                 analysisProgram = AnalysisProgramType.OMSSA;
                 return;
             }
+            analysisProgram = AnalysisProgramType.PEPXML;
         }
         
         if (sName.equals("search_database")) {

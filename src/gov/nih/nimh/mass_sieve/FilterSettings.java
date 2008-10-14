@@ -29,7 +29,7 @@ public class FilterSettings implements Serializable {
         sequestCutoff = 0.0;
         peptideProphetCutoff = 0.95;
         useIonIdent = true;
-        filterText = "o+m+x+s";
+        filterText = "o+m+x+s+p";
         useIndeterminates = true;
         usePepProphet = false;
         filterPeptides = false;

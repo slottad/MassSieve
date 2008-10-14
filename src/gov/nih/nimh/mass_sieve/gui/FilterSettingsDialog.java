@@ -14,15 +14,11 @@ import gov.nih.nimh.mass_sieve.FilterSettings;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ItemEvent;
-import java.util.Iterator;
-import java.util.TreeSet;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
-import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFormattedTextField;
@@ -31,7 +27,6 @@ import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
-import org.biojava.bio.proteomics.ProteaseManager;
 
 /**
  *
@@ -61,7 +56,7 @@ public class FilterSettingsDialog extends JDialog {
         setAlwaysOnTop(true);
         setLayout(new BorderLayout());
         JPanel centerPanel = new JPanel(new ParagraphLayout());
-        pepFilterField = new JTextField("o+m+x", 20);
+        pepFilterField = new JTextField("o+m+x+s+p", 20);
         mascotCutoff = new JTextField("0.5", 5);
         omssaCutoff = new JTextField("0.5", 5);
         xtandemCutoff = new JTextField("0.5", 5);
@@ -147,7 +142,7 @@ public class FilterSettingsDialog extends JDialog {
         pepFilterPanel.add(new JLabel("S,s")); pepFilterPanel.add(new JLabel("Sequest"));
         pepFilterPanel.add(new JLabel(" "));
         pepFilterPanel.add(new JLabel("~"));   pepFilterPanel.add(new JLabel("Complement"));
-        pepFilterPanel.add(new JLabel(" "));   pepFilterPanel.add(new JLabel(" "));
+        pepFilterPanel.add(new JLabel("P,p")); pepFilterPanel.add(new JLabel("Generic PepXML"));
         pepFilterPanel.add(new JLabel(" "));
         pepFilterPanel.add(new JLabel("( )")); pepFilterPanel.add(new JLabel("Precedence"));
         centerPanel.add(pepFilterPanel, ParagraphLayout.NEW_LINE);

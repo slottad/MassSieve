@@ -153,6 +153,11 @@ public class PeptideCollection implements Serializable, Comparable<PeptideCollec
                             pc.addPeptideHit(p);
                         }
                         break;
+                    case PEPXML:
+                        if (p.getPepProphet() >= fs.getPeptideProphetCutoff()) {
+                            pc.addPeptideHit(p);
+                        }
+                        break;
                 }
             }
         }
@@ -698,26 +703,6 @@ public class PeptideCollection implements Serializable, Comparable<PeptideCollec
         return g;
     }
 
-    public void print() {
-        for (Peptide pg : minPeptides.values()) {
-            System.out.print(pg.getSequence() + "(" + pg.getPeptideHits().size() + ") ");
-            if (pg.containsMascot()) {
-                System.out.print("Mascot(" + pg.getMascot().size() + ") ");
-            }
-            if (pg.containsOmssa()) {
-                System.out.print("OMSSA(" + pg.getOmssa().size() + ") ");
-            }
-            if (pg.containsXTandem()) {
-                System.out.print("XTandem(" + pg.getXTandem().size() + ") ");
-            }
-            System.out.print("\t");
-            for (String pro : pg.getProteins()) {
-                System.out.print(pro + " ");
-            }
-            System.out.println();
-        }
-    }
-
     public PeptideCollection filterByPeptidePerProtein(int numPeps) {
         HashSet<String> proDiscard = new HashSet<String>();
         for (String pName : minProteins.keySet()) {
@@ -795,6 +780,16 @@ public class PeptideCollection implements Serializable, Comparable<PeptideCollec
         PeptideCollection new_pc = new PeptideCollection();
         for (Peptide pg : minPeptides.values()) {
             if (pg.containsSequest()) {
+                new_pc.minPeptides.put(pg.getSequence(), pg);
+            }
+        }
+        return new_pc;
+    }
+
+    public PeptideCollection getPepXML() {
+        PeptideCollection new_pc = new PeptideCollection();
+        for (Peptide pg : minPeptides.values()) {
+            if (pg.containsPepXML()) {
                 new_pc.minPeptides.put(pg.getSequence(), pg);
             }
         }

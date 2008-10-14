@@ -9,8 +9,6 @@
 
 package gov.nih.nimh.mass_sieve.io;
 
-import gov.nih.nimh.mass_sieve.*;
-
 /**
  *
  * @author Douglas Slotta

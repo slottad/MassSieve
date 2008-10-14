@@ -108,7 +108,6 @@ public class ParseFile {
             pin.getProgressMonitor().setMillisToPopup(0);
             BufferedInputStream bin = new BufferedInputStream(pin);
             xmlReader.parse(new InputSource(bin));
-        //xmlReader.parse(filename);
         } catch (SAXException t) {
             filetype = AnalysisProgramType.UNKNOWN;
         } catch (Throwable t) {

@@ -1,7 +1,6 @@
 // $ANTLR 2.7.7 (20070412): "SetParser.g" -> "SetLexer.java"$
 
 package gov.nih.nimh.mass_sieve.io;
-import gov.nih.nimh.mass_sieve.*;
 
 public interface SetParserTokenTypes {
 	int EOF = 1;
