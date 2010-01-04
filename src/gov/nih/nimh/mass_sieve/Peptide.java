@@ -318,7 +318,25 @@ public class Peptide implements Serializable, Comparable<Peptide> {
                 + getSourceTypes(true) + ","
                 + getScanList(true);
     }
-    
+
+     public static String toTabStringHeader() {
+        return "Sequence\t"
+                + "Length\t"
+                + "Mass\t"
+                + "Indeterminate\t"
+                + "Type\t"
+                + "Cluster\n";
+    }
+
+    public String toTabString() {
+        return sequence + "\t"
+                + getLength() + "\t"
+                + getTheoreticalMass() + "\t"
+                + getIndeterminateType() + "\t"
+                + getPeptideType() + "\t"
+                + getCluster() + "\n";
+    }
+
     /**
      * Return the number of peptide hits in this peptide
      * @return The number of peptide hits.

@@ -35,6 +35,7 @@ import java.awt.Toolkit;
 import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.StringReader;
@@ -264,6 +265,43 @@ public class ExperimentPanel extends JPanel {
         }
         summaryDialog.setFileInformation(fileInfos);
         summaryDialog.setVisible(true);
+    }
+
+    public void exportDatabase(File file) {
+        try {
+            FileWriter fw = new FileWriter(file);
+            // export proteins
+            fw.write("# Proteins\n");
+            fw.write(Protein.toTabStringHeader());
+            for (Protein pro : pepCollection.getMinProteins().values()) {
+                fw.write(pro.toTabString());
+            }
+            // export peptides
+            fw.write("\n\n# Peptides\n");
+            fw.write(Peptide.toTabStringHeader());
+            for (Peptide pep : pepCollection.getMinPeptides().values()) {
+                fw.write(pep.toTabString());
+            }
+            // export peptide hits
+            fw.write("\n\n# Peptide Hits\n");
+            fw.write(PeptideHit.toTabStringHeader());
+            for (PeptideHit pepHit : pepCollection.getPeptideHits()) {
+                fw.write(pepHit.toTabString());
+            }
+            // export protein-peptide relationships
+            fw.write("\n\n# ProteinToPeptides\n");
+            fw.write("Protein\tPeptide\n");
+            for (Protein pro : pepCollection.getMinProteins().values()) {
+                for (Peptide pep : pro.getAllPeptides()) {
+                    fw.write(pro.getName() + "\t" + pep.getSequence() + "\n");
+                }
+            }
+
+            fw.close();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+        return;
     }
 
     public void saveExperiment(ObjectOutputStream os) {

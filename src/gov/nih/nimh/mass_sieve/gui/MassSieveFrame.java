@@ -48,7 +48,7 @@ public class MassSieveFrame extends javax.swing.JFrame {
 
     private ExperimentPanel currentExperiment;
     private HashMap<String, ExperimentPanel> expSet;
-    private boolean useDigest,  useMultiColumnSort;
+    private boolean useDigest, useMultiColumnSort;
     private String digestName;
     private GraphLayoutType glType;
     private PreferencesDialog optDialog;
@@ -57,6 +57,7 @@ public class MassSieveFrame extends javax.swing.JFrame {
     private MSFileFilter msFilter;
     private MSVFileFilter msvFilter;
     private FastaFileFilter fastaFilter;
+    private TextFileFilter txtFilter;
     private JTabbedPane jTabbedPaneMain;
     private StatusBar statusBar;
 
@@ -101,6 +102,8 @@ public class MassSieveFrame extends javax.swing.JFrame {
         jMenuSaveExp.setEnabled(false);
         jMenuSaveExp.setText("Save...");
         jMenuSaveExpSet.setEnabled(false);
+        jMenuExportDatabase.setText("Export Experiment Database...");
+        jMenuExportDatabase.setEnabled(false);
         jMenuAddSearchResults.setEnabled(false);
         jMenuOpenSeqDB.setEnabled(false);
         jMenuFilterPrefs.setEnabled(false);
@@ -140,14 +143,18 @@ public class MassSieveFrame extends javax.swing.JFrame {
             currentExperiment.loadDockState();
             jMenuSaveExp.setEnabled(true);
             jMenuSaveExp.setText("Save '" + jTabbedPaneMain.getSelectedComponent().getName() + "'");
+            jMenuExportDatabase.setText("Export '" + jTabbedPaneMain.getSelectedComponent().getName() + "' Database...");
+            jMenuExportDatabase.setEnabled(true);
         } else {
             jMenuSaveExp.setEnabled(false);
+            jMenuExportDatabase.setEnabled(false);
         }
         if (jTabbedPaneMain.getSelectedComponent() != null) {
             jMenuClose.setText("Close '" + jTabbedPaneMain.getSelectedComponent().getName() + "'");
         } else {
             jMenuSaveExp.setEnabled(false);
             jMenuSaveExpSet.setEnabled(false);
+            jMenuExportDatabase.setEnabled(false);
             jMenuClose.setEnabled(false);
         }
     }
@@ -174,6 +181,7 @@ public class MassSieveFrame extends javax.swing.JFrame {
         jSeparator2 = new javax.swing.JSeparator();
         jMenuSaveExp = new javax.swing.JMenuItem();
         jMenuSaveExpSet = new javax.swing.JMenuItem();
+        jMenuExportDatabase = new javax.swing.JMenuItem();
         jSeparator3 = new javax.swing.JSeparator();
         jMenuOpenSeqDB = new javax.swing.JMenuItem();
         jMenuOpenGenbankDB = new javax.swing.JMenuItem();
@@ -196,7 +204,7 @@ public class MassSieveFrame extends javax.swing.JFrame {
         jFileChooserLoad.setDialogTitle("Open Files");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("MassSieve v1.06a");
+        setTitle("MassSieve v1.09");
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosing(java.awt.event.WindowEvent evt) {
@@ -263,6 +271,14 @@ public class MassSieveFrame extends javax.swing.JFrame {
             }
         });
         jMenuFile.add(jMenuSaveExpSet);
+
+        jMenuExportDatabase.setText("Export Experiment Database...");
+        jMenuExportDatabase.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuExportDatabaseActionPerformed(evt);
+            }
+        });
+        jMenuFile.add(jMenuExportDatabase);
         jMenuFile.add(jSeparator3);
 
         jMenuOpenSeqDB.setText("Import Fasta...");
@@ -629,6 +645,8 @@ public class MassSieveFrame extends javax.swing.JFrame {
             jMenuClose.setText("Close '" + jTabbedPaneMain.getSelectedComponent().getName() + "'");
             jMenuSaveExp.setEnabled(true);
             jMenuSaveExp.setText("Save '" + jTabbedPaneMain.getSelectedComponent().getName() + "'");
+            jMenuExportDatabase.setText("Export '" + jTabbedPaneMain.getSelectedComponent().getName() + "' Database...");
+            jMenuExportDatabase.setEnabled(true);
         }
     }//GEN-LAST:event_jMenuNewExperimentActionPerformed
 
@@ -656,6 +674,8 @@ public class MassSieveFrame extends javax.swing.JFrame {
         jMenuSaveExp.setEnabled(true);
         jMenuSaveExp.setText("Save '" + jTabbedPaneMain.getSelectedComponent().getName() + "'");
         jMenuSaveExpSet.setEnabled(true);
+        jMenuExportDatabase.setText("Export '" + jTabbedPaneMain.getSelectedComponent().getName() + "' Database...");
+        jMenuExportDatabase.setEnabled(true);
         expSet.put(expPanel.getName(), currentExperiment);
         if (expSet.size() >= 2) {
             jMenuCompareDiff.setEnabled(true);
@@ -680,6 +700,9 @@ public class MassSieveFrame extends javax.swing.JFrame {
 
     public void addSeqDBfiles(final File files[]) {
         new Thread(new Runnable() {
+            /* TODO: use RichSequence.IOTools.readFile to guess format,
+            support more formats, support genbank directly
+             */
 
             public void run() {
                 int seqCount = 0;
@@ -780,9 +803,12 @@ public class MassSieveFrame extends javax.swing.JFrame {
             jMenuSaveExp.setEnabled(false);
             jMenuSaveExp.setText("Save...");
             jMenuSaveExpSet.setEnabled(false);
+            jMenuExportDatabase.setText("Export Experiment Database...");
+            jMenuExportDatabase.setEnabled(false);
         } else {
             jMenuClose.setText("Close " + jTabbedPaneMain.getSelectedComponent().getName());
             jMenuSaveExp.setText("Save '" + jTabbedPaneMain.getSelectedComponent().getName() + "'");
+            jMenuExportDatabase.setText("Export '" + jTabbedPaneMain.getSelectedComponent().getName() + "' Database...");
         }
     }//GEN-LAST:event_jMenuCloseActionPerformed
 
@@ -822,13 +848,13 @@ public class MassSieveFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_jMenuQuitActionPerformed
 
     private void jMenuAboutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuAboutActionPerformed
-        JOptionPane.showMessageDialog(MassSieveFrame.this, this.getTitle() +
-                "\nLNT/NIMH/NIH\nCreated by Douglas J. Slotta\n" +
-                "Mass Spec. proficiency by Melinda A. McFarland\n" +
-                "\n" + checkAllocatedMem() +
-                "\n" + checkAvailMem() +
-                "\n" + checkMaxMem() +
-                "\n\n" + getSystemInfo());
+        JOptionPane.showMessageDialog(MassSieveFrame.this, this.getTitle()
+                + "\nLNT/NIMH/NIH\nCreated by Douglas J. Slotta\n"
+                + "Mass Spec. proficiency by Melinda A. McFarland\n"
+                + "\n" + checkAllocatedMem()
+                + "\n" + checkAvailMem()
+                + "\n" + checkMaxMem()
+                + "\n\n" + getSystemInfo());
     }//GEN-LAST:event_jMenuAboutActionPerformed
 
     private void jMenuResetLayoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuResetLayoutActionPerformed
@@ -839,11 +865,42 @@ public class MassSieveFrame extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jMenuResetLayoutActionPerformed
 
+    private void jMenuExportDatabaseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuExportDatabaseActionPerformed
+        Component current = jTabbedPaneMain.getSelectedComponent();
+        if (current instanceof ExperimentPanel) {
+            currentExperiment = (ExperimentPanel) current;
+            jFileChooserLoad.setFileFilter(txtFilter);
+            jFileChooserLoad.setSelectedFile(new File(currentExperiment.getName() + ".txt"));
+            int status = jFileChooserLoad.showSaveDialog(this);
+            if (status == JFileChooser.APPROVE_OPTION) {
+                File selectedFile = jFileChooserLoad.getSelectedFile();
+                try {
+                    if (!selectedFile.createNewFile()) {
+                        status = JOptionPane.showConfirmDialog(this,
+                                selectedFile.getName() + " exists, are you sure you wish to overwrite it?",
+                                "Overwrite?", JOptionPane.YES_NO_OPTION);
+                        if (status != JOptionPane.OK_OPTION) {
+                            return;
+                        }
+                    }
+                    System.out.println("Exporting all records into " + selectedFile.getName());
+                    currentExperiment.exportDatabase(selectedFile);
+                } catch (FileNotFoundException ex) {
+                    JOptionPane.showMessageDialog(this, "Unable to export records", "File Error", JOptionPane.ERROR_MESSAGE);
+                    ex.printStackTrace();
+                } catch (IOException ex) {
+                    JOptionPane.showMessageDialog(this, "Unable to export records", "File Error", JOptionPane.ERROR_MESSAGE);
+                    ex.printStackTrace();
+                }
+            }
+        }
+    }//GEN-LAST:event_jMenuExportDatabaseActionPerformed
+
     private String getSystemInfo() {
         Properties p = System.getProperties();
-        return "VM: " + p.getProperty("java.vendor") + " Java " + p.getProperty("java.version") +
-                "\nOS: " + p.getProperty("os.name") + " " + p.getProperty("os.version") +
-                " running on " + p.getProperty("os.arch");
+        return "VM: " + p.getProperty("java.vendor") + " Java " + p.getProperty("java.version")
+                + "\nOS: " + p.getProperty("os.name") + " " + p.getProperty("os.version")
+                + " running on " + p.getProperty("os.arch");
     }
 
     private String checkAllocatedMem() {
@@ -920,6 +977,7 @@ public class MassSieveFrame extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuClose;
     private javax.swing.JMenuItem jMenuCompareDiff;
     private javax.swing.JMenuItem jMenuCompareParsimony;
+    private javax.swing.JMenuItem jMenuExportDatabase;
     private javax.swing.JMenuItem jMenuExportSeqDB;
     private javax.swing.JMenu jMenuFile;
     private javax.swing.JMenuItem jMenuFilterPrefs;

@@ -112,13 +112,13 @@ public class Protein implements Serializable, Comparable<Protein> {
                     if (pro.getName().equals(name)) {
                         if (pro.getStart() < 0) {
                             pro.updateLocation(p.getSequence(), seqObj.seqString());
-                        //if (p.getProteinName().equals(name)) {
-                        //scanNumbers.add(p.getScanNum());
-                        // Compute coverage
-                        //for (int i=pro.getStart(); i<=pro.getEnd(); i++) {
-                        //for (int i=p.getStart(); i<=p.getEnd(); i++) {
-                        //    coverage.add(i);
-                        //}
+                            //if (p.getProteinName().equals(name)) {
+                            //scanNumbers.add(p.getScanNum());
+                            // Compute coverage
+                            //for (int i=pro.getStart(); i<=pro.getEnd(); i++) {
+                            //for (int i=p.getStart(); i<=p.getEnd(); i++) {
+                            //    coverage.add(i);
+                            //}
                         }
                         Feature.Template templ = new Feature.Template();
 
@@ -139,7 +139,7 @@ public class Protein implements Serializable, Comparable<Protein> {
                 }
             }
         }
-    //coverageNum = coverage.size();
+        //coverageNum = coverage.size();
     }
 
     public double getMass() {
@@ -386,7 +386,7 @@ public class Protein implements Serializable, Comparable<Protein> {
     public String getDescription() {
         if (description == null) {
             description = MassSieveFrame.getProtein(this.name).getDescription();
-        //return "";
+            //return "";
         }
         return description;
     }
@@ -405,6 +405,32 @@ public class Protein implements Serializable, Comparable<Protein> {
 
     public String toString() {
         return name;
+    }
+
+    public static String toTabStringHeader() {
+        return "Protein Name\t"
+                + "Preferred\t"
+                + "Parsimony Type\t"
+                + "Cluster\t"
+                + "Equivalent Proteins\t"
+                + "Length\t"
+                + "% coverage\t"
+                + "Mass\t"
+                + "pI\t"
+                + "Description\n";
+    }
+
+    public String toTabString() {
+        return name + "\t"
+                + isMostEquivalent() + "\t"
+                + getParsimonyType() + "\t"
+                + getCluster() + "\t"
+                + getEquivalentList() + "\t"
+                + getLength() + "\t"
+                + getCoveragePercent() + "\t"
+                + getMass() + "\t"
+                + getIsoelectricPoint() + "\t"
+                + getDescription() + "\n";
     }
 
     public ViewSequence getSeqObj() {
@@ -523,14 +549,14 @@ public class Protein implements Serializable, Comparable<Protein> {
             }
         }
         Collections.sort(allPeptides);
-    //Collections.sort(distinct);
-    //Collections.sort(shared);
+        //Collections.sort(distinct);
+        //Collections.sort(shared);
     }
 
     private boolean isSubsumable() {
-        if (!distinct.isEmpty() ||
-                (differentiable.size() <= 1) ||
-                !superset.isEmpty()) {
+        if (!distinct.isEmpty()
+                || (differentiable.size() <= 1)
+                || !superset.isEmpty()) {
             return false;
         }
         for (int i = 0; i < (differentiable.size() - 1); i++) {

@@ -83,6 +83,48 @@ public class PeptideHit implements Serializable, Comparable<PeptideHit> {
         return ph;
     }
 
+    public static String toTabStringHeader() {
+        return "Sequence\t"
+                + "Modified Sequence\t"
+                + "Analysis\t"
+                + "Scan\t"
+                + "Query\t"
+                + "Indeterminate\t"
+                + "Expect\t"
+                + "Pep Proph\t"
+                + "ION\t"
+                + "Ident\t"
+                + "Xcorr\t"
+                + "m/z\t"
+                + "Exp. Mass\t"
+                + "Delta Mass\t"
+                + "Charge\t"
+                + "Experiment\t"
+                + "Source File\t"
+                + "Raw File\n";
+    }
+
+    public String toTabString() {
+        return sequence + "\t"
+                + getModSequence() + "\t"
+                + getSourceType() + "\t"
+                + getScanNum() + "\t"
+                + getQueryNum() + "\t"
+                + getIndeterminate() + "\t"
+                + getExpect() + "\t"
+                + getPepProphet() + "\t"
+                + getIonScore() + "\t"
+                + getIdent() + "\t"
+                + getXcorr() + "\t"
+                + getExpNeutralMass() + "\t"
+                + getExpMass() + "\t"
+                + getDiffMass() + "\t"
+                + getCharge() + "\t"
+                + getExperiment() + "\t"
+                + getSourceFile() + "\t"
+                + getRawFile() + "\n";
+    }
+
     // This method will return a clone, minus masked proteins
     // otherwise it will return itself if the hit does not contain
     // any proteins in the list
@@ -138,7 +180,7 @@ public class PeptideHit implements Serializable, Comparable<PeptideHit> {
 
     public int hashCode() {
         return scanNum;
-    //return sequence.hashCode();
+        //return sequence.hashCode();
     }
 
     public void setSequence(String s) {

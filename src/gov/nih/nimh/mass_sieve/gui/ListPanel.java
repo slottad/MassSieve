@@ -99,12 +99,12 @@ public class ListPanel {
         //jTable.setCellSelectionEnabled(true);
         
         if (expPanel == null) {
-            TableComparatorChooser tSorter = new TableComparatorChooser(jTable, sortList, true);
+            TableComparatorChooser.install(jTable, sortList, TableComparatorChooser.MULTIPLE_COLUMN_MOUSE);
         } else {
             if (expPanel.getMassSieveFrame().getUseMultiColumnSort()) {
-                TableComparatorChooser tSorter = new TableComparatorChooser(jTable, sortList, true);
+                TableComparatorChooser.install(jTable, sortList, TableComparatorChooser.MULTIPLE_COLUMN_MOUSE);
             } else {
-                TableComparatorChooser tSorter = new TableComparatorChooser(jTable, sortList, false);
+                TableComparatorChooser.install(jTable, sortList, TableComparatorChooser.SINGLE_COLUMN);
             }
         }
         jTable.setAutoResizeMode(jTable.AUTO_RESIZE_OFF);

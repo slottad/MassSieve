@@ -14,6 +14,7 @@ import be.proteomics.mascotdatfile.util.mascot.MascotDatfile;
 import be.proteomics.mascotdatfile.util.mascot.ProteinMap;
 import be.proteomics.mascotdatfile.util.mascot.Query;
 import be.proteomics.mascotdatfile.util.mascot.QueryToPeptideMap;
+import be.proteomics.mascotdatfile.util.mascot.iterator.QueryEnumerator;
 import gov.nih.nimh.mass_sieve.*;
 import java.awt.Component;
 import java.io.BufferedReader;
@@ -77,18 +78,19 @@ public class mascotDatHandler extends AnalysisHandler {
             q2pm = mdf.getQueryToPeptideMap();
             progressMonitor.setNote("Getting query list...");
             progressMonitor.setProgress(2);
-            Vector AllQueries = mdf.getQueryList();
-            progressMonitor.setNote("Done!");
-            progressMonitor.setProgress(3);
-            progressMonitor.close();
+            //Vector AllQueries = mdf.getQueryList();
+            QueryEnumerator qEnum = mdf.getQueryEnumerator();
             getMetaInfo();
-            for (int i=0; i<=AllQueries.size(); i++) {
+            //for (int i=0; i<=AllQueries.size(); i++) {
+            while (qEnum.hasMoreElements()) {
+                Query q = (Query)qEnum.nextElement();
+                int i = q.getQueryNumber();
                 int numHits = q2pm.getNumberOfPeptideHits(i);
                 pepHitCount += numHits;
                 if (numHits > 0) {
                     ArrayList<PeptideHit> subPeptide_hits = new ArrayList<PeptideHit>();
                     boolean isInderminate = false;
-                    Query q = (Query) AllQueries.elementAt(i-1);
+                    //Query q = (Query) AllQueries.elementAt(i-1);
                     Vector pephits = q2pm.getAllPeptideHits(i);
                     be.proteomics.mascotdatfile.util.mascot.PeptideHit ph1 =
                             (be.proteomics.mascotdatfile.util.mascot.PeptideHit) pephits.elementAt(0);
@@ -112,7 +114,11 @@ public class mascotDatHandler extends AnalysisHandler {
                     peptide_hits.addAll(subPeptide_hits);
                 }
             }
-            
+
+            progressMonitor.setNote("Done!");
+            progressMonitor.setProgress(3);
+            progressMonitor.close();
+
             ProteinMap proMap = mdf.getProteinMap();
             
             for (String p:minProteins) {
