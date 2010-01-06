@@ -104,6 +104,8 @@ public class MassSieveFrame extends javax.swing.JFrame {
         jMenuSaveExpSet.setEnabled(false);
         jMenuExportDatabase.setText("Export Experiment Database...");
         jMenuExportDatabase.setEnabled(false);
+        jMenuExportResults.setText("Export Experiment Results...");
+        jMenuExportResults.setEnabled(false);
         jMenuAddSearchResults.setEnabled(false);
         jMenuOpenSeqDB.setEnabled(false);
         jMenuFilterPrefs.setEnabled(false);
@@ -145,9 +147,12 @@ public class MassSieveFrame extends javax.swing.JFrame {
             jMenuSaveExp.setText("Save '" + jTabbedPaneMain.getSelectedComponent().getName() + "'");
             jMenuExportDatabase.setText("Export '" + jTabbedPaneMain.getSelectedComponent().getName() + "' Database...");
             jMenuExportDatabase.setEnabled(true);
+            jMenuExportResults.setText("Export '" + jTabbedPaneMain.getSelectedComponent().getName() + "' Results...");
+            jMenuExportResults.setEnabled(true);
         } else {
             jMenuSaveExp.setEnabled(false);
             jMenuExportDatabase.setEnabled(false);
+            jMenuExportResults.setEnabled(false);
         }
         if (jTabbedPaneMain.getSelectedComponent() != null) {
             jMenuClose.setText("Close '" + jTabbedPaneMain.getSelectedComponent().getName() + "'");
@@ -155,6 +160,7 @@ public class MassSieveFrame extends javax.swing.JFrame {
             jMenuSaveExp.setEnabled(false);
             jMenuSaveExpSet.setEnabled(false);
             jMenuExportDatabase.setEnabled(false);
+            jMenuExportResults.setEnabled(false);
             jMenuClose.setEnabled(false);
         }
     }
@@ -182,6 +188,7 @@ public class MassSieveFrame extends javax.swing.JFrame {
         jMenuSaveExp = new javax.swing.JMenuItem();
         jMenuSaveExpSet = new javax.swing.JMenuItem();
         jMenuExportDatabase = new javax.swing.JMenuItem();
+        jMenuExportResults = new javax.swing.JMenuItem();
         jSeparator3 = new javax.swing.JSeparator();
         jMenuOpenSeqDB = new javax.swing.JMenuItem();
         jMenuOpenGenbankDB = new javax.swing.JMenuItem();
@@ -279,6 +286,14 @@ public class MassSieveFrame extends javax.swing.JFrame {
             }
         });
         jMenuFile.add(jMenuExportDatabase);
+
+        jMenuExportResults.setText("Export Experiment Results...");
+        jMenuExportResults.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuExportResultsActionPerformed(evt);
+            }
+        });
+        jMenuFile.add(jMenuExportResults);
         jMenuFile.add(jSeparator3);
 
         jMenuOpenSeqDB.setText("Import Fasta...");
@@ -647,6 +662,8 @@ public class MassSieveFrame extends javax.swing.JFrame {
             jMenuSaveExp.setText("Save '" + jTabbedPaneMain.getSelectedComponent().getName() + "'");
             jMenuExportDatabase.setText("Export '" + jTabbedPaneMain.getSelectedComponent().getName() + "' Database...");
             jMenuExportDatabase.setEnabled(true);
+            jMenuExportResults.setText("Export '" + jTabbedPaneMain.getSelectedComponent().getName() + "' Results...");
+            jMenuExportResults.setEnabled(true);
         }
     }//GEN-LAST:event_jMenuNewExperimentActionPerformed
 
@@ -676,6 +693,8 @@ public class MassSieveFrame extends javax.swing.JFrame {
         jMenuSaveExpSet.setEnabled(true);
         jMenuExportDatabase.setText("Export '" + jTabbedPaneMain.getSelectedComponent().getName() + "' Database...");
         jMenuExportDatabase.setEnabled(true);
+        jMenuExportResults.setText("Export '" + jTabbedPaneMain.getSelectedComponent().getName() + "' Results...");
+        jMenuExportResults.setEnabled(true);
         expSet.put(expPanel.getName(), currentExperiment);
         if (expSet.size() >= 2) {
             jMenuCompareDiff.setEnabled(true);
@@ -805,10 +824,13 @@ public class MassSieveFrame extends javax.swing.JFrame {
             jMenuSaveExpSet.setEnabled(false);
             jMenuExportDatabase.setText("Export Experiment Database...");
             jMenuExportDatabase.setEnabled(false);
+            jMenuExportResults.setText("Export Experiment Results...");
+            jMenuExportResults.setEnabled(false);
         } else {
             jMenuClose.setText("Close " + jTabbedPaneMain.getSelectedComponent().getName());
             jMenuSaveExp.setText("Save '" + jTabbedPaneMain.getSelectedComponent().getName() + "'");
             jMenuExportDatabase.setText("Export '" + jTabbedPaneMain.getSelectedComponent().getName() + "' Database...");
+            jMenuExportResults.setText("Export '" + jTabbedPaneMain.getSelectedComponent().getName() + "' Results...");
         }
     }//GEN-LAST:event_jMenuCloseActionPerformed
 
@@ -870,7 +892,7 @@ public class MassSieveFrame extends javax.swing.JFrame {
         if (current instanceof ExperimentPanel) {
             currentExperiment = (ExperimentPanel) current;
             jFileChooserLoad.setFileFilter(txtFilter);
-            jFileChooserLoad.setSelectedFile(new File(currentExperiment.getName() + ".txt"));
+            jFileChooserLoad.setSelectedFile(new File(currentExperiment.getName() + "_records.txt"));
             int status = jFileChooserLoad.showSaveDialog(this);
             if (status == JFileChooser.APPROVE_OPTION) {
                 File selectedFile = jFileChooserLoad.getSelectedFile();
@@ -895,6 +917,37 @@ public class MassSieveFrame extends javax.swing.JFrame {
             }
         }
     }//GEN-LAST:event_jMenuExportDatabaseActionPerformed
+
+    private void jMenuExportResultsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuExportResultsActionPerformed
+        Component current = jTabbedPaneMain.getSelectedComponent();
+        if (current instanceof ExperimentPanel) {
+            currentExperiment = (ExperimentPanel) current;
+            jFileChooserLoad.setFileFilter(txtFilter);
+            jFileChooserLoad.setSelectedFile(new File(currentExperiment.getName() + "_results.txt"));
+            int status = jFileChooserLoad.showSaveDialog(this);
+            if (status == JFileChooser.APPROVE_OPTION) {
+                File selectedFile = jFileChooserLoad.getSelectedFile();
+                try {
+                    if (!selectedFile.createNewFile()) {
+                        status = JOptionPane.showConfirmDialog(this,
+                                selectedFile.getName() + " exists, are you sure you wish to overwrite it?",
+                                "Overwrite?", JOptionPane.YES_NO_OPTION);
+                        if (status != JOptionPane.OK_OPTION) {
+                            return;
+                        }
+                    }
+                    System.out.println("Exporting all records into " + selectedFile.getName());
+                    currentExperiment.exportDatabase(selectedFile);
+                } catch (FileNotFoundException ex) {
+                    JOptionPane.showMessageDialog(this, "Unable to export records", "File Error", JOptionPane.ERROR_MESSAGE);
+                    ex.printStackTrace();
+                } catch (IOException ex) {
+                    JOptionPane.showMessageDialog(this, "Unable to export records", "File Error", JOptionPane.ERROR_MESSAGE);
+                    ex.printStackTrace();
+                }
+            }
+        }
+    }//GEN-LAST:event_jMenuExportResultsActionPerformed
 
     private String getSystemInfo() {
         Properties p = System.getProperties();
@@ -978,6 +1031,7 @@ public class MassSieveFrame extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuCompareDiff;
     private javax.swing.JMenuItem jMenuCompareParsimony;
     private javax.swing.JMenuItem jMenuExportDatabase;
+    private javax.swing.JMenuItem jMenuExportResults;
     private javax.swing.JMenuItem jMenuExportSeqDB;
     private javax.swing.JMenu jMenuFile;
     private javax.swing.JMenuItem jMenuFilterPrefs;
