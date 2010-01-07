@@ -65,19 +65,19 @@ public class ExperimentPanel extends JPanel {
 
     private ArrayList<File> allFiles;
     private ArrayList<FileInformation> fileInfos;
-    private PeptideCollection pepCollection,  pepCollectionOriginal;
+    private PeptideCollection pepCollection, pepCollectionOriginal;
     private FilterSettings filterSettings;
-    private double omssaCutoffOrig,  mascotCutoffOrig,  xtandemCutoffOrig,  sequestCutoffOrig,  peptideProphetCutoffOrig;
+    private double omssaCutoffOrig, mascotCutoffOrig, xtandemCutoffOrig, sequestCutoffOrig, peptideProphetCutoffOrig;
     private DefaultTreeModel treeModelOverview;
     private FilterSettingsDialog prefDialog;
     private SummaryDialog summaryDialog;
     private JFileChooser jFileChooserLoad;
     //private JScrollPane jScrollPaneLeft;
     //private JSplitPane jSplitPaneMain;
-    private JScrollPane graphPanel,  treePanel;
-    private JPanel pepHitPanel,  pepPanel,  proPanel,  detailPanel;
+    private JScrollPane graphPanel, treePanel;
+    private JPanel pepHitPanel, pepPanel, proPanel, detailPanel;
     private FloatDockModel dockModel;
-    private DefaultDockable pepHitDockable,  pepDockable,  proDockable,  graphDockable,  detailDockable,  treeDockable;
+    private DefaultDockable pepHitDockable, pepDockable, proDockable, graphDockable, detailDockable, treeDockable;
     private JTree jTreeMain;
     private MassSieveFrame msFrame;
     private final static String DOCK_NAME = "MassSieve";
@@ -149,7 +149,7 @@ public class ExperimentPanel extends JPanel {
                 rootDock = (SplitDock) dockModel.getRootDock(ROOT_DOCK);
                 add(rootDock, BorderLayout.CENTER, 0);
                 this.validate();
-            //jSplitPaneMain.setRightComponent(rootDock);
+                //jSplitPaneMain.setRightComponent(rootDock);
             } catch (FileNotFoundException fileNotFoundException) {
                 System.out.println("Could not find the file [" + DOCK_FILE + "] with the saved dock model.");
                 System.out.println("Continuing with the default dock model.");
@@ -304,6 +304,39 @@ public class ExperimentPanel extends JPanel {
         return;
     }
 
+    public void exportResults(File file, int setType) {
+        try {
+            FileWriter fw = new FileWriter(file);
+            //	Output column headers if any.
+            fw.write("Proteins\tPeptides\tScans\n");
+            for (Protein pro : pepCollection.getMinProteins().values()) {
+                switch (setType) {
+                    case 0:  // preferred proteins only
+                        if (!pro.isMostEquivalent()) {
+                            continue;
+                        }
+                        break;
+                    case 1:  // parsimonious proteins only
+                        if ((pro.getParsimonyType() == ParsimonyType.SUBSET)
+                                || (pro.getParsimonyType() == ParsimonyType.SUBSUMABLE)) {
+                            continue;
+                        }
+                        break;
+                    default: // All proteins
+                        break;
+                }
+                fw.write(pro.getName());
+                for (Peptide pep : pro.getAllPeptides()) {
+                    fw.write("\t" + pep.getSequence() + "\t" + pep.getScanList(false) + "\n");
+                }
+            }
+            fw.close();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+        return;
+    }
+
     public void saveExperiment(ObjectOutputStream os) {
         System.out.print("Saving experiment " + this.getName() + "...");
         Experiment exp = new Experiment();
@@ -436,9 +469,9 @@ public class ExperimentPanel extends JPanel {
     }
 
     public synchronized void reloadFiles() {
-        if ((filterSettings.getOmssaCutoff() > omssaCutoffOrig) || (filterSettings.getMascotCutoff() > mascotCutoffOrig) ||
-                (filterSettings.getXtandemCutoff() > xtandemCutoffOrig) || (filterSettings.getSequestCutoff() > sequestCutoffOrig) ||
-                (filterSettings.getPeptideProphetCutoff() < peptideProphetCutoffOrig)) {
+        if ((filterSettings.getOmssaCutoff() > omssaCutoffOrig) || (filterSettings.getMascotCutoff() > mascotCutoffOrig)
+                || (filterSettings.getXtandemCutoff() > xtandemCutoffOrig) || (filterSettings.getSequestCutoff() > sequestCutoffOrig)
+                || (filterSettings.getPeptideProphetCutoff() < peptideProphetCutoffOrig)) {
             cleanDisplay();
             if (filterSettings.getOmssaCutoff() > omssaCutoffOrig) {
                 omssaCutoffOrig = filterSettings.getOmssaCutoff();
@@ -732,7 +765,7 @@ public class ExperimentPanel extends JPanel {
         jTreeMain.setSelectionRow(0);
         System.err.println("PepCollectionOrig: " + pepCollectionOriginal.getPeptideHits().size());
         System.err.println("PepCollection: " + pepCollection.getPeptideHits().size());
-    //System.gc();
+        //System.gc();
     }
 
     public HashMap<String, Protein> getProteins() {

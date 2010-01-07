@@ -905,8 +905,9 @@ public class MassSieveFrame extends javax.swing.JFrame {
                             return;
                         }
                     }
-                    System.out.println("Exporting all records into " + selectedFile.getName());
+                    System.out.print("Exporting records into " + selectedFile.getName() + "...");
                     currentExperiment.exportDatabase(selectedFile);
+                    System.out.println("completed!");
                 } catch (FileNotFoundException ex) {
                     JOptionPane.showMessageDialog(this, "Unable to export records", "File Error", JOptionPane.ERROR_MESSAGE);
                     ex.printStackTrace();
@@ -922,6 +923,33 @@ public class MassSieveFrame extends javax.swing.JFrame {
         Component current = jTabbedPaneMain.getSelectedComponent();
         if (current instanceof ExperimentPanel) {
             currentExperiment = (ExperimentPanel) current;
+
+            Object[] options = {
+                "Preferred only",
+                "Parsimonious",
+                "All proteins"};
+            int n = JOptionPane.showOptionDialog(this,
+                    "From which set of proteins should the results be derived?",
+                    "Select Protein Set",
+                    JOptionPane.YES_NO_CANCEL_OPTION,
+                    JOptionPane.QUESTION_MESSAGE,
+                    null,
+                    options,
+                    options[0]);
+
+            switch (n) {
+                case 0:
+                    System.out.println("Preferred proteins selected");
+                    break;
+                case 1:
+                    System.out.println("Parsimonious proteins selected");
+                    break;
+                case 2:
+                    System.out.println("All proteins selected");
+                    break;
+                default:    
+                    return;
+            }
             jFileChooserLoad.setFileFilter(txtFilter);
             jFileChooserLoad.setSelectedFile(new File(currentExperiment.getName() + "_results.txt"));
             int status = jFileChooserLoad.showSaveDialog(this);
@@ -936,8 +964,9 @@ public class MassSieveFrame extends javax.swing.JFrame {
                             return;
                         }
                     }
-                    System.out.println("Exporting all records into " + selectedFile.getName());
-                    currentExperiment.exportDatabase(selectedFile);
+                    System.out.print("Exporting results into " + selectedFile.getName() + "...");
+                    currentExperiment.exportResults(selectedFile, n);
+                    System.out.println("completed!");
                 } catch (FileNotFoundException ex) {
                     JOptionPane.showMessageDialog(this, "Unable to export records", "File Error", JOptionPane.ERROR_MESSAGE);
                     ex.printStackTrace();

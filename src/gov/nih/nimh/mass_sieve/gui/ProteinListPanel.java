@@ -102,37 +102,37 @@ public class ProteinListPanel extends ListPanel {
         return;        
     }
 
-    protected JPopupMenu createPopupMenu() {
-        final JPopupMenu menu = super.createPopupMenu();
-        // Create and add a menu item
-        JMenuItem exportPepItem = new JMenuItem("Export Table with Peptides");
-        exportPepItem.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                JFileChooser fc = new JFileChooser();
-                fc.setDialogTitle("Export to...");
-                int returnVal = fc.showSaveDialog(null);
-                if (returnVal == JFileChooser.APPROVE_OPTION) {
-                    File f = fc.getSelectedFile();
-                    tableToCSV(f, true);
-                }
-            }
-        });
-        menu.add(exportPepItem);
-        JMenuItem exportSimpleItem = new JMenuItem("Export Simple Protein-Peptide format");
-        exportSimpleItem.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                JFileChooser fc = new JFileChooser();
-                fc.setDialogTitle("Export to...");
-                int returnVal = fc.showSaveDialog(null);
-                if (returnVal == JFileChooser.APPROVE_OPTION) {
-                    File f = fc.getSelectedFile();
-                    tableToTabSimple(f);
-                }
-            }
-        });
-        menu.add(exportSimpleItem);
-        return menu;
-    }
+//    protected JPopupMenu createPopupMenu() {
+//        final JPopupMenu menu = super.createPopupMenu();
+//        // Create and add a menu item
+//        JMenuItem exportPepItem = new JMenuItem("Export Table with Peptides");
+//        exportPepItem.addActionListener(new java.awt.event.ActionListener() {
+//            public void actionPerformed(java.awt.event.ActionEvent evt) {
+//                JFileChooser fc = new JFileChooser();
+//                fc.setDialogTitle("Export to...");
+//                int returnVal = fc.showSaveDialog(null);
+//                if (returnVal == JFileChooser.APPROVE_OPTION) {
+//                    File f = fc.getSelectedFile();
+//                    tableToCSV(f, true);
+//                }
+//            }
+//        });
+//        menu.add(exportPepItem);
+//        JMenuItem exportSimpleItem = new JMenuItem("Export Simple Protein-Peptide format");
+//        exportSimpleItem.addActionListener(new java.awt.event.ActionListener() {
+//            public void actionPerformed(java.awt.event.ActionEvent evt) {
+//                JFileChooser fc = new JFileChooser();
+//                fc.setDialogTitle("Export to...");
+//                int returnVal = fc.showSaveDialog(null);
+//                if (returnVal == JFileChooser.APPROVE_OPTION) {
+//                    File f = fc.getSelectedFile();
+//                    tableToTabSimple(f);
+//                }
+//            }
+//        });
+//        menu.add(exportSimpleItem);
+//        return menu;
+//    }
     
     
 }
