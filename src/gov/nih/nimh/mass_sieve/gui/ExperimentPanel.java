@@ -296,6 +296,14 @@ public class ExperimentPanel extends JPanel {
                     fw.write(pro.getName() + "\t" + pep.getSequence() + "\n");
                 }
             }
+            // export equivalent proteins
+            fw.write("\n\n# EquivalentProteins\n");
+            fw.write("Protein\tProtein\n");
+            for (Protein pro1 : pepCollection.getMinProteins().values()) {
+                for (Protein pro2 : pro1.getEquivalent()) {
+                    fw.write(pro1.getName() + "\t" + pro2.getName() + "\n");
+                }
+            }
 
             fw.close();
         } catch (IOException ex) {
@@ -317,15 +325,14 @@ public class ExperimentPanel extends JPanel {
                 if ((setType == 0) && !pro.isMostEquivalent()) {
                     continue;  // preferred proteins only
                 }
-                fw.write(pro.getName());
-                if (setType > 0) {
-                    fw.write("\t" + pro.getParsimonyType());
+                if (setType == 0) {
+                    fw.write(pro.getName());
                 }
                 for (Peptide pep : pro.getAllPeptides()) {
                     if (setType == 0) {
                         fw.write("\t" + pep.getSequence() + "\t" + pep.getScanList(false) + "\n");
                     } else {
-                        fw.write("\t\t" + pep.getSequence() + "\t" + pep.getScanList(false) + "\n");
+                        fw.write(pro.getName() + "\t" + pro.getParsimonyType() + "\t" + pep.getSequence() + "\t" + pep.getScanList(false) + "\n");
                     }
                 }
             }

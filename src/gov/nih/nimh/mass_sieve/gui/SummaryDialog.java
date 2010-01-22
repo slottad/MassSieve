@@ -10,7 +10,6 @@ import gov.nih.nimh.mass_sieve.io.FileInformation;
 import java.awt.Dialog;
 import java.util.ArrayList;
 import java.util.Collections;
-import javax.swing.text.html.HTMLDocument;
 
 /**
  *

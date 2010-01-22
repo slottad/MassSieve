@@ -218,7 +218,12 @@ public class ListPanel {
             printColumnHeader(fw);
             
             for (int row=0 ; row < jTable.getRowCount(); row++) {
-                printRow(fw, row);
+                Object obj = tableModel.getElementAt(row);
+                if (obj instanceof SeparatorList.Separator) {
+                    fw.write("---------Protein Group---------\n");
+                } else {
+                    printRow(fw, row);
+                }
             }
             fw.close();
         } catch (IOException ex) {
