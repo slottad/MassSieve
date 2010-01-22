@@ -308,26 +308,25 @@ public class ExperimentPanel extends JPanel {
         try {
             FileWriter fw = new FileWriter(file);
             //	Output column headers if any.
-            fw.write("Proteins\tPeptides\tScans\n");
+            if (setType ==0) {
+                fw.write("Proteins\tPeptides\tScans\n");
+            } else {
+                fw.write("Proteins\tParsimony\tPeptides\tScans\n");
+            }
             for (Protein pro : pepCollection.getMinProteins().values()) {
-                switch (setType) {
-                    case 0:  // preferred proteins only
-                        if (!pro.isMostEquivalent()) {
-                            continue;
-                        }
-                        break;
-                    case 1:  // parsimonious proteins only
-                        if ((pro.getParsimonyType() == ParsimonyType.SUBSET)
-                                || (pro.getParsimonyType() == ParsimonyType.SUBSUMABLE)) {
-                            continue;
-                        }
-                        break;
-                    default: // All proteins
-                        break;
+                if ((setType == 0) && !pro.isMostEquivalent()) {
+                    continue;  // preferred proteins only
                 }
                 fw.write(pro.getName());
+                if (setType > 0) {
+                    fw.write("\t" + pro.getParsimonyType());
+                }
                 for (Peptide pep : pro.getAllPeptides()) {
-                    fw.write("\t" + pep.getSequence() + "\t" + pep.getScanList(false) + "\n");
+                    if (setType == 0) {
+                        fw.write("\t" + pep.getSequence() + "\t" + pep.getScanList(false) + "\n");
+                    } else {
+                        fw.write("\t\t" + pep.getSequence() + "\t" + pep.getScanList(false) + "\n");
+                    }
                 }
             }
             fw.close();

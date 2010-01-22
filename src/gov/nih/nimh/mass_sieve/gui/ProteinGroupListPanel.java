@@ -77,25 +77,28 @@ public class ProteinGroupListPanel extends ProteinListPanel {
         selectionModel = new EventSelectionModel(sepList);
     }
 
-//    protected JPopupMenu createPopupMenu() {
-//        final JPopupMenu menu = super.createPopupMenu();
-//
-//        if (!useClusters) {
-//            // Create and add a menu item
-//            JMenuItem exportPrefItem = new JMenuItem("Export Prefered Proteins");
-//            exportPrefItem.addActionListener(new java.awt.event.ActionListener() {
-//
-//                public void actionPerformed(java.awt.event.ActionEvent evt) {
-//                    JFileChooser fc = new JFileChooser();
-//                    fc.setDialogTitle("Export to...");
-//                    int returnVal = fc.showSaveDialog(null);
-//                    if (returnVal == JFileChooser.APPROVE_OPTION) {
-//                        File f = fc.getSelectedFile();
-//                        preferedToCSV(f, false);
-//                    }
-//                }
-//            });
-//            menu.add(exportPrefItem);
+    protected JPopupMenu createPopupMenu() {
+        final JPopupMenu menu = super.createPopupMenu();
+
+        if (!useClusters) {
+            // Create and add a menu item
+            JMenuItem exportPrefItem = new JMenuItem("Export Prefered Proteins");
+            exportPrefItem.addActionListener(new java.awt.event.ActionListener() {
+
+                public void actionPerformed(java.awt.event.ActionEvent evt) {
+                    JFileChooser fc = new JFileChooser();
+                    fc.setDialogTitle("Export to...");
+                    int returnVal = fc.showSaveDialog(null);
+                    if (returnVal == JFileChooser.APPROVE_OPTION) {
+                        File f = fc.getSelectedFile();
+                        preferedToCSV(f, false);
+                    }
+                }
+            });
+            menu.add(exportPrefItem);
+        }
+        return menu;
+    }
 //
 //            JMenuItem exportPrefPepItem = new JMenuItem("Export Prefered Proteins with Peptides");
 //            exportPrefPepItem.addActionListener(new java.awt.event.ActionListener() {

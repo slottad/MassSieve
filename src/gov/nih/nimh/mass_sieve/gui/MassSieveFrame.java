@@ -211,7 +211,7 @@ public class MassSieveFrame extends javax.swing.JFrame {
         jFileChooserLoad.setDialogTitle("Open Files");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("MassSieve v1.09");
+        setTitle("MassSieve v1.10");
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosing(java.awt.event.WindowEvent evt) {
@@ -926,12 +926,11 @@ public class MassSieveFrame extends javax.swing.JFrame {
 
             Object[] options = {
                 "Preferred only",
-                "Parsimonious",
                 "All proteins"};
             int n = JOptionPane.showOptionDialog(this,
                     "From which set of proteins should the results be derived?",
                     "Select Protein Set",
-                    JOptionPane.YES_NO_CANCEL_OPTION,
+                    JOptionPane.YES_NO_OPTION,
                     JOptionPane.QUESTION_MESSAGE,
                     null,
                     options,
@@ -942,9 +941,6 @@ public class MassSieveFrame extends javax.swing.JFrame {
                     System.out.println("Preferred proteins selected");
                     break;
                 case 1:
-                    System.out.println("Parsimonious proteins selected");
-                    break;
-                case 2:
                     System.out.println("All proteins selected");
                     break;
                 default:    
