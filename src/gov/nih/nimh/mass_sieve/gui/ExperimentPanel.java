@@ -422,7 +422,8 @@ public class ExperimentPanel extends JPanel {
                 p.setSourceFile(filename);
                 boolean usePepHit = false;
                 if (p.isPepXML() && (filterSettings.getUsePepProphet() || p.getSourceType() == AnalysisProgramType.PEPXML)) {
-                    if (p.getPepProphet() >= filterSettings.getPeptideProphetCutoff()) {
+                    if (!p.CanGetPepProphet() ||
+                            (p.getPepProphet() >= filterSettings.getPeptideProphetCutoff())) {
                         usePepHit = true;
                     }
                 } else {
@@ -447,6 +448,8 @@ public class ExperimentPanel extends JPanel {
                                 usePepHit = true;
                             }
                             break;
+                        default:
+                            usePepHit = true;
                     }
                 }
                 if (usePepHit) {

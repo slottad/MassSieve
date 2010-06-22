@@ -53,6 +53,10 @@ public class pepXMLHandler extends AnalysisHandler {
                 analysisProgram = AnalysisProgramType.OMSSA;
                 return;
             }
+            //if (aProg.compareToIgnoreCase("PepArML") == 0) {
+            //    analysisProgram = AnalysisProgramType.PEPARML;
+            //    return;
+            //}
             analysisProgram = AnalysisProgramType.PEPXML;
         }
         
@@ -108,7 +112,8 @@ public class pepXMLHandler extends AnalysisHandler {
             if (sName.equals("search_score")) {
                 String name = attrs.getValue("name");
                 String value = attrs.getValue("value");
-                if (name.compareToIgnoreCase("expect") == 0) curPep.setExpect(value); 
+                if (name.compareToIgnoreCase("expect") == 0) curPep.setExpect(value);
+                if (name.compareToIgnoreCase("estfdr") == 0) curPep.setExpect(value);
                 if (name.compareToIgnoreCase("xcorr") == 0) curPep.setXcorr(value); 
                 if (name.compareToIgnoreCase("ionscore") == 0) curPep.setIonScore(value); 
                 if (name.compareToIgnoreCase("identityscore") == 0) curPep.setIdent(value);

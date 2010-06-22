@@ -154,7 +154,8 @@ public class PeptideCollection implements Serializable, Comparable<PeptideCollec
                         }
                         break;
                     case PEPXML:
-                        if (p.getPepProphet() >= fs.getPeptideProphetCutoff()) {
+                        if (!p.CanGetPepProphet() ||
+                                (p.getPepProphet() >= fs.getPeptideProphetCutoff())) {
                             pc.addPeptideHit(p);
                         }
                         break;

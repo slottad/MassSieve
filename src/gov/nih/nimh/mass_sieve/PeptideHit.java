@@ -27,6 +27,7 @@ public class PeptideHit implements Serializable, Comparable<PeptideHit> {
     private double ident;
     private double xcorr;
     private double pepProphet;
+    private boolean hasPepProphet;
     private int Z;
     private HashSet<ProteinHit> proteinHits;
     private HashSet<String> proteinNames;
@@ -51,6 +52,7 @@ public class PeptideHit implements Serializable, Comparable<PeptideHit> {
         theoreticalMass = -1;
         indeterminate = false;
         pepXML = false;
+        hasPepProphet = false;
     }
 
     private PeptideHit createClone() {
@@ -466,6 +468,11 @@ public class PeptideHit implements Serializable, Comparable<PeptideHit> {
 
     public void setPepProphet(double d) {
         pepProphet = d;
+        hasPepProphet = true;
+    }
+
+    public boolean CanGetPepProphet() {
+        return hasPepProphet;
     }
 
     public boolean isPepXML() {
