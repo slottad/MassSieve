@@ -444,8 +444,10 @@ public class Protein implements Serializable, Comparable<Protein> {
                 seqObj = new ViewSequence(seq);
                 addPeptideHitFeatures();
             }
+            //System.out.println(this.getDescription());
             //System.out.println(seq.getDescription());
-            if (this.getDescription().length() < seq.getDescription().length()) {
+            if ((seq.getDescription() != null) && 
+                    (this.getDescription().length() < seq.getDescription().length())) {
                 setDescription(seq.getDescription());
             }
         }
