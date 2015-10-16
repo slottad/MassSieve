@@ -15,8 +15,8 @@ import ca.odell.glazedlists.ListSelection;
 import ca.odell.glazedlists.SeparatorList;
 import ca.odell.glazedlists.SortedList;
 import ca.odell.glazedlists.gui.TableFormat;
-import ca.odell.glazedlists.swing.EventSelectionModel;
-import ca.odell.glazedlists.swing.EventTableModel;
+import ca.odell.glazedlists.swing.DefaultEventSelectionModel;
+import ca.odell.glazedlists.swing.DefaultEventTableModel;
 import ca.odell.glazedlists.swing.TableComparatorChooser;
 import com.publicobject.misc.swing.JSeparatorTable;
 import gov.nih.nimh.mass_sieve.*;
@@ -52,8 +52,8 @@ public class ListPanel {
     protected JSeparatorTable jSepTable;
     protected TableFormat pTableFormat;
     protected SortedList sortList;
-    protected EventTableModel tableModel;
-    protected EventSelectionModel selectionModel;
+    protected DefaultEventTableModel tableModel;
+    protected DefaultEventSelectionModel selectionModel;
     private ExperimentPanel expPanel;
     protected boolean useClusters;
     
@@ -70,8 +70,8 @@ public class ListPanel {
     public void addList(Collection<?> list) {
         evList.addAll(list);
         sortList = new SortedList(evList, null);
-        tableModel = new EventTableModel(sortList, pTableFormat);
-        selectionModel = new EventSelectionModel(sortList);
+        tableModel = new DefaultEventTableModel(sortList, pTableFormat);
+        selectionModel = new DefaultEventSelectionModel(sortList);
     }
     
     public void addProteinList(HashMap<String, ExperimentPanel> expSet) {

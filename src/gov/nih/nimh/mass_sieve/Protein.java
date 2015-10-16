@@ -151,8 +151,6 @@ public class Protein implements Serializable, Comparable<Protein> {
                     mass = mc.getMass(seqObj);
                     mass = (new BigDecimal(mass)).setScale(2, BigDecimal.ROUND_HALF_EVEN).doubleValue();
                     MassSieveFrame.getProtein(this.name).setMass(mass);
-                } catch (IllegalSymbolException ex) {
-                    //ex.printStackTrace();
                 } catch (BioException ex) {
                     ex.printStackTrace();
                 } catch (NullPointerException ex) {

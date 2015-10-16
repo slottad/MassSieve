@@ -234,7 +234,7 @@ public class BatchLoadDialog extends Dialog {
     }//GEN-LAST:event_jButtonCancelActionPerformed
     
     private void jButtonRemoveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonRemoveActionPerformed
-        Object[] daFiles = jListFiles.getSelectedValues();
+        Object[] daFiles = jListFiles.getSelectedValuesList().toArray();
         for (Object o:daFiles) {
             listModel.removeElement(o);
         }

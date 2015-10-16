@@ -9,12 +9,18 @@
 
 package gov.nih.nimh.mass_sieve.io;
 
-import be.proteomics.mascotdatfile.util.mascot.Header;
-import be.proteomics.mascotdatfile.util.mascot.MascotDatfile;
-import be.proteomics.mascotdatfile.util.mascot.ProteinMap;
-import be.proteomics.mascotdatfile.util.mascot.Query;
-import be.proteomics.mascotdatfile.util.mascot.QueryToPeptideMap;
-import be.proteomics.mascotdatfile.util.mascot.iterator.QueryEnumerator;
+//import be.proteomics.mascotdatfile.util.mascot.Header;
+//import be.proteomics.mascotdatfile.util.mascot.MascotDatfile;
+//import be.proteomics.mascotdatfile.util.mascot.ProteinMap;
+//import be.proteomics.mascotdatfile.util.mascot.Query;
+//import be.proteomics.mascotdatfile.util.mascot.QueryToPeptideMap;
+//import be.proteomics.mascotdatfile.util.mascot.iterator.QueryEnumerator;
+import com.compomics.mascotdatfile.util.mascot.Header;
+import com.compomics.mascotdatfile.util.mascot.MascotDatfile;
+import com.compomics.mascotdatfile.util.mascot.ProteinMap;
+import com.compomics.mascotdatfile.util.mascot.Query;
+import com.compomics.mascotdatfile.util.mascot.QueryToPeptideMap;
+import com.compomics.mascotdatfile.util.mascot.iterator.QueryEnumerator;
 import gov.nih.nimh.mass_sieve.*;
 import java.awt.Component;
 import java.io.BufferedReader;
@@ -92,13 +98,13 @@ public class mascotDatHandler extends AnalysisHandler {
                     boolean isInderminate = false;
                     //Query q = (Query) AllQueries.elementAt(i-1);
                     Vector pephits = q2pm.getAllPeptideHits(i);
-                    be.proteomics.mascotdatfile.util.mascot.PeptideHit ph1 =
-                            (be.proteomics.mascotdatfile.util.mascot.PeptideHit) pephits.elementAt(0);
+                    com.compomics.mascotdatfile.util.mascot.PeptideHit ph1 =
+                            (com.compomics.mascotdatfile.util.mascot.PeptideHit) pephits.elementAt(0);
                     subPeptide_hits.addAll(mascotPepToPepHitList(ph1, q, i));
                     double ionsScore = ph1.getIonsScore();
                     for (int j=1; j < numHits; j++) {
-                        be.proteomics.mascotdatfile.util.mascot.PeptideHit ph2 =
-                                (be.proteomics.mascotdatfile.util.mascot.PeptideHit) pephits.elementAt(j);
+                        com.compomics.mascotdatfile.util.mascot.PeptideHit ph2 =
+                                (com.compomics.mascotdatfile.util.mascot.PeptideHit) pephits.elementAt(j);
                         if (ionsScore == ph2.getIonsScore()) {
                             subPeptide_hits.addAll(mascotPepToPepHitList(ph2, q, i));
                             isInderminate = true;
@@ -138,11 +144,11 @@ public class mascotDatHandler extends AnalysisHandler {
         }
     }
     
-    private ArrayList<PeptideHit> mascotPepToPepHitList(be.proteomics.mascotdatfile.util.mascot.PeptideHit ph, Query q, Integer i) {
+    private ArrayList<PeptideHit> mascotPepToPepHitList(com.compomics.mascotdatfile.util.mascot.PeptideHit ph, Query q, Integer i) {
         ArrayList<PeptideHit> peps = new ArrayList<PeptideHit>();
         ArrayList proteins = ph.getProteinHits();
         //for (Object obj:proteins) {
-        //be.proteomics.mascotdatfile.util.mascot.ProteinHit pro = (be.proteomics.mascotdatfile.util.mascot.ProteinHit)obj;
+        //com.compomics.mascotdatfile.util.mascot.ProteinHit pro = (com.compomics.mascotdatfile.util.mascot.ProteinHit)obj;
         PeptideHit p = new PeptideHit();
         p.setQueryNum(i);
         p.setScanNum(scanFilenameToScanNumber(q.getTitle(), i));
@@ -169,7 +175,7 @@ public class mascotDatHandler extends AnalysisHandler {
         //p.setStart(pro.getStart());
         //p.setEnd(pro.getStop());
         for (Object obj:proteins) {
-            be.proteomics.mascotdatfile.util.mascot.ProteinHit pro = (be.proteomics.mascotdatfile.util.mascot.ProteinHit)obj;
+            com.compomics.mascotdatfile.util.mascot.ProteinHit pro = (com.compomics.mascotdatfile.util.mascot.ProteinHit)obj;
             ProteinHit proHit = new ProteinHit(pro.getAccession(), pro.getStart(), pro.getStop());
             minProteins.add(pro.getAccession());
             p.addProteinHit(proHit);

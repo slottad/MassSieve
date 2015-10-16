@@ -11,8 +11,8 @@ package gov.nih.nimh.mass_sieve.gui;
 import ca.odell.glazedlists.GlazedLists;
 import ca.odell.glazedlists.SeparatorList;
 import ca.odell.glazedlists.SortedList;
-import ca.odell.glazedlists.swing.EventSelectionModel;
-import ca.odell.glazedlists.swing.EventTableModel;
+import ca.odell.glazedlists.swing.DefaultEventSelectionModel;
+import ca.odell.glazedlists.swing.DefaultEventTableModel;
 import com.publicobject.misc.swing.Icons;
 import com.publicobject.misc.swing.JSeparatorTable;
 import gov.nih.nimh.mass_sieve.Peptide;
@@ -70,11 +70,11 @@ public class ProteinGroupListPanel extends ProteinListPanel {
         } else {
             sepList = new SeparatorList<Protein>(sortList, GlazedLists.beanPropertyComparator(Protein.class, "equivalentGroup"), 0, Integer.MAX_VALUE);
         }
-        tableModel = new EventTableModel(sepList, pTableFormat);
+        tableModel = new DefaultEventTableModel(sepList, pTableFormat);
         jSepTable = new JSeparatorTable(tableModel);
         jSepTable.setSeparatorRenderer(new ProteinSeparatorTableCell(sepList));
         jSepTable.setSeparatorEditor(new ProteinSeparatorTableCell(sepList));
-        selectionModel = new EventSelectionModel(sepList);
+        selectionModel = new DefaultEventSelectionModel(sepList);
     }
 
     protected JPopupMenu createPopupMenu() {
