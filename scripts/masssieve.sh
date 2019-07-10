@@ -1,1 +1,1 @@
-java -Xss2m -Xms512m -Xmx1024m -jar MassSieve.jar
+java -Xss2m -Xms512m -Xmx2048m -jar MassSieve.jar
