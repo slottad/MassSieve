@@ -422,7 +422,7 @@ public class PeptideHit implements Serializable, Comparable<PeptideHit> {
     }
 
     public String getScanTuple() {
-        return this.getRawFile() + ":" + this.getScanNum();
+        return this.getExperiment() + ":" + this.getRawFile() + ":" + this.getScanNum();
     }
 
     public void normalizeXcorr() {
